@@ -41,7 +41,7 @@ export default function FullScreenDialogList({
         <React.Fragment>
             <Dialog
                 fullScreen
-                open={true}
+                open={false} //!!!!!!!!!!!!!!
                 onClose={handleClose}
                 TransitionComponent={Transition}
             >

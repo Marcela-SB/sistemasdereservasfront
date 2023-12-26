@@ -5,6 +5,9 @@ import ListItemText from "@mui/material/ListItemText";
 import ListSubheader from "@mui/material/ListSubheader";
 import { ReservationT } from "../types/ReservationT";
 import { RoomT } from "../types/RoomT";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { StateContext } from "../context/ReactContext";
 
 type Props = {
     //isOpen: boolean;
@@ -13,6 +16,10 @@ type Props = {
 };
 
 export default function ScrollableList({ optionsList }: Props) {
+
+    const {roomList} = React.useContext(StateContext);
+
+
     return (
         <List
             sx={{
@@ -23,15 +30,17 @@ export default function ScrollableList({ optionsList }: Props) {
                 overflow: "auto",
                 height: "100%",
                 margin: 2,
-                marginLeft:6,
+                marginLeft: 6,
                 "& ul": { padding: 0 },
             }}
         >
-            {[0, 1, 2,4,5,6,7,8,9,10,11,12,13,14,15,16].map((item) => (
-                <ListItem key={`item-${item}`}>
-                    <ListItemText primary={`Item ${item}`} />
-                </ListItem>
-            ))}
+            {roomList?.map(
+                (item : RoomT) => (
+                    <ListItem key={`item-${item.name}-${item?.roomNumber}`}>
+                        <ListItemText primary={`Item ${item.name} ${item?.roomNumber}`} />
+                    </ListItem>
+                )
+            )}
         </List>
     );
 }

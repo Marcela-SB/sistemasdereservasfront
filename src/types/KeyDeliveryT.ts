@@ -1,4 +1,4 @@
-export type KeyWithdrawal = {
+export type KeyT = {
     id: string;
     roomId: string;
     withdrawResponsibleId: string;

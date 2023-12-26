@@ -8,6 +8,7 @@ import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import LoginDrawer from "./Drawer";
+import LoginDialog from "./LoginDialog";
 
 function NavBar() {
 
@@ -16,13 +17,15 @@ function NavBar() {
         if (isLogged) {
             setIsDrawerOpen(true)
         } else {
-            setIsDrawerOpen(false)
+            setIsLoginDialogOpen(true)
         }
     };
 
-    const [isLogged, setIsLogged] = React.useState(true);
+    const [isLogged, setIsLogged] = React.useState(false);
 
     const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
+
+    const [isLoginDialogOpen, setIsLoginDialogOpen] = React.useState(false)
 
     return (
         <AppBar position="absolute">
@@ -60,7 +63,8 @@ function NavBar() {
                                 />
                             </IconButton>
                         </Tooltip>
-                        <LoginDrawer isOpen={isDrawerOpen}  setIsOpen={setIsDrawerOpen}/>
+                        <LoginDrawer isOpen={isDrawerOpen} setIsOpen={setIsDrawerOpen}/>
+                        <LoginDialog isOpen={isLoginDialogOpen} setIsOpen={setIsLoginDialogOpen} />
                     </Box>
                 </Toolbar>
             </Container>
