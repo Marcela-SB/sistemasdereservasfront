@@ -314,7 +314,7 @@ export default function FullScreenActionDialog({
                             <Grid xs={3} paddingX={1} paddingTop={1}>
                                 <DemoContainer components={["DatePicker"]}>
                                     <DatePicker
-                                        label="Inicio da reserva"
+                                        label="Final da reserva"
                                         value={formEndDay}
                                         disabled
                                         sx={{ width: "100%" }}
@@ -325,7 +325,7 @@ export default function FullScreenActionDialog({
                             <Grid xs={3} paddingX={1} paddingTop={1}>
                                 <DemoContainer components={["DatePicker"]}>
                                     <DatePicker
-                                        label="Inicio da reserva"
+                                        label="Final da reserva"
                                         value={formEndDay}
                                         onChange={(newValue) =>
                                             setFormEndDay(newValue)

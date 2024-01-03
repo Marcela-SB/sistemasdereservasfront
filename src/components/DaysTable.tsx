@@ -29,7 +29,7 @@ export default function DaysTable() {
         percent =
             ((currentTime.hour() * 60 + currentTime.minute() - 7 * 60) / 915) *
                 100 +
-            7;
+            3.5;
     }
 
     const [finalSchedule, setFinalSchedule] = React.useState([]);

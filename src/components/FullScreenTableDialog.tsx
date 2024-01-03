@@ -32,12 +32,6 @@ export default function FullScreenTableDialog({
     };
 
 
-    React.useEffect(() => {
-        if (formSchedule) {
-            setFormIntern(formSchedule);
-        }
-    }, [formSchedule]);
-
     return (
         <TableContainer
             component={Paper}
@@ -104,7 +98,7 @@ export default function FullScreenTableDialog({
                                                 <Checkbox
                                                     sx={{
                                                         "& .MuiSvgIcon-root": {
-                                                            fontSize: 52,
+                                                            fontSize: 26,
                                                         },
                                                     }}
                                                     checked={
@@ -124,7 +118,7 @@ export default function FullScreenTableDialog({
                                                 <Checkbox
                                                     sx={{
                                                         "& .MuiSvgIcon-root": {
-                                                            fontSize: 52,
+                                                            fontSize: 26,
                                                         },
                                                     }}
                                                     checked={
