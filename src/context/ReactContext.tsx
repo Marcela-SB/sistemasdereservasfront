@@ -1,5 +1,5 @@
 import dayjs, { Dayjs } from "dayjs";
-import { ReactElement, createContext, useState } from "react";
+import React, { ReactElement, createContext, useState } from "react";
 import { RoomT } from "../types/RoomT";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -13,7 +13,9 @@ export type GlobalContent = {
     roomList: RoomT[],
     userList: UserT[],
     reservationList: ReservationT[],
-    keyList: KeyT[]
+    keyList: KeyT[], 
+    loggedUser: unknown | null,
+    setLoggedUser: (u: unknown) => void
 };
 
 export const StateContext = createContext<GlobalContent>({
@@ -22,15 +24,16 @@ export const StateContext = createContext<GlobalContent>({
     roomList: [],
     userList: [],
     reservationList: [],
-    keyList: []
+    keyList: [],
+    loggedUser: null,
+    setLoggedUser: () => {}
+
 });
 
 type Props = { children: ReactElement };
 
 function ReactContext({ children }: Props) {
     const [date, setDate] = useState<Dayjs>(dayjs());
-
-    const [roomObjList, setRoomObjList] = useState<RoomT | null>(null);
 
     const { data: roomList } = useQuery({
         queryKey: ["roomListContext"],
@@ -40,8 +43,6 @@ function ReactContext({ children }: Props) {
         },
     });
 
-    const [userObjList, setUserObjList] = useState<UserT | null>(null);
-
     const { data: userList } = useQuery({
         queryKey: ["userListContext"],
         queryFn: async () => {
@@ -49,9 +50,6 @@ function ReactContext({ children }: Props) {
             return response.data;
         },
     });
-
-    const [reservationObjList, setReservationObjList] =
-        useState<ReservationT | null>(null);
 
     const { data: reservationList } = useQuery({
         queryKey: ["reservationListContext"],
@@ -63,9 +61,6 @@ function ReactContext({ children }: Props) {
         },
     });
 
-    const [keyObjList, setKeyObjList] =
-        useState<KeyT | null>(null);
-
     const { data: keyList } = useQuery({
         queryKey: ["keyListContext"],
         queryFn: async () => {
@@ -76,8 +71,10 @@ function ReactContext({ children }: Props) {
         },
     });
 
+    const [loggedUser, setLoggedUser] = React.useState<unknown | null>(null)
+
     return (
-        <StateContext.Provider value={{ date, setDate, roomList, userList, reservationList, keyList }}>
+        <StateContext.Provider value={{ date, setDate, roomList, userList, reservationList, keyList, loggedUser, setLoggedUser }}>
             {children}
         </StateContext.Provider>
     );

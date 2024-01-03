@@ -12,38 +12,160 @@ import PersonIcon from "@mui/icons-material/Person";
 import AddIcon from "@mui/icons-material/Add";
 import Typography from "@mui/material/Typography";
 import { blue } from "@mui/material/colors";
-import { DialogContent, TextField } from "@mui/material";
+import {
+    Alert,
+    DialogContent,
+    FormControl,
+    IconButton,
+    InputAdornment,
+    InputLabel,
+    OutlinedInput,
+    Snackbar,
+    Stack,
+    TextField,
+} from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+
+import InputMask from "react-input-mask";
+import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
+import { StateContext } from "../context/ReactContext";
 
 type Props = {
     setIsOpen: (b: boolean) => void;
     isOpen: boolean;
+    setIsLogged: (b:boolean) => void
 };
 
-export default function LoginDialog({ setIsOpen, isOpen }: Props) {
-    const [username, setUsername] = React.useState<string | null>(null);
+export default function LoginDialog({ setIsOpen, isOpen, setIsLogged }: Props) {
+
+    const {setLoggedUser} = React.useContext(StateContext);
+
+    const [username, setUsername] = React.useState<string>("");
+    const [password, setPassword] = React.useState<string | null>(null);
+
+    const [showPassword, setShowPassword] = React.useState(false);
+
+    const [isSnackBarOpen, setIsSnackBarOpen] = React.useState(false);
+
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+    const handleMouseDownPassword = (
+        event: React.MouseEvent<HTMLButtonElement>
+    ) => {
+        event.preventDefault();
+    };
+
+    const loginMutation = useMutation({
+        mutationFn: (header) => {
+            return axios.post(
+                "http://localhost:8080/auth/authenticate",
+                header
+            );
+        },
+        onSuccess: (data) => {
+            setLoggedUser(data.data.user)
+            setIsSnackBarOpen(true);
+            setIsLogged(true)
+            closeDialog()
+        },
+        
+    });
+
+    const LoginTentative = () => {
+        const header = {
+            username: username,
+            password: password,
+        };
+
+        loginMutation.mutate(header);
+    };
+
+    const closeDialog = () => {
+        loginMutation.reset();
+        setIsOpen(false);
+    };
 
     return (
-        <Dialog
-            onClose={() => {
-                setIsOpen(false);
-            }}
-            open={isOpen}
-        >
-            <DialogTitle >Login</DialogTitle>
-            <DialogContent
-            sx={{
-                paddingTop:"2rem"
-            }}
+        <>
+            <Dialog onClose={() => {closeDialog}} open={isOpen}>
+                <DialogTitle>Painel de login</DialogTitle>
+                <DialogContent>
+                    <Stack direction={"column"} paddingTop={1} gap={2}>
+                        <FormControl variant="outlined">
+                            <InputMask
+                                mask={"999.999.999-99"}
+                                value={username}
+                                onChange={(
+                                    event: React.ChangeEvent<HTMLInputElement>
+                                ) => {
+                                    setUsername(event.target.value);
+                                }}
+                            >
+                                {() => <TextField label="CPF" />}
+                            </InputMask>
+                        </FormControl>
+
+                        <FormControl variant="outlined">
+                            <InputLabel htmlFor="outlined-adornment-password">
+                                Password
+                            </InputLabel>
+                            <OutlinedInput
+                                id="outlined-adornment-password"
+                                type={showPassword ? "text" : "password"}
+                                value={password}
+                                onChange={(
+                                    event: React.ChangeEvent<HTMLInputElement>
+                                ) => {
+                                    setPassword(event.target.value);
+                                }}
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={handleClickShowPassword}
+                                            onMouseDown={
+                                                handleMouseDownPassword
+                                            }
+                                            edge="end"
+                                        >
+                                            {showPassword ? (
+                                                <VisibilityOff />
+                                            ) : (
+                                                <Visibility />
+                                            )}
+                                        </IconButton>
+                                    </InputAdornment>
+                                }
+                                label="Password"
+                            />
+                        </FormControl>
+
+                        {loginMutation.error && (
+                            <Alert severity="error">
+                                CPF ou senha incorretos
+                            </Alert>
+                        )}
+
+                        <Button
+                            variant="contained"
+                            onClick={LoginTentative}
+                            sx={{ marginTop: 1 }}
+                        >
+                            login
+                        </Button>
+                    </Stack>
+                </DialogContent>
+            </Dialog>
+            <Snackbar
+                open={isSnackBarOpen}
+                autoHideDuration={3000}
+                onClose={() => {setIsSnackBarOpen(false)}}
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
             >
-                <TextField
-                    id="outlined-controlled"
-                    label="Nome da reserva"
-                    value={username}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                        setUsername(event.target.value);
-                    }}
-                />
-            </DialogContent>
-        </Dialog>
+                <Alert severity="success">Logado com sucesso.</Alert>
+            </Snackbar>
+        </>
     );
 }

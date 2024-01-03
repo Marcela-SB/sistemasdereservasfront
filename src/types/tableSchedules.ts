@@ -16,5 +16,14 @@ export const tableSchedule = [
     { startTime: '20:35', endTime: '21:25', shift: 'N', hourly: 3 },
     { startTime: '21:25', endTime: '22:15', shift: 'N', hourly: 4 },
   ];
+
+export const baseInternalSchedule = [
+  [false, false, false, false, false, false, false, false,false, false, false, false,false, false, false, false],
+  [false, false, false, false, false, false, false, false,false, false, false, false,false, false, false, false],
+  [false, false, false, false, false, false, false, false,false, false, false, false,false, false, false, false],
+  [false, false, false, false, false, false, false, false,false, false, false, false,false, false, false, false],
+  [false, false, false, false, false, false, false, false,false, false, false, false,false, false, false, false],
+  [false, false, false, false, false, false, false, false,false, false, false, false,false, false, false, false],
+]
   
   

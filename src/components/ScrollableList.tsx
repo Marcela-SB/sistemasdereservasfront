@@ -8,17 +8,27 @@ import { RoomT } from "../types/RoomT";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { StateContext } from "../context/ReactContext";
+import { tableSchedule } from "../types/tableSchedules";
+import { Checkbox, ListItemSecondaryAction } from "@mui/material";
 
 type Props = {
-    //isOpen: boolean;
-    //setIsOpen: (b: boolean) => void;
-    optionsList: ReservationT[];
+    formSchedule: boolean[];
+    setFormSchedule: (b: boolean[]) => void;
 };
 
-export default function ScrollableList({ optionsList }: Props) {
-
-    const {roomList} = React.useContext(StateContext);
-
+export default function ScrollableList({
+    formSchedule,
+    setFormSchedule,
+}: Props) {
+    const handleChange = (
+        event: React.ChangeEvent<HTMLInputElement>,
+        hIndex: number
+    ) => {
+        const holder = formSchedule;
+        holder[hIndex] = event.target.checked;
+        console.log(holder);
+        setFormSchedule([...holder]);
+    };
 
     return (
         <List
@@ -28,19 +38,32 @@ export default function ScrollableList({ optionsList }: Props) {
                 bgcolor: "background.paper",
                 position: "relative",
                 overflow: "auto",
-                height: "100%",
-                margin: 2,
-                marginLeft: 6,
+                maxHeight: "24rem",
                 "& ul": { padding: 0 },
+                "&::-webkit-scrollbar": { display: "none" },
             }}
         >
-            {roomList?.map(
-                (item : RoomT) => (
-                    <ListItem key={`item-${item.name}-${item?.roomNumber}`}>
-                        <ListItemText primary={`Item ${item.name} ${item?.roomNumber}`} />
-                    </ListItem>
-                )
-            )}
+            {tableSchedule.map((item, index) => (
+                <ListItem
+                    key={`item-${item.shift}-${item.hourly}`}
+                    sx={{
+                        borderBottom: "1px solid gray",
+                    }}
+                >
+                    <ListItemText
+                        primary={`${item.shift}${item.hourly} ${item.startTime}-${item.endTime}`}
+                    />
+                    <ListItemSecondaryAction>
+                        <Checkbox
+                            onChange={(
+                                event: React.ChangeEvent<HTMLInputElement>
+                            ) => {
+                                handleChange(event, index);
+                            }}
+                        />
+                    </ListItemSecondaryAction>
+                </ListItem>
+            ))}
         </List>
     );
 }

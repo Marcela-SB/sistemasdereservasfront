@@ -7,5 +7,6 @@ export type ReservationT = {
     schedule: boolean[][];
     reservationStart: string; 
     reservationEnd: string; 
+    name:string
   };
   

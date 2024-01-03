@@ -12,21 +12,53 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs, { Dayjs } from "dayjs";
 import FullScreenTableDialog from "./FullScreenTableDialog";
+import { ReservationT } from "../types/ReservationT";
+import { RoomT } from "../types/RoomT";
+import { StateContext } from "../context/ReactContext";
+import { UserT } from "../types/UserT";
+import { baseInternalSchedule } from "../types/tableSchedules";
 
 type Props = {};
 
 function FullScreenFormDialog({}: Props) {
+
+    
+    const {roomList, userList, reservationList, loggedUser} = React.useContext(StateContext);
+
     const [formName, setFormName] = useState("");
 
-    const [formRoom, setFormRoom] = useState<string | null>("");
+    const [formRoom, setFormRoom] = useState<RoomT | null>(null);
 
     const [formStartDay, setFormStartDay] = useState<Dayjs | null>(dayjs());
 
     const [formIsOneDay, setFormIsOneDay] = useState(true);
 
-    const [formStartEnd, setFormStartEnd] = useState<Dayjs | null>(dayjs());
+    const [formEndDay, setFormEndDay] = useState<Dayjs | null>(dayjs());
 
-    const [formReservatedTo, setFormReservatedTo] = useState<string | null>("");
+    const [formReservatedTo, setFormReservatedTo] = useState<UserT | null>(null);
+
+    const [formSchedule, setFormSchedule] = useState<boolean[][]>(baseInternalSchedule)
+
+    const onSubmit = () => {
+        const formatedStart = formStartDay!.startOf("D").format('YYYY-MM-DDTHH:mm:ss') 
+        let formatedEnd = formEndDay!.endOf("D").format('YYYY-MM-DDTHH:mm:ss')
+        if(formIsOneDay){
+            
+            formatedEnd = formStartDay!.endOf("D").format('YYYY-MM-DDTHH:mm:ss') 
+        }
+         
+        const header  = {
+            name: formName,
+            roomId: formRoom!.id,
+            reservationStart: formatedStart,
+            reservationEnd: formatedEnd,
+            reservatedToId:formReservatedTo!.id,
+            reservationResponsibleId: loggedUser.id,
+            schedule: formSchedule
+        }
+
+        console.log(header)
+    }
 
     return (
         <Box sx={{ padding: 2, flexGrow: 1 }}>
@@ -47,11 +79,17 @@ function FullScreenFormDialog({}: Props) {
                 <Grid xs={5} paddingX={1}>
                     <Autocomplete
                         value={formRoom}
-                        onChange={(event: any, newValue: string | null) => {
+                        onChange={(event: any, newValue: RoomT | null) => {
                             setFormRoom(newValue);
                         }}
                         id="controllable-states-demo"
-                        options={[""]}
+                        options={roomList}
+                        getOptionLabel={(room : RoomT) => {
+                            let roomN = ""
+                            if(room.roomNumber){
+                                roomN = room.roomNumber
+                            }
+                            return `${room.name} ${roomN}`}}
                         sx={{ flexGrow: 1 }}
                         renderInput={(params) => (
                             <TextField {...params} label="Sala reservada" />
@@ -63,7 +101,7 @@ function FullScreenFormDialog({}: Props) {
                     <TextField
                         id="outlined-controlled"
                         label="Supervisor da reserva"
-                        value="Supervisor logado"
+                        value={loggedUser.name}
                         disabled
                         fullWidth
                     />
@@ -100,7 +138,7 @@ function FullScreenFormDialog({}: Props) {
                         <DemoContainer components={["DatePicker"]}>
                             <DatePicker
                                 label="Inicio da reserva"
-                                value={formStartEnd}
+                                value={formEndDay}
                                 disabled
                                 sx={{ width: "100%" }}
                             />
@@ -111,9 +149,9 @@ function FullScreenFormDialog({}: Props) {
                         <DemoContainer components={["DatePicker"]}>
                             <DatePicker
                                 label="Inicio da reserva"
-                                value={formStartEnd}
+                                value={formEndDay}
                                 onChange={(newValue) =>
-                                    setFormStartEnd(newValue)
+                                    setFormEndDay(newValue)
                                 }
                                 disablePast
                                 sx={{ width: "100%" }}
@@ -124,18 +162,20 @@ function FullScreenFormDialog({}: Props) {
                 <Grid xs paddingX={1} paddingTop={2}>
                     <Autocomplete
                         value={formReservatedTo}
-                        onChange={(event: any, newValue: string | null) => {
+                        onChange={(event: any, newValue: UserT | null) => {
                             setFormReservatedTo(newValue);
                         }}
                         id="controllable-states-demo"
-                        options={[""]}
+                        options={userList}
+                        
+                        getOptionLabel={(user : UserT) => {return user.name}}
                         sx={{ flexGrow: 1 }}
                         renderInput={(params) => (
                             <TextField {...params} label="Sala reservada para..." />
                         )}
                     />
                 </Grid>
-                <FullScreenTableDialog />
+                <FullScreenTableDialog formSchedule={formSchedule} setFormSchedule={setFormSchedule}/>
             </Grid>
         </Box>
     );

@@ -9,15 +9,14 @@ import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import LoginDrawer from "./Drawer";
 import LoginDialog from "./LoginDialog";
+import { orange } from "@mui/material/colors";
 
 function NavBar() {
-
-
     const handleClickOnProfile = () => {
         if (isLogged) {
-            setIsDrawerOpen(true)
+            setIsDrawerOpen(true);
         } else {
-            setIsLoginDialogOpen(true)
+            setIsLoginDialogOpen(true);
         }
     };
 
@@ -25,7 +24,7 @@ function NavBar() {
 
     const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
 
-    const [isLoginDialogOpen, setIsLoginDialogOpen] = React.useState(false)
+    const [isLoginDialogOpen, setIsLoginDialogOpen] = React.useState(false);
 
     return (
         <AppBar position="absolute">
@@ -57,14 +56,22 @@ function NavBar() {
                                 onClick={handleClickOnProfile}
                                 sx={{ p: 0 }}
                             >
-                                <Avatar
-                                    alt="Deart"
-                                    src="/static/images/avatar/2.jpg"
-                                />
+                                {isLogged ? (
+                                    <Avatar alt="Deart" sx={{bgcolor: orange[700]}}  />
+                                ) : (
+                                    <Avatar alt="Deart">D</Avatar>
+                                )}
                             </IconButton>
                         </Tooltip>
-                        <LoginDrawer isOpen={isDrawerOpen} setIsOpen={setIsDrawerOpen}/>
-                        <LoginDialog isOpen={isLoginDialogOpen} setIsOpen={setIsLoginDialogOpen} />
+                        <LoginDrawer
+                            isOpen={isDrawerOpen}
+                            setIsOpen={setIsDrawerOpen}
+                        />
+                        <LoginDialog
+                            isOpen={isLoginDialogOpen}
+                            setIsOpen={setIsLoginDialogOpen}
+                            setIsLogged={setIsLogged}
+                        />
                     </Box>
                 </Toolbar>
             </Container>

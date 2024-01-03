@@ -6,11 +6,38 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { tableSchedule } from "../types/tableSchedules";
+import { baseInternalSchedule, tableSchedule } from "../types/tableSchedules";
 import { Checkbox, Tooltip } from "@mui/material";
 import { weekDays } from "../types/weekDays";
 
-export default function FullScreenTableDialog() {
+type Props = {
+    formSchedule: boolean[][];
+    setFormSchedule: (b: boolean[][]) => void;
+};
+
+export default function FullScreenTableDialog({
+    formSchedule,
+    setFormSchedule,
+}: Props) {
+    const handleChange = (
+        event: React.ChangeEvent<HTMLInputElement>,
+        wIndex: number,
+        hIndex: number
+    ) => {
+        const holder = formSchedule;
+        console.log(event.target.checked);
+        holder[wIndex][hIndex] = event.target.checked;
+        console.log(holder);
+        setFormSchedule([...holder]);
+    };
+
+
+    React.useEffect(() => {
+        if (formSchedule) {
+            setFormIntern(formSchedule);
+        }
+    }, [formSchedule]);
+
     return (
         <TableContainer
             component={Paper}
@@ -24,6 +51,11 @@ export default function FullScreenTableDialog() {
                             return (
                                 <Tooltip
                                     title={
+                                        schedule.startTime +
+                                        "-" +
+                                        schedule.endTime
+                                    }
+                                    key={
                                         schedule.startTime +
                                         "-" +
                                         schedule.endTime
@@ -46,15 +78,16 @@ export default function FullScreenTableDialog() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {weekDays.map((wd) => (
+                    {weekDays.map((wd, weekIndex) => (
                         <TableRow key={wd.name}>
-                            <TableCell align="center">
-                                {wd.name}
-                            </TableCell>
+                            <TableCell align="center">{wd.name}</TableCell>
 
-                            {tableSchedule.map((schedule) => {
+                            {tableSchedule.map((schedule, hourIndex) => {
                                 return (
-                                    <Tooltip title={""}>
+                                    <Tooltip
+                                        title={""}
+                                        key={weekIndex + hourIndex}
+                                    >
                                         <TableCell
                                             padding="checkbox"
                                             key={
@@ -65,13 +98,49 @@ export default function FullScreenTableDialog() {
                                             size="medium"
                                             align="center"
                                         >
-                                            <Checkbox
-                                                sx={{
-                                                    "& .MuiSvgIcon-root": {
-                                                        fontSize:52,
-                                                    },
-                                                }}
-                                            />
+                                            {formSchedule[weekIndex][
+                                                hourIndex
+                                            ] ? (
+                                                <Checkbox
+                                                    sx={{
+                                                        "& .MuiSvgIcon-root": {
+                                                            fontSize: 52,
+                                                        },
+                                                    }}
+                                                    checked={
+                                                        formSchedule[weekIndex][
+                                                            hourIndex
+                                                        ]
+                                                    }
+                                                    onChange={(e) => {
+                                                        handleChange(
+                                                            e,
+                                                            weekIndex,
+                                                            hourIndex
+                                                        );
+                                                    }}
+                                                />
+                                            ) : (
+                                                <Checkbox
+                                                    sx={{
+                                                        "& .MuiSvgIcon-root": {
+                                                            fontSize: 52,
+                                                        },
+                                                    }}
+                                                    checked={
+                                                        formSchedule[weekIndex][
+                                                            hourIndex
+                                                        ]
+                                                    }
+                                                    onChange={(e) => {
+                                                        handleChange(
+                                                            e,
+                                                            weekIndex,
+                                                            hourIndex
+                                                        );
+                                                    }}
+                                                />
+                                            )}
                                         </TableCell>
                                     </Tooltip>
                                 );

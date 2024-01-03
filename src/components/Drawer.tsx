@@ -8,30 +8,26 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 
-import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
-import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
-import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove';
+import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import BookmarkRemoveIcon from "@mui/icons-material/BookmarkRemove";
 
-import KeyIcon from '@mui/icons-material/Key';
-import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
+import KeyIcon from "@mui/icons-material/Key";
+import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 import FullScreenActionDialog from "./FullScreenActionDialog";
 import FullScreenDialogList from "./FullScreenDialogList";
-
-const reservationActions = ["Criar reserva", "Editar reserva", "Excluir reserva"]
-const reservationIcons = [<BookmarkAddIcon />, <BookmarkBorderIcon />, <BookmarkRemoveIcon />]
-
-const keyActions = ["Criar retirada de chave", "Criar devolução de chave"]
-const keyIcons = [<KeyIcon />, <KeyboardReturnIcon />]
+import { ReservationT } from "../types/ReservationT";
+import KeyWithdraDialog from "./KeyWithdrawDialog";
+import KeyReturnDialog from "./KeyReturnDialog";
 
 type Props = {
     isOpen: boolean;
-    setIsOpen: (b:boolean) => void
+    setIsOpen: (b: boolean) => void;
 };
 
 export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
     const toggleDrawer =
-        (open: boolean) =>
-        (event: React.KeyboardEvent | React.MouseEvent) => {
+        (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
             if (
                 event.type === "keydown" &&
                 ((event as React.KeyboardEvent).key === "Tab" ||
@@ -43,7 +39,15 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
             setIsOpen(open);
         };
 
-    const [reservationDIsOpen, setReservationDIsOpen] = React.useState(false)
+    const [reservationDIsOpen, setReservationDIsOpen] = React.useState(false);
+    const [reservationDListIsOpen, setReservationDListIsOpen] =
+        React.useState(false);
+
+    const [selectedReservation, setSelectedReservation] =
+        React.useState<ReservationT | null>(null);
+
+    const [keyWDialogIsOpen, setKeyWDialogIsOpen] = React.useState(false);
+    const [keyRDialogIsOpen, setKeyRDialogIsOpen] = React.useState(false);
 
     return (
         <div>
@@ -61,36 +65,91 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
                     onKeyDown={toggleDrawer(false)}
                 >
                     <List>
-                        {reservationActions.map(
-                            (text, index) => (
-                                <ListItem key={text} disablePadding>
-                                    <ListItemButton>
-                                        <ListItemIcon>
-                                            {reservationIcons[index]}
-                                        </ListItemIcon>
-                                        <ListItemText primary={text} />
-                                    </ListItemButton>
-                                </ListItem>
-                            )
-                        )}
+                        <ListItem key={"Criar reserva"} disablePadding>
+                            <ListItemButton
+                                onClick={() => {
+                                    setReservationDIsOpen(true);
+                                }}
+                            >
+                                <ListItemIcon>
+                                    <BookmarkAddIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={"Criar reserva"} />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem key={"Excluir reserva"} disablePadding>
+                            <ListItemButton
+                                onClick={() => {
+                                    setReservationDListIsOpen(true);
+                                }}
+                            >
+                                <ListItemIcon>
+                                    <BookmarkRemoveIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={"Modificar reserva"} />
+                            </ListItemButton>
+                        </ListItem>
                     </List>
                     <Divider />
                     <List>
-                        {keyActions.map((text, index) => (
-                            <ListItem key={text} disablePadding>
-                                <ListItemButton>
-                                    <ListItemIcon>
-                                        {keyIcons[index]}
-                                    </ListItemIcon>
-                                    <ListItemText primary={text} />
-                                </ListItemButton>
-                            </ListItem>
-                        ))}
+                        <ListItem
+                            key={"Criar retirada de chave"}
+                            disablePadding
+                        >
+                            <ListItemButton
+                                onClick={() => {
+                                    setKeyWDialogIsOpen(true);
+                                }}
+                            >
+                                <ListItemIcon>
+                                    <KeyIcon />
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary={"Criar retirada de chave"}
+                                />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem
+                            key={"Criar devolução de chave"}
+                            disablePadding
+                        >
+                            <ListItemButton
+                                onClick={() => {
+                                    setKeyRDialogIsOpen(true);
+                                }}
+                            >
+                                <ListItemIcon>
+                                    <KeyboardReturnIcon />
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary={"Criar devolução de chave"}
+                                />
+                            </ListItemButton>
+                        </ListItem>
                     </List>
                 </Box>
             </Drawer>
-            <FullScreenActionDialog isOpen={reservationDIsOpen} setIsOpen={setReservationDIsOpen} text="reserva" />
-            <FullScreenDialogList isOpen={reservationDIsOpen} setIsOpen={setReservationDIsOpen} text="reserva" />
+            <FullScreenActionDialog
+                isOpen={reservationDIsOpen}
+                setIsOpen={setReservationDIsOpen}
+                text="criar"
+                selectedReservation={selectedReservation}
+            />
+            <FullScreenDialogList
+                isOpen={reservationDListIsOpen}
+                setIsOpen={setReservationDListIsOpen}
+                text="reserva"
+                setSelectedReservation={setSelectedReservation}
+                setReservationDIsOpen={setReservationDIsOpen}
+            />
+            <KeyWithdraDialog
+                isOpen={keyWDialogIsOpen}
+                setIsOpen={setKeyWDialogIsOpen}
+            />
+            <KeyReturnDialog
+                isOpen={keyRDialogIsOpen}
+                setIsOpen={setKeyRDialogIsOpen}
+            />
         </div>
     );
 }
