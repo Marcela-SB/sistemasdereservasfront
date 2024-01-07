@@ -33,6 +33,9 @@ export default function KeyScrollableList({ setSelectedKey }: Props) {
                 maxHeight: "24rem",
                 "& ul": { padding: 0 },
                 "&::-webkit-scrollbar": { display: "none" },
+                marginLeft:2    ,
+                marginTop:2,
+                borderRadius:"2%"
             }}
         >
             {keyList.map((item) => {

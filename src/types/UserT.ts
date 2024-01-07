@@ -5,7 +5,7 @@ export type UserT = {
     name: string;
     email: string;
     cpf: string;
-    registration: number;
+    registration: string;
     role: string;
 };
   

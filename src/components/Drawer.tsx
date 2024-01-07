@@ -19,6 +19,19 @@ import FullScreenDialogList from "./FullScreenDialogList";
 import { ReservationT } from "../types/ReservationT";
 import KeyWithdraDialog from "./KeyWithdrawDialog";
 import KeyReturnDialog from "./KeyReturnDialog";
+import {
+    ManageAccounts,
+    MeetingRoom,
+    PersonAdd,
+    RoomPreferences,
+} from "@mui/icons-material";
+import CreateUserDialog from "./CreateUserDialog";
+import { useState } from "react";
+import { UserT } from "../types/UserT";
+import CreateRoomDialog from "./CreateRoomDialog";
+import { RoomT } from "../types/RoomT";
+import ModifyRoomListD from "./ModifyRoomListD";
+import ModifyUserListD from "./ModifyUserListD";
 
 type Props = {
     isOpen: boolean;
@@ -39,15 +52,24 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
             setIsOpen(open);
         };
 
-    const [reservationDIsOpen, setReservationDIsOpen] = React.useState(false);
-    const [reservationDListIsOpen, setReservationDListIsOpen] =
-        React.useState(false);
+    const [reservationDIsOpen, setReservationDIsOpen] = useState(false);
+    const [reservationDListIsOpen, setReservationDListIsOpen] = useState(false);
 
     const [selectedReservation, setSelectedReservation] =
-        React.useState<ReservationT | null>(null);
+        useState<ReservationT | null>(null);
 
-    const [keyWDialogIsOpen, setKeyWDialogIsOpen] = React.useState(false);
-    const [keyRDialogIsOpen, setKeyRDialogIsOpen] = React.useState(false);
+    const [keyWDialogIsOpen, setKeyWDialogIsOpen] = useState(false);
+    const [keyRDialogIsOpen, setKeyRDialogIsOpen] = useState(false);
+
+    const [userCreateDIsOpen, setUserCreateDIsOpen] = useState(false);
+    const [userModifyDIsOpen, setUserModifyDIsOpen] = useState(false);
+
+    const [selectedUser, setSelectedUser] = useState<UserT | null>(null);
+
+    const [roomCreateDIsOpen, setRoomCreateDIsOpen] = useState(false);
+    const [roomModifyDIsOpen, setRoomModifyDIsOpen] = useState(false);
+
+    const [selectedRoom, setSelectedRoom] = useState<RoomT | null>(null);
 
     return (
         <div>
@@ -92,10 +114,7 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
                     </List>
                     <Divider />
                     <List>
-                        <ListItem
-                            key={"Criar retirada de chave"}
-                            disablePadding
-                        >
+                        <ListItem key={"Retirada de chave"} disablePadding>
                             <ListItemButton
                                 onClick={() => {
                                     setKeyWDialogIsOpen(true);
@@ -104,15 +123,10 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
                                 <ListItemIcon>
                                     <KeyIcon />
                                 </ListItemIcon>
-                                <ListItemText
-                                    primary={"Criar retirada de chave"}
-                                />
+                                <ListItemText primary={"Retirada de chave"} />
                             </ListItemButton>
                         </ListItem>
-                        <ListItem
-                            key={"Criar devolução de chave"}
-                            disablePadding
-                        >
+                        <ListItem key={"Devolução de chave"} disablePadding>
                             <ListItemButton
                                 onClick={() => {
                                     setKeyRDialogIsOpen(true);
@@ -121,9 +135,61 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
                                 <ListItemIcon>
                                     <KeyboardReturnIcon />
                                 </ListItemIcon>
-                                <ListItemText
-                                    primary={"Criar devolução de chave"}
-                                />
+                                <ListItemText primary={"Devolução de chave"} />
+                            </ListItemButton>
+                        </ListItem>
+                    </List>
+                    <Divider />
+                    <List>
+                        <ListItem key={"Criar espaço"} disablePadding>
+                            <ListItemButton
+                                onClick={() => {
+                                    setRoomCreateDIsOpen(true);
+                                }}
+                            >
+                                <ListItemIcon>
+                                    <MeetingRoom />
+                                </ListItemIcon>
+                                <ListItemText primary={"Criar espaço"} />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem key={"Modificar espaço"} disablePadding>
+                            <ListItemButton
+                                onClick={() => {
+                                    setRoomModifyDIsOpen(true);
+                                }}
+                            >
+                                <ListItemIcon>
+                                    <RoomPreferences />
+                                </ListItemIcon>
+                                <ListItemText primary={"Modificar espaço"} />
+                            </ListItemButton>
+                        </ListItem>
+                    </List>
+                    <Divider />
+                    <List>
+                        <ListItem key={"Criar usuario"} disablePadding>
+                            <ListItemButton
+                                onClick={() => {
+                                    setUserCreateDIsOpen(true);
+                                }}
+                            >
+                                <ListItemIcon>
+                                    <PersonAdd />
+                                </ListItemIcon>
+                                <ListItemText primary={"Criar usuario"} />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem key={"Modificar usuario"} disablePadding>
+                            <ListItemButton
+                                onClick={() => {
+                                    setUserModifyDIsOpen(true);
+                                }}
+                            >
+                                <ListItemIcon>
+                                    <ManageAccounts />
+                                </ListItemIcon>
+                                <ListItemText primary={"Modificar usuario"} />
                             </ListItemButton>
                         </ListItem>
                     </List>
@@ -149,6 +215,29 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
             <KeyReturnDialog
                 isOpen={keyRDialogIsOpen}
                 setIsOpen={setKeyRDialogIsOpen}
+            />
+            <CreateUserDialog
+                isOpen={userCreateDIsOpen}
+                setIsOpen={setUserCreateDIsOpen}
+                selectedUser={selectedUser}
+            />
+            <CreateRoomDialog
+                isOpen={roomCreateDIsOpen}
+                setIsOpen={setRoomCreateDIsOpen}
+                selectedRoom={selectedRoom}
+                setSelectedRoom={setSelectedRoom}
+            />
+            <ModifyRoomListD
+                isOpen={roomModifyDIsOpen}
+                setIsOpen={setRoomModifyDIsOpen}
+                setSelectedRoom={setSelectedRoom}
+                setCreateRoom={setRoomCreateDIsOpen}
+            />
+            <ModifyUserListD 
+            isOpen={userModifyDIsOpen}
+            setIsOpen={setUserModifyDIsOpen}
+            setSelectedUser={setSelectedUser}
+            setCreateUserIsOpen={setUserCreateDIsOpen}
             />
         </div>
     );
