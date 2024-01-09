@@ -21,6 +21,7 @@ import { KeyT } from "../types/KeyDeliveryT";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../utils/queryClient";
+import CheckUserDialog from "./CheckUserDialog";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -45,6 +46,11 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
 
     const handleClose = () => {
         setIsOpen(false);
+        setFormRoom(null);
+        setFormReturnTime(dayjs());
+        setFormReservatedTo(null);
+        setFormResponsible(null);
+        setSelectedInternalReservation(null);
     };
 
     const [formRoom, setFormRoom] = useState<RoomT | null>(null);
@@ -60,6 +66,10 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
     const [selectedInternalReservation, setSelectedInternalReservation] =
         useState<ReservationT | null>(null);
 
+    const [checkDialogIsOpen, setCheckDialogIsOpen] = useState(false);
+
+    const [checkSucess, setCheckSucess] = useState(false);
+
     const createMutation = useMutation({
         mutationFn: (header) => {
             return axios.post(
@@ -70,26 +80,34 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
         onSuccess: () => {
             //TODO setIsSnackBarOpen(true);
             handleClose();
-            queryClient.invalidateQueries({queryKey: ['keyListContext']})
+            queryClient.invalidateQueries({ queryKey: ["keyListContext"] });
         },
     });
 
     const submitWithdraw = () => {
-        const formatedStart = formReturnTime!.format("YYYY-MM-DDTHH:mm:ss");
-
-        const header = {
-            roomId: formRoom?.id,
-            returnPrevision: formatedStart,
-            withdrawResponsibleId: loggedUser.id,
-            responsibleForTheKeyId: formReservatedTo?.id,
-            withdrawTime: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
-            isKeyReturned: false,
-        };
-
-        console.log(header)
-
-        createMutation.mutate(header);
+        setCheckDialogIsOpen(true);
     };
+
+    React.useEffect(() => {
+        if (checkSucess) {
+            const formatedStart = formReturnTime!.format("YYYY-MM-DDTHH:mm:ss");
+
+            const header = {
+                roomId: formRoom?.id,
+                returnPrevision: formatedStart,
+                withdrawResponsibleId: loggedUser.id,
+                responsibleForTheKeyId: formReservatedTo?.id,
+                withdrawTime: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
+                isKeyReturned: false,
+            };
+
+            console.log(header);
+
+            createMutation.mutate(header);
+
+            setCheckSucess(false);
+        }
+    }, [checkSucess]);
 
     return (
         <React.Fragment>
@@ -172,6 +190,12 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                         />
                     </DemoContainer>
                 </Stack>
+                <CheckUserDialog
+                    isOpen={checkDialogIsOpen}
+                    setIsOpen={setCheckDialogIsOpen}
+                    chekedUser={formReservatedTo}
+                    setCheckSucess={setCheckSucess}
+                />
                 <Button
                     variant="contained"
                     sx={{ marginX: 6, marginY: 2 }}

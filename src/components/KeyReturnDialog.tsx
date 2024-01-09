@@ -6,8 +6,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
-import FullScreenFormDialog from "./FullScreenFormDialog";
-import ScrollableList from "./ScrollableList";
+
 import { ReservationT } from "../types/ReservationT";
 import { StateContext } from "../context/ReactContext";
 import { Autocomplete, Stack, TextField } from "@mui/material";
@@ -16,13 +15,15 @@ import { RoomT } from "../types/RoomT";
 import dayjs, { Dayjs } from "dayjs";
 import { UserT } from "../types/UserT";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { DatePicker, TimePicker } from "@mui/x-date-pickers";
+import { TimePicker } from "@mui/x-date-pickers";
 import { KeyT } from "../types/KeyDeliveryT";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import KeyScrollableList from "./KeyScrollableList";
 import getRoomById from "../utils/getRoomById";
 import getUserById from "../utils/getUserById";
+import CheckUserDialog from "./CheckUserDialog";
+import { queryClient } from "../utils/queryClient";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -41,19 +42,22 @@ type Props = {
 export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
     const { roomList, userList, loggedUser } = React.useContext(StateContext);
 
-    const handleClickOpen = () => {
-        setIsOpen(true);
-    };
-
     const handleClose = () => {
         setIsOpen(false);
+        setFormReservatedTo(null);
+        setFormResponsible(null);
+        setSelectedKey(null);
+        setFormReturnTimePrevision(dayjs());
+        setFormReturnedBy(null);
+        setFormRoom(null);
     };
 
     const [selectedKey, setSelectedKey] = useState<KeyT | null>(null);
 
     const [formRoom, setFormRoom] = useState<RoomT | null>(null);
 
-    const [formReturnTime, setFormReturnTime] = useState<Dayjs | null>(dayjs());
+    const [formReturnTimePrevision, setFormReturnTimePrevision] =
+        useState<Dayjs | null>(dayjs());
 
     const [formReservatedTo, setFormReservatedTo] = useState<UserT | null>(
         null
@@ -63,19 +67,21 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
 
     const [formReturnedBy, setFormReturnedBy] = useState<UserT | null>(null);
 
-    const [selectedInternalReservation, setSelectedInternalReservation] =
-        useState<ReservationT | null>(null);
+    const [checkDialogIsOpen, setCheckDialogIsOpen] = useState(false);
 
-    const createMutation = useMutation({
+    const [checkSucess, setCheckSucess] = useState(false);
+
+    const editMutation = useMutation({
         mutationFn: (header) => {
-            return axios.post(
-                "http://localhost:8080/keydelivery/create",
+            return axios.put(
+                "http://localhost:8080/keydelivery/edit/" + selectedKey?.id,
                 header
             );
         },
         onSuccess: () => {
             //TODO setIsSnackBarOpen(true);
             handleClose();
+            queryClient.invalidateQueries({ queryKey: ["keyListContext"] });
         },
     });
 
@@ -86,7 +92,7 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
             const room: RoomT = getRoomById(selectedKey.roomId, roomList);
             setFormRoom(room);
 
-            setFormReturnTime(dayjs(selectedKey.returnPrevision));
+            setFormReturnTimePrevision(dayjs(selectedKey.returnPrevision));
 
             const user: UserT = getUserById(
                 selectedKey.responsibleForTheKeyId,
@@ -98,26 +104,29 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
                 selectedKey.withdrawResponsibleId,
                 userList
             );
-            setFormResponsible(user);
+            setFormResponsible(userResponsible);
         }
     }, [selectedKey]);
 
-    const submitWithdraw = () => {
-        const formatedStart = formReturnTime!.format("YYYY-MM-DDTHH:mm:ss");
-
-        const header = {
-            roomId: formRoom?.id,
-            returnPrevision: formatedStart,
-            withdrawResponsibleId: loggedUser.id,
-            responsibleForTheKeyId: formReservatedTo?.id,
-            withdrawTime: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
-            isKeyReturned: false,
-        };
-
-        console.log(header);
-
-        createMutation.mutate(header);
+    const submitReturn = () => {
+        setCheckDialogIsOpen(true);
     };
+
+    React.useEffect(() => {
+        if (checkSucess) {
+            const returnTime = dayjs().format("YYYY-MM-DDTHH:mm:ss");
+
+            const header = {
+                isKeyReturned: true,
+                keyReturnedById: formReturnedBy?.id,
+                returnTime: returnTime,
+            };
+
+            editMutation.mutate(header)
+
+            setCheckSucess(false)
+        }
+    }, [checkSucess]);
 
     return (
         <React.Fragment>
@@ -152,7 +161,7 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
                     >
                         <Autocomplete
                             value={formRoom}
-                            readOnly
+                            disabled
                             id="controllable-states-demo"
                             options={roomList}
                             getOptionLabel={(room: RoomT) => {
@@ -168,7 +177,7 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
                         />
                         <Autocomplete
                             value={formReservatedTo}
-                            readOnly
+                            disabled
                             id="controllable-states-demo"
                             options={userList}
                             getOptionLabel={(user: UserT) => {
@@ -177,26 +186,35 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
-                                    label="Sala reservada para..."
+                                    label="Sala reservada para"
                                 />
                             )}
                         />
-                        <TextField
-                            id="outlined-controlled"
-                            label="Supervisor da reserva"
-                            value={loggedUser?.name}
-                            readOnly
-                            fullWidth
+
+                        <Autocomplete
+                            value={formResponsible}
+                            disabled
+                            id="controllable-states-demo"
+                            options={userList}
+                            getOptionLabel={(user: UserT) => {
+                                return user.name;
+                            }}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label="Supervisor da reserva"
+                                />
+                            )}
                         />
 
                         <DemoContainer components={["TimePicker"]}>
                             <TimePicker
                                 label="Previsão de retorno"
-                                value={formReturnTime}
+                                value={formReturnTimePrevision}
                                 onChange={(newValue) =>
-                                    setFormReturnTime(newValue)
+                                    setFormReturnTimePrevision(newValue)
                                 }
-                                readOnly
+                                disabled
                                 sx={{ width: "100%" }}
                             />
                         </DemoContainer>
@@ -221,11 +239,17 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
                 <Button
                     variant="contained"
                     sx={{ marginX: 6, marginY: 2 }}
-                    onClick={submitWithdraw}
+                    onClick={submitReturn}
                 >
                     Criar devolução
                 </Button>
             </Dialog>
+            <CheckUserDialog
+                isOpen={checkDialogIsOpen}
+                setIsOpen={setCheckDialogIsOpen}
+                chekedUser={formReturnedBy}
+                setCheckSucess={setCheckSucess}
+            />
         </React.Fragment>
     );
 }

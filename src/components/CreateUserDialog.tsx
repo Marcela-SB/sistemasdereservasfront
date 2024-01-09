@@ -46,12 +46,14 @@ type Props = {
     isOpen: boolean;
     setIsOpen: (b: boolean) => void;
     selectedUser: UserT | null;
+    setSelectedUser: (user: UserT | null) => void;
 };
 
 export default function CreateUserDialog({
     isOpen,
     setIsOpen,
     selectedUser,
+    setSelectedUser
 }: Props) {
     const handleClickOpen = () => {
         setIsOpen(true);
@@ -59,6 +61,14 @@ export default function CreateUserDialog({
 
     const handleClose = () => {
         createMutation.reset();
+        setSelectedUser(null)
+        setFormName("");
+        setFormEmail("");
+        setFormPassword("");
+        setFormRegistration("");
+        setFormUsername("");
+        setFormRole("USER");
+        setShowPassword(false)
         setIsOpen(false);
     };
 
@@ -104,7 +114,7 @@ export default function CreateUserDialog({
 
     const createMutation = useMutation({
         mutationFn: (header) => {
-            return axios.post("http://localhost:8080/user/create", header);
+            return axios.post("http://localhost:8080/auth/register", header);
         },
         onSuccess: () => {
             //TODO setIsSnackBarOpen(true);
@@ -128,24 +138,14 @@ export default function CreateUserDialog({
     });
 
     const onSubmit = () => {
-        const formatedStart = formStartDay!
-            .startOf("D")
-            .format("YYYY-MM-DDTHH:mm:ss");
-        let formatedEnd = formEndDay!.endOf("D").format("YYYY-MM-DDTHH:mm:ss");
-        if (formIsOneDay) {
-            formatedEnd = formStartDay!
-                .endOf("D")
-                .format("YYYY-MM-DDTHH:mm:ss");
-        }
-
+       
         const header = {
+            username: formUsername,
             name: formName,
-            roomId: formRoom!.id,
-            reservationStart: formatedStart,
-            reservationEnd: formatedEnd,
-            reservatedToId: formReservatedTo!.id,
-            reservationResponsibleId: loggedUser.id,
-            schedule: formSchedule,
+            email: formEmail,
+            password: formPassword,
+            registration: formRegistration,
+            role: formRole,
         };
 
         if (selectedUser) {

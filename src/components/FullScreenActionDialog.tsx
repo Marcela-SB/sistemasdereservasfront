@@ -45,6 +45,7 @@ type Props = {
     setIsOpen: (b: boolean) => void;
     text: string;
     selectedReservation: ReservationT | null;
+    setSelectedReservation: (r: ReservationT | null) => void;
 };
 
 export default function FullScreenActionDialog({
@@ -52,18 +53,22 @@ export default function FullScreenActionDialog({
     setIsOpen,
     text,
     selectedReservation,
+    setSelectedReservation,
 }: Props) {
-    const handleClickOpen = () => {
-        setIsOpen(true);
-    };
-
     const handleClose = () => {
         createMutation.reset();
         setIsOpen(false);
+        setFormName("");
+        setFormRoom(null);
+        setFormStartDay(dayjs());
+        setFormEndDay(dayjs());
+        setFormReservatedTo(null);
+        setFormSchedule(baseInternalSchedule);
+        setFormIsOneDay(true);
+        setSelectedReservation(null);
     };
 
-    const { roomList, userList, reservationList, loggedUser } =
-        React.useContext(StateContext);
+    const { roomList, userList, loggedUser } = React.useContext(StateContext);
 
     const [formName, setFormName] = useState("");
 
@@ -79,12 +84,13 @@ export default function FullScreenActionDialog({
         null
     );
 
+    const [formComment, setFormComment] = useState("");
+
     const [formSchedule, setFormSchedule] =
         useState<boolean[][]>(baseInternalSchedule);
 
     React.useEffect(() => {
         if (selectedReservation) {
-            console.log(selectedReservation);
 
             setFormName(selectedReservation.name);
 
@@ -116,6 +122,8 @@ export default function FullScreenActionDialog({
             setFormReservatedTo(user);
 
             setFormSchedule(selectedReservation.schedule);
+
+            setFormComment(selectedReservation.comment);
         }
     }, [selectedReservation]);
 
@@ -129,21 +137,26 @@ export default function FullScreenActionDialog({
         onSuccess: () => {
             //TODO setIsSnackBarOpen(true);
             handleClose();
-            queryClient.invalidateQueries({queryKey: ['reservationListContext']})
+            queryClient.invalidateQueries({
+                queryKey: ["reservationListContext"],
+            });
         },
     });
 
     const editMutation = useMutation({
         mutationFn: (header) => {
             return axios.put(
-                "http://localhost:8080/reservation/edit/"+selectedReservation?.id,
+                "http://localhost:8080/reservation/edit/" +
+                    selectedReservation?.id,
                 header
             );
         },
         onSuccess: () => {
             //TODO setIsSnackBarOpen(true);
             handleClose();
-            queryClient.invalidateQueries({queryKey: ['reservationListContext']})
+            queryClient.invalidateQueries({
+                queryKey: ["reservationListContext"],
+            });
         },
     });
 
@@ -158,7 +171,6 @@ export default function FullScreenActionDialog({
                 .format("YYYY-MM-DDTHH:mm:ss");
         }
 
-
         const header = {
             name: formName,
             roomId: formRoom!.id,
@@ -167,8 +179,8 @@ export default function FullScreenActionDialog({
             reservatedToId: formReservatedTo!.id,
             reservationResponsibleId: loggedUser.id,
             schedule: formSchedule,
+            comment: formComment,
         };
-
 
         if (selectedReservation) {
             editMutation.mutate(header);
@@ -187,7 +199,9 @@ export default function FullScreenActionDialog({
         onSuccess: () => {
             //TODO setIsSnackBarOpen(true);
             handleClose();
-            queryClient.invalidateQueries({queryKey: ['reservationListContext']})
+            queryClient.invalidateQueries({
+                queryKey: ["reservationListContext"],
+            });
         },
     });
 
@@ -359,10 +373,28 @@ export default function FullScreenActionDialog({
                                 )}
                             />
                         </Grid>
-                        <FullScreenTableDialog
-                            formSchedule={formSchedule}
-                            setFormSchedule={setFormSchedule}
-                        />
+                        <Grid container sx={{ marginTop: 2, paddingX: 1 }}>
+                            <Grid xs={3} sx={{ paddingRight: 2 }}>
+                                <TextField
+                                    label="Observações"
+                                    value={formComment}
+                                    onChange={(
+                                        event: React.ChangeEvent<HTMLInputElement>
+                                    ) => {
+                                        setFormComment(event.target.value);
+                                    }}
+                                    multiline
+                                    fullWidth
+                                    rows={14}
+                                />
+                            </Grid>
+                            <Grid xs={9}>
+                                <FullScreenTableDialog
+                                    formSchedule={formSchedule}
+                                    setFormSchedule={setFormSchedule}
+                                />
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Box>
             </Dialog>

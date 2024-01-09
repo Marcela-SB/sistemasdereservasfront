@@ -35,7 +35,7 @@ export default function FullScreenTableDialog({
     return (
         <TableContainer
             component={Paper}
-            sx={{ marginTop: 4, marginX: "auto" }}
+            sx={{ marginX: "auto" }}
         >
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>

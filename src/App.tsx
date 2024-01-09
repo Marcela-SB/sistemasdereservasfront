@@ -15,7 +15,7 @@ function App() {
                     <ThemeContext>
                         <DateContext>
                             <>
-                                <Container maxWidth={false} sx={{   }}>
+                                <Container maxWidth={false} sx={{ margin:"auto",marginTop:10 }}>
                                     <NavBar />
                                     <DaysTable />
                                 </Container>

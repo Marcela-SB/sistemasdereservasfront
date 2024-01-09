@@ -24,7 +24,7 @@ function FilteredUserList({ inputText, selectUser}: Props) {
         //return the item which contains the user input
         else {
             const splitedText = inputText.split("_");
-            return user.username.toLowerCase().includes(splitedText[0]);
+            return user.username?.toLowerCase().includes(splitedText[0]);
         }
     });
     return (

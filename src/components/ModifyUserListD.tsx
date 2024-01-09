@@ -66,7 +66,7 @@ function ModifyUserListD({
     };
 
     return (
-        <Dialog open={true} onClose={handleClose} maxWidth="xs" fullWidth>
+        <Dialog open={isOpen} onClose={handleClose} maxWidth="xs" fullWidth>
             <AppBar sx={{ position: "relative" }}>
                 <Toolbar>
                     <Typography

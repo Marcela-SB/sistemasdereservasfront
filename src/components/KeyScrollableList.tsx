@@ -20,7 +20,7 @@ type Props = {
 };
 
 export default function KeyScrollableList({ setSelectedKey }: Props) {
-    const { keyList, roomList, userList } = React.useContext(StateContext);
+    const { keyList, roomList } = React.useContext(StateContext);
 
     return (
         <List
@@ -35,10 +35,14 @@ export default function KeyScrollableList({ setSelectedKey }: Props) {
                 "&::-webkit-scrollbar": { display: "none" },
                 marginLeft:2    ,
                 marginTop:2,
-                borderRadius:"2%"
+                borderRadius:"2%",
+                minWidth: 200
             }}
         >
             {keyList.map((item) => {
+
+                if(item.isKeyReturned) return
+
                 const room = getRoomById(item.roomId, roomList);
                 let roomDisplayName = room?.name;
                 if (room?.roomNumber) {

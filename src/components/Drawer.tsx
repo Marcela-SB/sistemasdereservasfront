@@ -200,6 +200,7 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
                 setIsOpen={setReservationDIsOpen}
                 text="criar"
                 selectedReservation={selectedReservation}
+                setSelectedReservation={setSelectedReservation}
             />
             <FullScreenDialogList
                 isOpen={reservationDListIsOpen}
@@ -220,6 +221,7 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
                 isOpen={userCreateDIsOpen}
                 setIsOpen={setUserCreateDIsOpen}
                 selectedUser={selectedUser}
+                setSelectedUser={setSelectedUser}
             />
             <CreateRoomDialog
                 isOpen={roomCreateDIsOpen}

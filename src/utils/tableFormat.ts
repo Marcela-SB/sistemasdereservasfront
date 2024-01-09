@@ -80,8 +80,20 @@ export default function tableFormat(
                 ];
             } else {
                 reserv.schedule[dayOfWeek].forEach((h:boolean, index : number) => {
+                    // se existir primeiro ele procura se ja esta na base schedule se ja estiver adiciona um no span se não estiver ele cria
                     if(h){
-                        baseSchedule[index + 1] = reserv
+                        let isInBaseSchedule = false
+                        baseSchedule.forEach((baseScheduleItem : any) => {
+                            console.log(baseScheduleItem[0])
+                            if(baseScheduleItem[0]?.id == reserv.id){
+                                        baseScheduleItem[1]++
+                                        isInBaseSchedule = true
+                                        baseSchedule.pop()
+                                    }
+                        })
+                        if(!isInBaseSchedule){
+                            baseSchedule[index + 1] = [reserv, 1]
+                        }
                     }
                 })
             }
@@ -98,6 +110,5 @@ export default function tableFormat(
         headers.push(head)      
     })
 
-    console.log(finalSchedule)
     return [headers, finalSchedule]
 }

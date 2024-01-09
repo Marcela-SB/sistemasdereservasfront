@@ -93,7 +93,7 @@ export default function CreateRoomDialog({
 
         setProjector(false);
         setIsProjectorWorking(false);
-        
+
         setIsOpen(false);
     };
 
@@ -125,14 +125,6 @@ export default function CreateRoomDialog({
     const [sinks, setSinks] = useState(false);
 
     const [isSnackBarOpen, setIsSnackBarOpen] = useState(false);
-
-    const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-    const handleMouseDownPassword = (
-        event: React.MouseEvent<HTMLButtonElement>
-    ) => {
-        event.preventDefault();
-    };
 
     const handleChangeAir = (event: React.ChangeEvent<HTMLInputElement>) => {
         setAirConditioner(event.target.checked);
@@ -189,49 +181,52 @@ export default function CreateRoomDialog({
 
     const createMutation = useMutation({
         mutationFn: (header) => {
-            return axios.post("http://localhost:8080/user/create", header);
+            return axios.post("http://localhost:8080/room/create", header);
         },
         onSuccess: () => {
             //TODO setIsSnackBarOpen(true);
             handleClose();
-            queryClient.invalidateQueries({ queryKey: ["userListContext"] });
+            queryClient.invalidateQueries({ queryKey: ["roomListContext"] });
         },
     });
 
     const editMutation = useMutation({
         mutationFn: (header) => {
             return axios.put(
-                "http://localhost:8080/user/edit/" + selectedRoom?.id,
+                "http://localhost:8080/room/edit/" + selectedRoom?.id,
                 header
             );
         },
         onSuccess: () => {
             //TODO setIsSnackBarOpen(true);
             handleClose();
-            queryClient.invalidateQueries({ queryKey: ["userListContext"] });
+            queryClient.invalidateQueries({ queryKey: ["roomListContext"] });
         },
     });
 
-    const onSubmit = () => {
-        const formatedStart = formStartDay!
-            .startOf("D")
-            .format("YYYY-MM-DDTHH:mm:ss");
-        let formatedEnd = formEndDay!.endOf("D").format("YYYY-MM-DDTHH:mm:ss");
-        if (formIsOneDay) {
-            formatedEnd = formStartDay!
-                .endOf("D")
-                .format("YYYY-MM-DDTHH:mm:ss");
-        }
+    const isWhitespaceString = (str: string) => !str.replace(/\s/g, "").length;
 
+    const onSubmit = () => {
+        let submitedRNumber: string | null = null;
+
+        if (formRNumber && !isWhitespaceString(formRNumber)) {
+            submitedRNumber = formRNumber;
+        }
         const header = {
             name: formName,
-            roomId: formRoom!.id,
-            reservationStart: formatedStart,
-            reservationEnd: formatedEnd,
-            reservatedToId: formReservatedTo!.id,
-            reservationResponsibleId: loggedUser.id,
-            schedule: formSchedule,
+            roomNumber: submitedRNumber,
+            capacity: formCapacity,
+            chairQuantity: formChairQuantity,
+            computerQuantity: formComputerQuantity,
+            airConditioning: airConditioner,
+            isAirConditioningWorking: isAirConditionerWorking,
+            projector: projector,
+            isProjectorWorking: isProjectorWorking,
+            bigTables: bigTables,
+            sinks: sinks,
         };
+
+        console.log(header)
 
         if (selectedRoom) {
             editMutation.mutate(header);
@@ -243,13 +238,13 @@ export default function CreateRoomDialog({
     const deleteMutation = useMutation({
         mutationFn: () => {
             return axios.delete(
-                "http://localhost:8080/user/delete/" + selectedRoom?.id
+                "http://localhost:8080/room/delete/" + selectedRoom?.id
             );
         },
         onSuccess: () => {
             //TODO setIsSnackBarOpen(true);
             handleClose();
-            queryClient.invalidateQueries({ queryKey: ["userListContext"] });
+            queryClient.invalidateQueries({ queryKey: ["roomListContext"] });
         },
     });
 

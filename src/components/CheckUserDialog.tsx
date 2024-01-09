@@ -32,24 +32,33 @@ import InputMask from "react-input-mask";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { StateContext } from "../context/ReactContext";
+import { UserT } from "../types/UserT";
+import { queryClient } from "../utils/queryClient";
 import { Close } from "@mui/icons-material";
 
 type Props = {
     setIsOpen: (b: boolean) => void;
     isOpen: boolean;
-    setIsLogged: (b:boolean) => void
+    chekedUser: UserT | null;
+    setCheckSucess: (b: boolean) => void;
 };
 
-export default function LoginDialog({ setIsOpen, isOpen, setIsLogged }: Props) {
-
-    const {setLoggedUser} = React.useContext(StateContext);
-
-    const [username, setUsername] = React.useState<string>("");
+export default function CheckUserDialog({
+    setIsOpen,
+    isOpen,
+    chekedUser,
+    setCheckSucess,
+}: Props) {
+    const [username, setUsername] = React.useState<string | null>(null);
     const [password, setPassword] = React.useState<string | null>(null);
 
     const [showPassword, setShowPassword] = React.useState(false);
 
-    const [isSnackBarOpen, setIsSnackBarOpen] = React.useState(false);
+    React.useEffect(() => {
+        if (chekedUser) {
+            setUsername(chekedUser.username);
+        }
+    }, [chekedUser]);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -66,13 +75,11 @@ export default function LoginDialog({ setIsOpen, isOpen, setIsLogged }: Props) {
                 header
             );
         },
-        onSuccess: (data) => {
-            setLoggedUser(data.data.user)
-            setIsSnackBarOpen(true);
-            setIsLogged(true)
-            closeDialog()
+        onSuccess: () => {
+            closeDialog();
+            setCheckSucess(true);
+            
         },
-        
     });
 
     const LoginTentative = () => {
@@ -87,25 +94,34 @@ export default function LoginDialog({ setIsOpen, isOpen, setIsLogged }: Props) {
     const closeDialog = () => {
         loginMutation.reset();
         setIsOpen(false);
+        setUsername(null);
+        setPassword(null);
     };
 
     return (
         <>
-            <Dialog onClose={() => {closeDialog}} open={isOpen}>
-            <Stack direction={"row"} justifyContent={"space-between"}>
-                    <DialogTitle>Login</DialogTitle>
+            <Dialog
+                onClose={() => {
+                    closeDialog;
+                }}
+                open={isOpen}
+            >
+                <Stack direction={"row"}>
+                    <DialogTitle>Logue para completar</DialogTitle>
                     <DialogActions>
                         <IconButton onClick={closeDialog} aria-label="close">
                             <Close />
                         </IconButton>
                     </DialogActions>
                 </Stack>
+
                 <DialogContent>
                     <Stack direction={"column"} gap={2}>
                         <FormControl variant="outlined">
                             <InputMask
                                 mask={"999.999.999-99"}
                                 value={username}
+                                readOnly
                                 onChange={(
                                     event: React.ChangeEvent<HTMLInputElement>
                                 ) => {
@@ -167,14 +183,6 @@ export default function LoginDialog({ setIsOpen, isOpen, setIsLogged }: Props) {
                     </Stack>
                 </DialogContent>
             </Dialog>
-            <Snackbar
-                open={isSnackBarOpen}
-                autoHideDuration={3000}
-                onClose={() => {setIsSnackBarOpen(false)}}
-                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            >
-                <Alert severity="success">Logado com sucesso.</Alert>
-            </Snackbar>
         </>
     );
 }

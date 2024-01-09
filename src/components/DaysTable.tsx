@@ -7,13 +7,26 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { tableSchedule } from "../types/tableSchedules";
-import { Box, Container, Divider, Tooltip, Typography } from "@mui/material";
+import {
+    Box,
+    Container,
+    Divider,
+    Tooltip,
+    Typography,
+    styled,
+} from "@mui/material";
 import { weekDays } from "../types/weekDays";
 import { StateContext } from "../context/ReactContext";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import tableFormat from "../utils/tableFormat";
+import DaysTableCell from "./DaysTableCell";
+import { ReservationT } from "../types/ReservationT";
+
+const OrangeTableRow = styled(TableRow)(({ theme }) => ({
+    backgroundColor: theme.palette.primary.main,
+}));
 
 export default function DaysTable() {
     const { roomList, userList, reservationList, loggedUser } =
@@ -36,15 +49,17 @@ export default function DaysTable() {
 
     React.useEffect(() => {
         if ((roomList, reservationList)) {
+
+            const holder = tableFormat(selectedDate, reservationList, roomList)
             setFinalSchedule(
-                tableFormat(selectedDate, reservationList, roomList)
+                holder
             );
         }
     }, [roomList, reservationList, selectedDate]);
 
     return (
         <>
-            <DemoContainer components={["DatePicker"]} sx={{ marginBottom: 1 }}>
+            <DemoContainer components={["DatePicker"]} sx={{  marginLeft:2,marginBottom: 1, }}>
                 <DatePicker
                     value={selectedDate}
                     onChange={(newValue) => setSelectedDate(newValue)}
@@ -62,23 +77,21 @@ export default function DaysTable() {
                         backgroundColor: "hsla(120, 100%, 25%, 0.2)",
                         display: "flex",
                         width: "var(--width, 0)",
-                        minWidth: "7.1rem",
+                        minWidth: "9rem",
                         height: "100%",
                         overflow: "hidden",
                         borderRight: "0.1rem solid hsla(120, 100%, 25%, 1)",
                         pointerEvents: "none",
                     },
                     width: "100%",
+                    maxWidth:1250,
+                    margin:"auto",
                 }}
             >
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
-                        <TableRow
-                            sx={{
-                                backgroundColor: "transparent",
-                            }}
-                        >
-                            <TableCell />
+                        <OrangeTableRow>
+                            <TableCell ></TableCell>
                             {tableSchedule.map((schedule) => {
                                 return (
                                     <>
@@ -109,47 +122,44 @@ export default function DaysTable() {
                                     </>
                                 );
                             })}
-                        </TableRow>
+                        </OrangeTableRow>
                     </TableHead>
                     <TableBody>
-                        {finalSchedule[1]?.map((array, arrayIndex) => (
-                            <TableRow key={finalSchedule[0][arrayIndex]}>
-                                <TableCell align="center">
-                                    {finalSchedule[0][arrayIndex].name}
-                                </TableCell>
+                        {finalSchedule[1]?.map(
+                            (array: ReservationT[], arrayIndex: number) => (
+                                <TableRow key={finalSchedule[0][arrayIndex]}>
+                                    <TableCell align="center">
+                                        {finalSchedule[0][arrayIndex].name}{" "}
+                                        {
+                                            finalSchedule[0][arrayIndex]
+                                                ?.roomNumber
+                                        }
+                                    </TableCell>
 
-                                {array?.map((schedule, index) => {
-                                    console.log(finalSchedule[1]);
-                                    return (
-                                        <Tooltip title={schedule.name}>
-                                            <TableCell
-                                                padding="normal"
-                                                key={schedule.id + index}
-                                                size="medium"
-                                                align="center"
-                                                sx={{
-                                                    borderLeft:
-                                                        "1px solid rgba(81, 81, 81, 1);",
-                                                }}
-                                            >
-                                                <div
-                                                    style={{
-                                                        overflow: "hidden",
-                                                        textOverflow:
-                                                            "ellipsis",
-                                                        width: "3.3rem",
-                                                    }}
-                                                >
-                                                    <Typography noWrap>
-                                                        {schedule.name}
-                                                    </Typography>
-                                                </div>
-                                            </TableCell>
-                                        </Tooltip>
-                                    );
-                                })}
-                            </TableRow>
-                        ))}
+                                    {array?.map(
+                                        (
+                                            schedule: any[],
+                                            index: number
+                                        ) => {
+                                            let passedSchedule = null
+                                            let passedSpan = 1
+                                            if(schedule[0]) {
+                                                passedSchedule = schedule[0]
+                                                passedSpan = schedule[1]
+                                            }
+                                            return (
+                                                <DaysTableCell
+                                                    key={`daystablecell ${finalSchedule[0]}-${arrayIndex}-${index}`}
+                                                    schedule={passedSchedule}
+                                                    index={index}
+                                                    span={passedSpan}
+                                                />
+                                            );
+                                        }
+                                    )}
+                                </TableRow>
+                            )
+                        )}
                     </TableBody>
                 </Table>
             </TableContainer>
