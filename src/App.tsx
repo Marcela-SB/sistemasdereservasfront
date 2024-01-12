@@ -6,6 +6,7 @@ import { Container, CssBaseline } from "@mui/material";
 import NavBar from "./components/NavBar";
 import DaysTable from "./components/DaysTable";
 import QueryContext from "./context/QueryContext";
+import GlobalSnackBar from "./components/GlobalSnackBar";
 
 function App() {
     return (
@@ -18,6 +19,7 @@ function App() {
                                 <Container maxWidth={false} sx={{ margin:"auto",marginTop:10 }}>
                                     <NavBar />
                                     <DaysTable />
+                                    <GlobalSnackBar />
                                 </Container>
                                 <CssBaseline enableColorScheme />
                             </>

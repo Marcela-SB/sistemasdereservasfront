@@ -25,8 +25,9 @@ export default function tableFormat(
     });
 
     const filteredReservationsByRooms: any[] = [];
-
+    
     roomList.forEach((room: RoomT, index) => {
+        
         filteredReservationsByRooms.push([room]);
 
         filteredReservations.forEach((reservation: ReservationT) => {
@@ -57,6 +58,7 @@ export default function tableFormat(
         null,
     ];
     filteredReservationsByRooms.forEach((array, indexOfRoom) => {
+        
         array.forEach((reserv : ReservationT | RoomT, indexOfReserv) => {
             if (indexOfReserv == 0) {
                 baseSchedule = [

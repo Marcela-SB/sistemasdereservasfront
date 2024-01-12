@@ -6,6 +6,7 @@ import axios from "axios";
 import { UserT } from "../types/UserT";
 import { ReservationT } from "../types/ReservationT";
 import { KeyT } from "../types/KeyDeliveryT";
+import { AlertColor } from "@mui/material";
 
 export type GlobalContent = {
     date: Dayjs;
@@ -15,7 +16,11 @@ export type GlobalContent = {
     reservationList: ReservationT[],
     keyList: KeyT[], 
     loggedUser: unknown | null,
-    setLoggedUser: (u: unknown) => void
+    setLoggedUser: (u: unknown) => void,
+    snackBarText: string,
+    setSnackBarText: (s: string) => void,
+    snackBarSeverity: AlertColor,
+    setSnackBarSeverity: (s: AlertColor) => void,
 };
 
 export const StateContext = createContext<GlobalContent>({
@@ -26,8 +31,11 @@ export const StateContext = createContext<GlobalContent>({
     reservationList: [],
     keyList: [],
     loggedUser: null,
-    setLoggedUser: () => {}
-
+    setLoggedUser: () => {},
+    snackBarText: "",
+    setSnackBarText: () => {},
+    snackBarSeverity: "success",
+    setSnackBarSeverity: () => {}
 });
 
 type Props = { children: ReactElement };
@@ -73,8 +81,12 @@ function ReactContext({ children }: Props) {
 
     const [loggedUser, setLoggedUser] = React.useState<unknown | null>(null)
 
+    const [snackBarText, setSnackBarText] = useState<string>("")
+
+    const [snackBarSeverity, setSnackBarSeverity] = useState<AlertColor>("success")
+
     return (
-        <StateContext.Provider value={{ date, setDate, roomList, userList, reservationList, keyList, loggedUser, setLoggedUser }}>
+        <StateContext.Provider value={{ date, setDate, roomList, userList, reservationList, keyList, loggedUser, setLoggedUser, snackBarText, setSnackBarText, snackBarSeverity, setSnackBarSeverity }}>
             {children}
         </StateContext.Provider>
     );

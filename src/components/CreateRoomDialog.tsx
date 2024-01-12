@@ -97,7 +97,7 @@ export default function CreateRoomDialog({
         setIsOpen(false);
     };
 
-    const { roomList, userList, loggedUser } = React.useContext(StateContext);
+    const { setSnackBarText, setSnackBarSeverity } = React.useContext(StateContext);
 
     const [formName, setFormName] = useState("");
 
@@ -124,7 +124,9 @@ export default function CreateRoomDialog({
 
     const [sinks, setSinks] = useState(false);
 
-    const [isSnackBarOpen, setIsSnackBarOpen] = useState(false);
+    const [key, setKey] = useState(false);
+
+    const [reservable, setReservable] = useState(false);
 
     const handleChangeAir = (event: React.ChangeEvent<HTMLInputElement>) => {
         setAirConditioner(event.target.checked);
@@ -176,6 +178,9 @@ export default function CreateRoomDialog({
 
             setProjector(selectedRoom.projector);
             setIsProjectorWorking(selectedRoom.isProjectorWorking);
+
+            setKey(selectedRoom.hasKey);
+            setReservable(selectedRoom.reservable);
         }
     }, [selectedRoom]);
 
@@ -184,9 +189,14 @@ export default function CreateRoomDialog({
             return axios.post("http://localhost:8080/room/create", header);
         },
         onSuccess: () => {
-            //TODO setIsSnackBarOpen(true);
             handleClose();
             queryClient.invalidateQueries({ queryKey: ["roomListContext"] });
+            setSnackBarText("Espaço criado com sucesso");
+            setSnackBarSeverity("success");
+        },
+        onError: (error) => {
+            setSnackBarText(error.response.data);
+            setSnackBarSeverity("error");
         },
     });
 
@@ -198,9 +208,14 @@ export default function CreateRoomDialog({
             );
         },
         onSuccess: () => {
-            //TODO setIsSnackBarOpen(true);
             handleClose();
             queryClient.invalidateQueries({ queryKey: ["roomListContext"] });
+            setSnackBarText("Espaço editado com sucesso");
+            setSnackBarSeverity("success");
+        },
+        onError: (error) => {
+            setSnackBarText(error.response.data);
+            setSnackBarSeverity("error");
         },
     });
 
@@ -224,9 +239,11 @@ export default function CreateRoomDialog({
             isProjectorWorking: isProjectorWorking,
             bigTables: bigTables,
             sinks: sinks,
+            hasKey: key,
+            reservable: reservable,
         };
 
-        console.log(header)
+        console.log(header);
 
         if (selectedRoom) {
             editMutation.mutate(header);
@@ -242,9 +259,14 @@ export default function CreateRoomDialog({
             );
         },
         onSuccess: () => {
-            //TODO setIsSnackBarOpen(true);
             handleClose();
             queryClient.invalidateQueries({ queryKey: ["roomListContext"] });
+            setSnackBarText("Espaço removido com sucesso");
+            setSnackBarSeverity("success");
+        },
+        onError: (error) => {
+            setSnackBarText(error.response.data);
+            setSnackBarSeverity("error");
         },
     });
 
@@ -358,7 +380,7 @@ export default function CreateRoomDialog({
                         <Divider orientation="vertical" flexItem />
                         <Stack>
                             <Typography variant="h5" marginY={1}>
-                                Atributos?????
+                                Característica
                             </Typography>
                             <FormControlLabel
                                 label="Mesas grandes"
@@ -421,6 +443,32 @@ export default function CreateRoomDialog({
                                     <Checkbox
                                         checked={isProjectorWorking}
                                         onChange={handleChangeProjectorWorking}
+                                    />
+                                }
+                            />
+                            <FormControlLabel
+                                label="Possui chave"
+                                control={
+                                    <Checkbox
+                                        checked={key}
+                                        onChange={(
+                                            event: React.ChangeEvent<HTMLInputElement>
+                                        ) => {
+                                            setKey(event.target.checked);
+                                        }}
+                                    />
+                                }
+                            />
+                            <FormControlLabel
+                                label="Espaço reservavel"
+                                control={
+                                    <Checkbox
+                                        checked={reservable}
+                                        onChange={(
+                                            event: React.ChangeEvent<HTMLInputElement>
+                                        ) => {
+                                            setReservable(event.target.checked);
+                                        }}
                                     />
                                 }
                             />

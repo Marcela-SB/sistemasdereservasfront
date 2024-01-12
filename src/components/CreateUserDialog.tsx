@@ -72,7 +72,7 @@ export default function CreateUserDialog({
         setIsOpen(false);
     };
 
-    const { roomList, userList, loggedUser } = React.useContext(StateContext);
+    const { setSnackBarText, setSnackBarSeverity } = React.useContext(StateContext);
 
     const [formUsername, setFormUsername] = useState("");
 
@@ -117,9 +117,14 @@ export default function CreateUserDialog({
             return axios.post("http://localhost:8080/auth/register", header);
         },
         onSuccess: () => {
-            //TODO setIsSnackBarOpen(true);
             handleClose();
             queryClient.invalidateQueries({ queryKey: ["userListContext"] });
+            setSnackBarText("Usuario criado com sucesso");
+            setSnackBarSeverity("success");
+        },
+        onError: (error) => {
+            setSnackBarText(error.response.data);
+            setSnackBarSeverity("error");
         },
     });
 
@@ -131,9 +136,14 @@ export default function CreateUserDialog({
             );
         },
         onSuccess: () => {
-            //TODO setIsSnackBarOpen(true);
             handleClose();
             queryClient.invalidateQueries({ queryKey: ["userListContext"] });
+            setSnackBarText("Usuario editado com sucesso");
+            setSnackBarSeverity("success");
+        },
+        onError: (error) => {
+            setSnackBarText(error.response.data);
+            setSnackBarSeverity("error");
         },
     });
 
@@ -162,9 +172,14 @@ export default function CreateUserDialog({
             );
         },
         onSuccess: () => {
-            //TODO setIsSnackBarOpen(true);
             handleClose();
             queryClient.invalidateQueries({ queryKey: ["userListContext"] });
+            setSnackBarText("Usuario removido com sucesso");
+            setSnackBarSeverity("success");
+        },
+        onError: (error) => {
+            setSnackBarText(error.response.data);
+            setSnackBarSeverity("error");
         },
     });
 

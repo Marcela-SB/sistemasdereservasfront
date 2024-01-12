@@ -11,5 +11,7 @@ export type RoomT = {
     isProjectorWorking: boolean;
     bigTables: boolean;
     sinks: boolean;
+    hasKey:boolean;
+    reservable:boolean;
   };
   

@@ -73,9 +73,9 @@ export default function FullScreenDialogList({
 
     const [formRoom, setFormRoom] = useState<RoomT | null>(null);
 
-    const [formStartDay, setFormStartDay] = useState<Dayjs | null>(dayjs());
+    const [formStartDay, setFormStartDay] = useState<Dayjs | null>(null);
 
-    const [formEndDay, setFormEndDay] = useState<Dayjs | null>(dayjs());
+    const [formEndDay, setFormEndDay] = useState<Dayjs | null>(null);
 
     const [formReservatedTo, setFormReservatedTo] = useState<UserT | null>(
         null
@@ -134,6 +134,8 @@ export default function FullScreenDialogList({
                 });
             }
 
+            console.log(holderList);
+
             if (formEndDay) {
                 holderList = holderList.filter((r: ReservationT) => {
                     if (
@@ -151,16 +153,35 @@ export default function FullScreenDialogList({
                 });
             }
 
-            /** 
+            console.log(holderList);
 
-            if(formSchedule){
-                holderList = holderList.filter((r: ReservationT) => {
-                    formSchedule.some((h,index) => )
-                });
+            if (formSchedule) {
+                if (formSchedule.some((formS: boolean) => formS)) {
+                    holderList = holderList.filter((r: ReservationT) => {
+                        return r.schedule.some((daylySchdule: boolean[]) => {
+                            return daylySchdule.some(
+                                (
+                                    hourlySchedule: boolean,
+                                    hourlyIndex: number
+                                ) => {
+                                    console.log(hourlySchedule)
+                                    console.log(formSchedule[hourlyIndex])
+                                    if (
+                                        hourlySchedule &&
+                                        formSchedule[hourlyIndex]
+                                    ) {
+                                        return true;
+                                    }
+                                }
+                            );
+                        });
+                    });
+                }
             }
-            */
 
-            setOptionsList([...holderList])
+            console.log(holderList);
+
+            setOptionsList([...holderList]);
         }
     }, [
         reservationList,
@@ -205,7 +226,10 @@ export default function FullScreenDialogList({
                     >
                         <Autocomplete
                             value={formRoom}
-                            onChange={(event: any, newValue: RoomT | null) => {
+                            onChange={(
+                                event: React.SyntheticEvent<Element, Event>,
+                                newValue: RoomT | null
+                            ) => {
                                 setFormRoom(newValue);
                             }}
                             id="controllable-states-demo"
@@ -223,7 +247,10 @@ export default function FullScreenDialogList({
                         />
                         <Autocomplete
                             value={formReservatedTo}
-                            onChange={(event: any, newValue: UserT | null) => {
+                            onChange={(
+                                event: React.SyntheticEvent<Element, Event>,
+                                newValue: UserT | null
+                            ) => {
                                 setFormReservatedTo(newValue);
                             }}
                             id="controllable-states-demo"
@@ -240,7 +267,10 @@ export default function FullScreenDialogList({
                         />
                         <Autocomplete
                             value={formResponsible}
-                            onChange={(event: any, newValue: UserT | null) => {
+                            onChange={(
+                                event: React.SyntheticEvent<Element, Event>,
+                                newValue: UserT | null
+                            ) => {
                                 setFormResponsible(newValue);
                             }}
                             id="controllable-states-demo"
@@ -262,7 +292,6 @@ export default function FullScreenDialogList({
                                 onChange={(newValue) =>
                                     setFormStartDay(newValue)
                                 }
-                                disablePast
                                 sx={{ width: "100%" }}
                             />
                         </DemoContainer>
@@ -271,7 +300,6 @@ export default function FullScreenDialogList({
                                 label="Final da reserva"
                                 value={formEndDay}
                                 onChange={(newValue) => setFormEndDay(newValue)}
-                                disablePast
                                 sx={{ width: "100%" }}
                             />
                         </DemoContainer>

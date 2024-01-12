@@ -23,14 +23,14 @@ import dayjs, { Dayjs } from "dayjs";
 import tableFormat from "../utils/tableFormat";
 import DaysTableCell from "./DaysTableCell";
 import { ReservationT } from "../types/ReservationT";
+import { RoomT } from "../types/RoomT";
 
 const OrangeTableRow = styled(TableRow)(({ theme }) => ({
     backgroundColor: theme.palette.primary.main,
 }));
 
 export default function DaysTable() {
-    const { roomList, userList, reservationList, loggedUser } =
-        React.useContext(StateContext);
+    const { roomList, reservationList } = React.useContext(StateContext);
 
     const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(
         dayjs()
@@ -48,18 +48,25 @@ export default function DaysTable() {
     const [finalSchedule, setFinalSchedule] = React.useState([]);
 
     React.useEffect(() => {
-        if ((roomList, reservationList)) {
-
-            const holder = tableFormat(selectedDate, reservationList, roomList)
-            setFinalSchedule(
-                holder
+        if (roomList && reservationList && selectedDate) {
+            const reservableRoomList = roomList.filter(
+                (r: RoomT) => r.reservable == true
             );
+            const holder = tableFormat(
+                selectedDate,
+                reservationList,
+                reservableRoomList
+            );
+            setFinalSchedule(holder);
         }
     }, [roomList, reservationList, selectedDate]);
 
     return (
         <>
-            <DemoContainer components={["DatePicker"]} sx={{  marginLeft:2,marginBottom: 1, }}>
+            <DemoContainer
+                components={["DatePicker"]}
+                sx={{ marginLeft: 2, marginBottom: 1 }}
+            >
                 <DatePicker
                     value={selectedDate}
                     onChange={(newValue) => setSelectedDate(newValue)}
@@ -84,14 +91,14 @@ export default function DaysTable() {
                         pointerEvents: "none",
                     },
                     width: "100%",
-                    maxWidth:1250,
-                    margin:"auto",
+                    maxWidth: 1250,
+                    margin: "auto",
                 }}
             >
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                         <OrangeTableRow>
-                            <TableCell ></TableCell>
+                            <TableCell></TableCell>
                             {tableSchedule.map((schedule) => {
                                 return (
                                     <>
@@ -126,39 +133,46 @@ export default function DaysTable() {
                     </TableHead>
                     <TableBody>
                         {finalSchedule[1]?.map(
-                            (array: ReservationT[], arrayIndex: number) => (
-                                <TableRow key={finalSchedule[0][arrayIndex]}>
-                                    <TableCell align="center">
-                                        {finalSchedule[0][arrayIndex].name}{" "}
-                                        {
-                                            finalSchedule[0][arrayIndex]
-                                                ?.roomNumber
-                                        }
-                                    </TableCell>
-
-                                    {array?.map(
-                                        (
-                                            schedule: any[],
-                                            index: number
-                                        ) => {
-                                            let passedSchedule = null
-                                            let passedSpan = 1
-                                            if(schedule[0]) {
-                                                passedSchedule = schedule[0]
-                                                passedSpan = schedule[1]
+                            (array: ReservationT[], arrayIndex: number) => {
+                                return (
+                                    <TableRow
+                                        key={finalSchedule[0][arrayIndex]}
+                                    >
+                                        <TableCell align="center">
+                                            {finalSchedule[0][arrayIndex].name}{" "}
+                                            {
+                                                finalSchedule[0][arrayIndex]
+                                                    ?.roomNumber
                                             }
-                                            return (
-                                                <DaysTableCell
-                                                    key={`daystablecell ${finalSchedule[0]}-${arrayIndex}-${index}`}
-                                                    schedule={passedSchedule}
-                                                    index={index}
-                                                    span={passedSpan}
-                                                />
-                                            );
-                                        }
-                                    )}
-                                </TableRow>
-                            )
+                                        </TableCell>
+
+                                        {array?.map(
+                                            (
+                                                schedule: any[],
+                                                index: number
+                                            ) => {
+                                                let passedSchedule = null;
+                                                let passedSpan = 1;
+                                                if (schedule[0]) {
+                                                    passedSchedule =
+                                                        schedule[0];
+                                                    passedSpan = schedule[1];
+                                                }
+                                                return (
+                                                    <DaysTableCell
+                                                        key={`daystablecell ${finalSchedule[0]}-${arrayIndex}-${index}`}
+                                                        schedule={
+                                                            passedSchedule
+                                                        }
+                                                        index={index}
+                                                        span={passedSpan}
+                                                    />
+                                                );
+                                            }
+                                        )}
+                                    </TableRow>
+                                );
+                            }
                         )}
                     </TableBody>
                 </Table>

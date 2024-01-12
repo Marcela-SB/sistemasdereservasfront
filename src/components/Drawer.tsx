@@ -32,6 +32,7 @@ import CreateRoomDialog from "./CreateRoomDialog";
 import { RoomT } from "../types/RoomT";
 import ModifyRoomListD from "./ModifyRoomListD";
 import ModifyUserListD from "./ModifyUserListD";
+import { StateContext } from "../context/ReactContext";
 
 type Props = {
     isOpen: boolean;
@@ -39,6 +40,8 @@ type Props = {
 };
 
 export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
+    const { loggedUser } = React.useContext(StateContext);
+
     const toggleDrawer =
         (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
             if (
@@ -51,6 +54,8 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
 
             setIsOpen(open);
         };
+
+    const [userPower, setUserPower] = useState<number>(0);
 
     const [reservationDIsOpen, setReservationDIsOpen] = useState(false);
     const [reservationDListIsOpen, setReservationDListIsOpen] = useState(false);
@@ -71,6 +76,18 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
 
     const [selectedRoom, setSelectedRoom] = useState<RoomT | null>(null);
 
+    React.useEffect(() => {
+        if (loggedUser) {
+            if(loggedUser.role == "ADMIN"){
+                setUserPower(3)
+            } else if(loggedUser.role == "SUPERVISOR"){
+                setUserPower(2)
+            } else if(loggedUser.role == "TRAINEE"){
+                setUserPower(1)
+            }
+        }
+    }, [loggedUser]);
+
     return (
         <div>
             <Drawer
@@ -86,113 +103,161 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
                     onClick={toggleDrawer(false)}
                     onKeyDown={toggleDrawer(false)}
                 >
-                    <List>
-                        <ListItem key={"Criar reserva"} disablePadding>
-                            <ListItemButton
-                                onClick={() => {
-                                    setReservationDIsOpen(true);
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <BookmarkAddIcon />
-                                </ListItemIcon>
-                                <ListItemText primary={"Criar reserva"} />
-                            </ListItemButton>
-                        </ListItem>
-                        <ListItem key={"Excluir reserva"} disablePadding>
-                            <ListItemButton
-                                onClick={() => {
-                                    setReservationDListIsOpen(true);
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <BookmarkRemoveIcon />
-                                </ListItemIcon>
-                                <ListItemText primary={"Modificar reserva"} />
-                            </ListItemButton>
-                        </ListItem>
-                    </List>
-                    <Divider />
-                    <List>
-                        <ListItem key={"Retirada de chave"} disablePadding>
-                            <ListItemButton
-                                onClick={() => {
-                                    setKeyWDialogIsOpen(true);
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <KeyIcon />
-                                </ListItemIcon>
-                                <ListItemText primary={"Retirada de chave"} />
-                            </ListItemButton>
-                        </ListItem>
-                        <ListItem key={"Devolução de chave"} disablePadding>
-                            <ListItemButton
-                                onClick={() => {
-                                    setKeyRDialogIsOpen(true);
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <KeyboardReturnIcon />
-                                </ListItemIcon>
-                                <ListItemText primary={"Devolução de chave"} />
-                            </ListItemButton>
-                        </ListItem>
-                    </List>
-                    <Divider />
-                    <List>
-                        <ListItem key={"Criar espaço"} disablePadding>
-                            <ListItemButton
-                                onClick={() => {
-                                    setRoomCreateDIsOpen(true);
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <MeetingRoom />
-                                </ListItemIcon>
-                                <ListItemText primary={"Criar espaço"} />
-                            </ListItemButton>
-                        </ListItem>
-                        <ListItem key={"Modificar espaço"} disablePadding>
-                            <ListItemButton
-                                onClick={() => {
-                                    setRoomModifyDIsOpen(true);
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <RoomPreferences />
-                                </ListItemIcon>
-                                <ListItemText primary={"Modificar espaço"} />
-                            </ListItemButton>
-                        </ListItem>
-                    </List>
-                    <Divider />
-                    <List>
-                        <ListItem key={"Criar usuario"} disablePadding>
-                            <ListItemButton
-                                onClick={() => {
-                                    setUserCreateDIsOpen(true);
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <PersonAdd />
-                                </ListItemIcon>
-                                <ListItemText primary={"Criar usuario"} />
-                            </ListItemButton>
-                        </ListItem>
-                        <ListItem key={"Modificar usuario"} disablePadding>
-                            <ListItemButton
-                                onClick={() => {
-                                    setUserModifyDIsOpen(true);
-                                }}
-                            >
-                                <ListItemIcon>
-                                    <ManageAccounts />
-                                </ListItemIcon>
-                                <ListItemText primary={"Modificar usuario"} />
-                            </ListItemButton>
-                        </ListItem>
-                    </List>
+                    {userPower >= 2 ? (
+                        <>
+                            <List>
+                                <ListItem key={"Criar reserva"} disablePadding>
+                                    <ListItemButton
+                                        onClick={() => {
+                                            setReservationDIsOpen(true);
+                                        }}
+                                    >
+                                        <ListItemIcon>
+                                            <BookmarkAddIcon />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={"Criar reserva"}
+                                        />
+                                    </ListItemButton>
+                                </ListItem>
+                                <ListItem
+                                    key={"Excluir reserva"}
+                                    disablePadding
+                                >
+                                    <ListItemButton
+                                        onClick={() => {
+                                            setReservationDListIsOpen(true);
+                                        }}
+                                    >
+                                        <ListItemIcon>
+                                            <BookmarkRemoveIcon />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={"Modificar reserva"}
+                                        />
+                                    </ListItemButton>
+                                </ListItem>
+                            </List>
+                            <Divider />
+                        </>
+                    ) : null}
+                    {userPower >= 1 ? (
+                        <>
+                            <List>
+                                <ListItem
+                                    key={"Retirada de chave"}
+                                    disablePadding
+                                >
+                                    <ListItemButton
+                                        onClick={() => {
+                                            setKeyWDialogIsOpen(true);
+                                        }}
+                                    >
+                                        <ListItemIcon>
+                                            <KeyIcon />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={"Retirada de chave"}
+                                        />
+                                    </ListItemButton>
+                                </ListItem>
+                                <ListItem
+                                    key={"Devolução de chave"}
+                                    disablePadding
+                                >
+                                    <ListItemButton
+                                        onClick={() => {
+                                            setKeyRDialogIsOpen(true);
+                                        }}
+                                    >
+                                        <ListItemIcon>
+                                            <KeyboardReturnIcon />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={"Devolução de chave"}
+                                        />
+                                    </ListItemButton>
+                                </ListItem>
+                            </List>
+                            <Divider />
+                        </>
+                    ) : null}
+
+                    {userPower >= 2 ? (
+                        <>
+                            <List>
+                                <ListItem key={"Criar espaço"} disablePadding>
+                                    <ListItemButton
+                                        onClick={() => {
+                                            setRoomCreateDIsOpen(true);
+                                        }}
+                                    >
+                                        <ListItemIcon>
+                                            <MeetingRoom />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={"Criar espaço"}
+                                        />
+                                    </ListItemButton>
+                                </ListItem>
+                                <ListItem
+                                    key={"Modificar espaço"}
+                                    disablePadding
+                                >
+                                    <ListItemButton
+                                        onClick={() => {
+                                            setRoomModifyDIsOpen(true);
+                                        }}
+                                    >
+                                        <ListItemIcon>
+                                            <RoomPreferences />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={"Modificar espaço"}
+                                        />
+                                    </ListItemButton>
+                                </ListItem>
+                            </List>
+                            <Divider />
+                        </>
+                    ) : null}
+                    {userPower >= 1 ? (
+                        <>
+                            <List>
+                                <ListItem key={"Criar usuario"} disablePadding>
+                                    <ListItemButton
+                                        onClick={() => {
+                                            setUserCreateDIsOpen(true);
+                                        }}
+                                    >
+                                        <ListItemIcon>
+                                            <PersonAdd />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={"Criar usuario"}
+                                        />
+                                    </ListItemButton>
+                                </ListItem>
+                                <ListItem
+                                    key={"Modificar usuario"}
+                                    disablePadding
+                                >
+                                    <ListItemButton
+                                        onClick={() => {
+                                            setUserModifyDIsOpen(true);
+                                        }}
+                                    >
+                                        <ListItemIcon>
+                                            <ManageAccounts />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={"Modificar usuario"}
+                                        />
+                                    </ListItemButton>
+                                </ListItem>
+                            </List>
+                        </>
+                    ) : null}
                 </Box>
             </Drawer>
             <FullScreenActionDialog
@@ -235,11 +300,11 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
                 setSelectedRoom={setSelectedRoom}
                 setCreateRoom={setRoomCreateDIsOpen}
             />
-            <ModifyUserListD 
-            isOpen={userModifyDIsOpen}
-            setIsOpen={setUserModifyDIsOpen}
-            setSelectedUser={setSelectedUser}
-            setCreateUserIsOpen={setUserCreateDIsOpen}
+            <ModifyUserListD
+                isOpen={userModifyDIsOpen}
+                setIsOpen={setUserModifyDIsOpen}
+                setSelectedUser={setSelectedUser}
+                setCreateUserIsOpen={setUserCreateDIsOpen}
             />
         </div>
     );

@@ -68,7 +68,13 @@ export default function FullScreenActionDialog({
         setSelectedReservation(null);
     };
 
-    const { roomList, userList, loggedUser } = React.useContext(StateContext);
+    const {
+        roomList,
+        userList,
+        loggedUser,
+        setSnackBarText,
+        setSnackBarSeverity,
+    } = React.useContext(StateContext);
 
     const [formName, setFormName] = useState("");
 
@@ -91,7 +97,6 @@ export default function FullScreenActionDialog({
 
     React.useEffect(() => {
         if (selectedReservation) {
-
             setFormName(selectedReservation.name);
 
             const room: RoomT = getRoomById(
@@ -134,12 +139,17 @@ export default function FullScreenActionDialog({
                 header
             );
         },
-        onSuccess: () => {
-            //TODO setIsSnackBarOpen(true);
+        onSuccess: (data) => {
             handleClose();
             queryClient.invalidateQueries({
                 queryKey: ["reservationListContext"],
             });
+            setSnackBarText("Reserva criada com sucesso");
+            setSnackBarSeverity("success");
+        },
+        onError: (error) => {
+            setSnackBarText(error.response.data);
+            setSnackBarSeverity("error");
         },
     });
 
@@ -152,11 +162,16 @@ export default function FullScreenActionDialog({
             );
         },
         onSuccess: () => {
-            //TODO setIsSnackBarOpen(true);
             handleClose();
             queryClient.invalidateQueries({
                 queryKey: ["reservationListContext"],
             });
+            setSnackBarText("Reserva editada com sucesso");
+            setSnackBarSeverity("success");
+        },
+        onError: (error) => {
+            setSnackBarText(error.response.data);
+            setSnackBarSeverity("error");
         },
     });
 
@@ -196,12 +211,17 @@ export default function FullScreenActionDialog({
                     selectedReservation?.id
             );
         },
-        onSuccess: () => {
-            //TODO setIsSnackBarOpen(true);
+        onSuccess: (data) => {
             handleClose();
             queryClient.invalidateQueries({
                 queryKey: ["reservationListContext"],
             });
+            setSnackBarText("Reserva deletada com sucesso");
+            setSnackBarSeverity("success");
+        },
+        onError: (error) => {
+            setSnackBarText(error.response.data);
+            setSnackBarSeverity("error");
         },
     });
 
