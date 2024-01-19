@@ -57,9 +57,9 @@ export default function tableFormat(
         null,
         null,
     ];
-    filteredReservationsByRooms.forEach((array, indexOfRoom) => {
+    filteredReservationsByRooms.forEach((array) => {
         
-        array.forEach((reserv : ReservationT | RoomT, indexOfReserv) => {
+        array.forEach((reserv : ReservationT | RoomT, indexOfReserv: number) => {
             if (indexOfReserv == 0) {
                 baseSchedule = [
                     reserv,

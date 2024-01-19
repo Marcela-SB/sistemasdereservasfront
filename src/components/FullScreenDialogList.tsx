@@ -6,7 +6,6 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
-import FullScreenFormDialog from "./FullScreenFormDialog";
 import ScrollableList from "./ScrollableList";
 import { ReservationT } from "../types/ReservationT";
 import { StateContext } from "../context/ReactContext";
@@ -42,9 +41,6 @@ export default function FullScreenDialogList({
     setSelectedReservation,
     setReservationDIsOpen,
 }: Props) {
-    const handleClickOpen = () => {
-        setIsOpen(true);
-    };
 
     const handleClose = () => {
         setIsOpen(false);
@@ -227,7 +223,7 @@ export default function FullScreenDialogList({
                         <Autocomplete
                             value={formRoom}
                             onChange={(
-                                event: React.SyntheticEvent<Element, Event>,
+                                _event: React.SyntheticEvent<Element, Event>,
                                 newValue: RoomT | null
                             ) => {
                                 setFormRoom(newValue);
@@ -248,7 +244,7 @@ export default function FullScreenDialogList({
                         <Autocomplete
                             value={formReservatedTo}
                             onChange={(
-                                event: React.SyntheticEvent<Element, Event>,
+                                _event: React.SyntheticEvent<Element, Event>,
                                 newValue: UserT | null
                             ) => {
                                 setFormReservatedTo(newValue);
@@ -268,7 +264,7 @@ export default function FullScreenDialogList({
                         <Autocomplete
                             value={formResponsible}
                             onChange={(
-                                event: React.SyntheticEvent<Element, Event>,
+                                _event: React.SyntheticEvent<Element, Event>,
                                 newValue: UserT | null
                             ) => {
                                 setFormResponsible(newValue);
@@ -308,7 +304,7 @@ export default function FullScreenDialogList({
                 <Autocomplete
                     sx={{ padding: 2 }}
                     value={selectedInternalReservation}
-                    onChange={(event: any, newValue: ReservationT | null) => {
+                    onChange={(_event: any, newValue: ReservationT | null) => {
                         setSelectedInternalReservation(newValue);
                     }}
                     id="controllable-states-demo"

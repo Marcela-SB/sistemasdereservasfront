@@ -9,7 +9,6 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
-import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import BookmarkRemoveIcon from "@mui/icons-material/BookmarkRemove";
 
 import KeyIcon from "@mui/icons-material/Key";

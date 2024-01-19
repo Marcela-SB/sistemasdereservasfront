@@ -6,7 +6,6 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
-import FullScreenFormDialog from "./FullScreenFormDialog";
 import { StateContext } from "../context/ReactContext";
 import { useState } from "react";
 import { RoomT } from "../types/RoomT";
@@ -139,7 +138,7 @@ export default function FullScreenActionDialog({
                 header
             );
         },
-        onSuccess: (data) => {
+        onSuccess: (_data) => {
             handleClose();
             queryClient.invalidateQueries({
                 queryKey: ["reservationListContext"],
@@ -211,7 +210,7 @@ export default function FullScreenActionDialog({
                     selectedReservation?.id
             );
         },
-        onSuccess: (data) => {
+        onSuccess: () => {
             handleClose();
             queryClient.invalidateQueries({
                 queryKey: ["reservationListContext"],
@@ -278,7 +277,7 @@ export default function FullScreenActionDialog({
                             <Autocomplete
                                 value={formRoom}
                                 onChange={(
-                                    event: any,
+                                    _event: any,
                                     newValue: RoomT | null
                                 ) => {
                                     setFormRoom(newValue);
@@ -374,7 +373,7 @@ export default function FullScreenActionDialog({
                             <Autocomplete
                                 value={formReservatedTo}
                                 onChange={(
-                                    event: any,
+                                    _event: any,
                                     newValue: UserT | null
                                 ) => {
                                     setFormReservatedTo(newValue);

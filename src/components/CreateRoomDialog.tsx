@@ -8,32 +8,17 @@ import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
 import { StateContext } from "../context/ReactContext";
 import { useState } from "react";
-import { UserT } from "../types/UserT";
-import { baseInternalSchedule } from "../types/tableSchedules";
 import {
-    Autocomplete,
     Box,
     Checkbox,
     Divider,
-    FormControl,
     FormControlLabel,
-    Grid,
-    IconButton,
-    InputAdornment,
-    InputLabel,
-    MenuItem,
-    OutlinedInput,
-    Select,
-    SelectChangeEvent,
     Stack,
-    Switch,
     TextField,
 } from "@mui/material";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../utils/queryClient";
-import InputMask from "react-input-mask";
-import { VisibilityOff, Visibility } from "@mui/icons-material";
 import { RoomT } from "../types/RoomT";
 
 const Transition = React.forwardRef(function Transition(
@@ -72,9 +57,6 @@ export default function CreateRoomDialog({
     selectedRoom,
     setSelectedRoom,
 }: Props) {
-    const handleClickOpen = () => {
-        setIsOpen(true);
-    };
 
     const handleClose = () => {
         createMutation.reset();

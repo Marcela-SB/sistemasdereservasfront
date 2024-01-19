@@ -9,13 +9,9 @@ import { TransitionProps } from "@mui/material/transitions";
 import { StateContext } from "../context/ReactContext";
 import { useState } from "react";
 import { UserT } from "../types/UserT";
-import { baseInternalSchedule } from "../types/tableSchedules";
 import {
-    Autocomplete,
     Box,
     FormControl,
-    FormControlLabel,
-    Grid,
     IconButton,
     InputAdornment,
     InputLabel,
@@ -24,7 +20,6 @@ import {
     Select,
     SelectChangeEvent,
     Stack,
-    Switch,
     TextField,
 } from "@mui/material";
 import axios from "axios";
@@ -55,9 +50,6 @@ export default function CreateUserDialog({
     selectedUser,
     setSelectedUser
 }: Props) {
-    const handleClickOpen = () => {
-        setIsOpen(true);
-    };
 
     const handleClose = () => {
         createMutation.reset();
@@ -87,9 +79,7 @@ export default function CreateUserDialog({
     const [formRole, setFormRole] = useState("USER");
 
     const [showPassword, setShowPassword] = React.useState(false);
-
-    const [isSnackBarOpen, setIsSnackBarOpen] = React.useState(false);
-
+    
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     const handleMouseDownPassword = (

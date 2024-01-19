@@ -7,7 +7,6 @@ import Typography from "@mui/material/Typography";
 import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
 
-import { ReservationT } from "../types/ReservationT";
 import { StateContext } from "../context/ReactContext";
 import { Autocomplete, Stack, TextField } from "@mui/material";
 import { useState } from "react";
@@ -40,7 +39,7 @@ type Props = {
 };
 
 export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
-    const { roomList, userList, loggedUser } = React.useContext(StateContext);
+    const { roomList, userList } = React.useContext(StateContext);
 
     const handleClose = () => {
         setIsOpen(false);
@@ -223,7 +222,7 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
                 <Autocomplete
                     sx={{ margin: 2 }}
                     value={formReturnedBy}
-                    onChange={(event: any, newValue: UserT | null) => {
+                    onChange={(_event: any, newValue: UserT | null) => {
                         setFormReturnedBy(newValue);
                     }}
                     id="controllable-states-demo"

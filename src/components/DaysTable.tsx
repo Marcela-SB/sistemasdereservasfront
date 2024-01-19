@@ -8,14 +8,9 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { tableSchedule } from "../types/tableSchedules";
 import {
-    Box,
-    Container,
-    Divider,
     Tooltip,
-    Typography,
     styled,
 } from "@mui/material";
-import { weekDays } from "../types/weekDays";
 import { StateContext } from "../context/ReactContext";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { DatePicker } from "@mui/x-date-pickers";

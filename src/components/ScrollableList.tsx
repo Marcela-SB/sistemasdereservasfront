@@ -2,12 +2,6 @@ import * as React from "react";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import ListSubheader from "@mui/material/ListSubheader";
-import { ReservationT } from "../types/ReservationT";
-import { RoomT } from "../types/RoomT";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { StateContext } from "../context/ReactContext";
 import { tableSchedule } from "../types/tableSchedules";
 import { Checkbox, ListItemSecondaryAction } from "@mui/material";
 

@@ -2,12 +2,8 @@ import {
     AppBar,
     Button,
     Dialog,
-    Divider,
     FormControl,
-    IconButton,
     List,
-    ListItem,
-    ListItemSecondaryAction,
     Stack,
     TextField,
     Toolbar,
@@ -15,7 +11,6 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { StateContext } from "../context/ReactContext";
-import { Send } from "@mui/icons-material";
 import { UserT } from "../types/UserT";
 import FilteredUserList from "./FilteredUserList";
 

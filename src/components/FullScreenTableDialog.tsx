@@ -6,7 +6,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { baseInternalSchedule, tableSchedule } from "../types/tableSchedules";
+import { tableSchedule } from "../types/tableSchedules";
 import { Checkbox, Tooltip } from "@mui/material";
 import { weekDays } from "../types/weekDays";
 
@@ -31,12 +31,8 @@ export default function FullScreenTableDialog({
         setFormSchedule([...holder]);
     };
 
-
     return (
-        <TableContainer
-            component={Paper}
-            sx={{ marginX: "auto" }}
-        >
+        <TableContainer component={Paper} sx={{ marginX: "auto" }}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                     <TableRow>

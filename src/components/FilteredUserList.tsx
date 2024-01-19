@@ -1,5 +1,4 @@
-import { React, useContext, useState } from "react";
-import data from "./ListData.json";
+import {  useContext } from "react";
 import { StateContext } from "../context/ReactContext";
 import { UserT } from "../types/UserT";
 import { Divider, IconButton, List, ListItem, ListItemSecondaryAction } from "@mui/material";
