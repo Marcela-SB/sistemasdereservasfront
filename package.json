@@ -1,6 +1,6 @@
 {
   "name": "sistemasdereservasfront",
-  "homepage": "http://https://reservas.deart.ufrn.br/",
+  "homepage": ".",
   "private": true,
   "version": "1.0.0",
   "type": "module",
