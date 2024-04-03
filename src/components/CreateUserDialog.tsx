@@ -104,7 +104,7 @@ export default function CreateUserDialog({
 
     const createMutation = useMutation({
         mutationFn: (header) => {
-            return axios.post("http://localhost:8080/auth/register", header);
+            return axios.post("http://localhost:8087/auth/register", header);
         },
         onSuccess: () => {
             handleClose();
@@ -121,7 +121,7 @@ export default function CreateUserDialog({
     const editMutation = useMutation({
         mutationFn: (header) => {
             return axios.put(
-                "http://localhost:8080/user/edit/" + selectedUser?.id,
+                "http://localhost:8087/user/edit/" + selectedUser?.id,
                 header
             );
         },
@@ -158,7 +158,7 @@ export default function CreateUserDialog({
     const deleteMutation = useMutation({
         mutationFn: () => {
             return axios.delete(
-                "http://localhost:8080/user/delete/" + selectedUser?.id
+                "http://localhost:8087/user/delete/" + selectedUser?.id
             );
         },
         onSuccess: () => {

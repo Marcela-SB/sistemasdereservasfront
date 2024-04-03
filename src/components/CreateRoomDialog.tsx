@@ -168,7 +168,7 @@ export default function CreateRoomDialog({
 
     const createMutation = useMutation({
         mutationFn: (header) => {
-            return axios.post("http://localhost:8080/room/create", header);
+            return axios.post("http://localhost:8087/room/create", header);
         },
         onSuccess: () => {
             handleClose();
@@ -185,7 +185,7 @@ export default function CreateRoomDialog({
     const editMutation = useMutation({
         mutationFn: (header) => {
             return axios.put(
-                "http://localhost:8080/room/edit/" + selectedRoom?.id,
+                "http://localhost:8087/room/edit/" + selectedRoom?.id,
                 header
             );
         },
@@ -237,7 +237,7 @@ export default function CreateRoomDialog({
     const deleteMutation = useMutation({
         mutationFn: () => {
             return axios.delete(
-                "http://localhost:8080/room/delete/" + selectedRoom?.id
+                "http://localhost:8087/room/delete/" + selectedRoom?.id
             );
         },
         onSuccess: () => {

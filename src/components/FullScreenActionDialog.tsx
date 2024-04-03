@@ -134,7 +134,7 @@ export default function FullScreenActionDialog({
     const createMutation = useMutation({
         mutationFn: (header) => {
             return axios.post(
-                "http://localhost:8080/reservation/create",
+                "http://localhost:8087/reservation/create",
                 header
             );
         },
@@ -155,7 +155,7 @@ export default function FullScreenActionDialog({
     const editMutation = useMutation({
         mutationFn: (header) => {
             return axios.put(
-                "http://localhost:8080/reservation/edit/" +
+                "http://localhost:8087/reservation/edit/" +
                     selectedReservation?.id,
                 header
             );
@@ -206,7 +206,7 @@ export default function FullScreenActionDialog({
     const deleteMutation = useMutation({
         mutationFn: () => {
             return axios.delete(
-                "http://localhost:8080/reservation/delete/" +
+                "http://localhost:8087/reservation/delete/" +
                     selectedReservation?.id
             );
         },
