@@ -52,7 +52,7 @@ export default function LoginDialog({ setIsOpen, isOpen, setIsLogged }: Props) {
     const loginMutation = useMutation({
         mutationFn: (header) => {
             return axios.post(
-                "http://localhost:8087/auth/authenticate",
+                "http://10.3.227.44:8087/auth/authenticate",
                 header
             );
         },

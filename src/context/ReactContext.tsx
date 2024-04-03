@@ -46,7 +46,7 @@ function ReactContext({ children }: Props) {
     const { data: roomList } = useQuery({
         queryKey: ["roomListContext"],
         queryFn: async () => {
-            const response = await axios.get("http://localhost:8087/room/list");
+            const response = await axios.get("http://10.3.227.44:8087/room/list");
             return response.data;
         },
     });
@@ -54,7 +54,7 @@ function ReactContext({ children }: Props) {
     const { data: userList } = useQuery({
         queryKey: ["userListContext"],
         queryFn: async () => {
-            const response = await axios.get("http://localhost:8087/user/list");
+            const response = await axios.get("http://10.3.227.44:8087/user/list");
             return response.data;
         },
     });
@@ -63,7 +63,7 @@ function ReactContext({ children }: Props) {
         queryKey: ["reservationListContext"],
         queryFn: async () => {
             const response = await axios.get(
-                "http://localhost:8087/reservation/list"
+                "http://10.3.227.44:8087/reservation/list"
             );
             return response.data;
         },
@@ -73,7 +73,7 @@ function ReactContext({ children }: Props) {
         queryKey: ["keyListContext"],
         queryFn: async () => {
             const response = await axios.get(
-                "http://localhost:8087/keydelivery/list"
+                "http://10.3.227.44:8087/keydelivery/list"
             );
             return response.data;
         },
