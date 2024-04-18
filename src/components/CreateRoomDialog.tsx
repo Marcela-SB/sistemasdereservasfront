@@ -16,7 +16,7 @@ import {
     Stack,
     TextField,
 } from "@mui/material";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../utils/queryClient";
 import { RoomT } from "../types/RoomT";
@@ -57,7 +57,6 @@ export default function CreateRoomDialog({
     selectedRoom,
     setSelectedRoom,
 }: Props) {
-
     const handleClose = () => {
         createMutation.reset();
         setSelectedRoom(null);
@@ -79,7 +78,8 @@ export default function CreateRoomDialog({
         setIsOpen(false);
     };
 
-    const { setSnackBarText, setSnackBarSeverity } = React.useContext(StateContext);
+    const { setSnackBarText, setSnackBarSeverity } =
+        React.useContext(StateContext);
 
     const [formName, setFormName] = useState("");
 
@@ -168,7 +168,7 @@ export default function CreateRoomDialog({
 
     const createMutation = useMutation({
         mutationFn: (header) => {
-            return axios.post("http://10.3.227.44:8087/room/create", header);
+            return axiosInstance.post("room/create", header);
         },
         onSuccess: () => {
             handleClose();
@@ -184,10 +184,7 @@ export default function CreateRoomDialog({
 
     const editMutation = useMutation({
         mutationFn: (header) => {
-            return axios.put(
-                "http://10.3.227.44:8087/room/edit/" + selectedRoom?.id,
-                header
-            );
+            return axiosInstance.put("room/edit/" + selectedRoom?.id, header);
         },
         onSuccess: () => {
             handleClose();
@@ -236,9 +233,7 @@ export default function CreateRoomDialog({
 
     const deleteMutation = useMutation({
         mutationFn: () => {
-            return axios.delete(
-                "http://10.3.227.44:8087/room/delete/" + selectedRoom?.id
-            );
+            return axiosInstance.delete("room/delete/" + selectedRoom?.id);
         },
         onSuccess: () => {
             handleClose();

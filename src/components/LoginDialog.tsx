@@ -19,7 +19,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import InputMask from "react-input-mask";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
 import { StateContext } from "../context/ReactContext";
 import { Close } from "@mui/icons-material";
@@ -27,12 +27,11 @@ import { Close } from "@mui/icons-material";
 type Props = {
     setIsOpen: (b: boolean) => void;
     isOpen: boolean;
-    setIsLogged: (b:boolean) => void
+    setIsLogged: (b: boolean) => void;
 };
 
 export default function LoginDialog({ setIsOpen, isOpen, setIsLogged }: Props) {
-
-    const {setLoggedUser} = React.useContext(StateContext);
+    const { setLoggedUser } = React.useContext(StateContext);
 
     const [username, setUsername] = React.useState<string>("");
     const [password, setPassword] = React.useState<string | null>(null);
@@ -51,18 +50,14 @@ export default function LoginDialog({ setIsOpen, isOpen, setIsLogged }: Props) {
 
     const loginMutation = useMutation({
         mutationFn: (header) => {
-            return axios.post(
-                "http://10.3.227.44:8087/auth/authenticate",
-                header
-            );
+            return axiosInstance.post("auth/authenticate", header);
         },
         onSuccess: (data) => {
-            setLoggedUser(data.data.user)
+            setLoggedUser(data.data.user);
             setIsSnackBarOpen(true);
-            setIsLogged(true)
-            closeDialog()
+            setIsLogged(true);
+            closeDialog();
         },
-        
     });
 
     const LoginTentative = () => {
@@ -81,8 +76,13 @@ export default function LoginDialog({ setIsOpen, isOpen, setIsLogged }: Props) {
 
     return (
         <>
-            <Dialog onClose={() => {closeDialog}} open={isOpen}>
-            <Stack direction={"row"} justifyContent={"space-between"}>
+            <Dialog
+                onClose={() => {
+                    closeDialog;
+                }}
+                open={isOpen}
+            >
+                <Stack direction={"row"} justifyContent={"space-between"}>
                     <DialogTitle>Login</DialogTitle>
                     <DialogActions>
                         <IconButton onClick={closeDialog} aria-label="close">
@@ -160,7 +160,9 @@ export default function LoginDialog({ setIsOpen, isOpen, setIsLogged }: Props) {
             <Snackbar
                 open={isSnackBarOpen}
                 autoHideDuration={3000}
-                onClose={() => {setIsSnackBarOpen(false)}}
+                onClose={() => {
+                    setIsSnackBarOpen(false);
+                }}
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
             >
                 <Alert severity="success">Logado com sucesso.</Alert>

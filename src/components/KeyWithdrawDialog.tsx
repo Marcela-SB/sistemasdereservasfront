@@ -15,7 +15,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { UserT } from "../types/UserT";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { TimePicker } from "@mui/x-date-pickers";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../utils/queryClient";
 import CheckUserDialog from "./CheckUserDialog";
@@ -65,10 +65,7 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
 
     const createMutation = useMutation({
         mutationFn: (header) => {
-            return axios.post(
-                "http://10.3.227.44:8087/keydelivery/create",
-                header
-            );
+            return axiosInstance.post("keydelivery/create", header);
         },
         onSuccess: () => {
             //TODO setIsSnackBarOpen(true);

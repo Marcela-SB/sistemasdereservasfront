@@ -23,7 +23,7 @@ import {
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { DatePicker } from "@mui/x-date-pickers";
 import FullScreenTableDialog from "./FullScreenTableDialog";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
 import { ReservationT } from "../types/ReservationT";
 import getRoomById from "../utils/getRoomById";
@@ -133,10 +133,7 @@ export default function FullScreenActionDialog({
 
     const createMutation = useMutation({
         mutationFn: (header) => {
-            return axios.post(
-                "http://10.3.227.44:8087/reservation/create",
-                header
-            );
+            return axiosInstance.post("reservation/create", header);
         },
         onSuccess: (_data) => {
             handleClose();
@@ -154,9 +151,8 @@ export default function FullScreenActionDialog({
 
     const editMutation = useMutation({
         mutationFn: (header) => {
-            return axios.put(
-                "http://10.3.227.44:8087/reservation/edit/" +
-                    selectedReservation?.id,
+            return axiosInstance.put(
+                "reservation/edit/" + selectedReservation?.id,
                 header
             );
         },
@@ -205,9 +201,8 @@ export default function FullScreenActionDialog({
 
     const deleteMutation = useMutation({
         mutationFn: () => {
-            return axios.delete(
-                "http://10.3.227.44:8087/reservation/delete/" +
-                    selectedReservation?.id
+            return axiosInstance.delete(
+                "reservation/delete/" + selectedReservation?.id
             );
         },
         onSuccess: () => {

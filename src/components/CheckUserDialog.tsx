@@ -18,7 +18,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import InputMask from "react-input-mask";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
 import { UserT } from "../types/UserT";
 import { Close } from "@mui/icons-material";
@@ -57,15 +57,14 @@ export default function CheckUserDialog({
 
     const loginMutation = useMutation({
         mutationFn: (header) => {
-            return axios.post(
-                "http://10.3.227.44:8087/auth/authenticate",
+            return axiosInstance.post(
+                "auth/authenticate",
                 header
             );
         },
         onSuccess: () => {
             closeDialog();
             setCheckSucess(true);
-            
         },
     });
 

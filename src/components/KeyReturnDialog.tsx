@@ -16,7 +16,7 @@ import { UserT } from "../types/UserT";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { TimePicker } from "@mui/x-date-pickers";
 import { KeyT } from "../types/KeyDeliveryT";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
 import KeyScrollableList from "./KeyScrollableList";
 import getRoomById from "../utils/getRoomById";
@@ -72,8 +72,8 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
 
     const editMutation = useMutation({
         mutationFn: (header) => {
-            return axios.put(
-                "http://10.3.227.44:8087/keydelivery/edit/" + selectedKey?.id,
+            return axiosInstance.put(
+                "keydelivery/edit/" + selectedKey?.id,
                 header
             );
         },
@@ -121,9 +121,9 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
                 returnTime: returnTime,
             };
 
-            editMutation.mutate(header)
+            editMutation.mutate(header);
 
-            setCheckSucess(false)
+            setCheckSucess(false);
         }
     }, [checkSucess]);
 

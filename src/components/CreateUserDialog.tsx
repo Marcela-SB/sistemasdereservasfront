@@ -22,7 +22,7 @@ import {
     Stack,
     TextField,
 } from "@mui/material";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../utils/queryClient";
 import InputMask from "react-input-mask";
@@ -48,23 +48,23 @@ export default function CreateUserDialog({
     isOpen,
     setIsOpen,
     selectedUser,
-    setSelectedUser
+    setSelectedUser,
 }: Props) {
-
     const handleClose = () => {
         createMutation.reset();
-        setSelectedUser(null)
+        setSelectedUser(null);
         setFormName("");
         setFormEmail("");
         setFormPassword("");
         setFormRegistration("");
         setFormUsername("");
         setFormRole("USER");
-        setShowPassword(false)
+        setShowPassword(false);
         setIsOpen(false);
     };
 
-    const { setSnackBarText, setSnackBarSeverity } = React.useContext(StateContext);
+    const { setSnackBarText, setSnackBarSeverity } =
+        React.useContext(StateContext);
 
     const [formUsername, setFormUsername] = useState("");
 
@@ -79,7 +79,7 @@ export default function CreateUserDialog({
     const [formRole, setFormRole] = useState("USER");
 
     const [showPassword, setShowPassword] = React.useState(false);
-    
+
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     const handleMouseDownPassword = (
@@ -104,7 +104,7 @@ export default function CreateUserDialog({
 
     const createMutation = useMutation({
         mutationFn: (header) => {
-            return axios.post("http://10.3.227.44:8087/auth/register", header);
+            return axiosInstance.post("auth/register", header);
         },
         onSuccess: () => {
             handleClose();
@@ -120,10 +120,7 @@ export default function CreateUserDialog({
 
     const editMutation = useMutation({
         mutationFn: (header) => {
-            return axios.put(
-                "http://10.3.227.44:8087/user/edit/" + selectedUser?.id,
-                header
-            );
+            return axiosInstance.put("user/edit/" + selectedUser?.id, header);
         },
         onSuccess: () => {
             handleClose();
@@ -138,7 +135,6 @@ export default function CreateUserDialog({
     });
 
     const onSubmit = () => {
-       
         const header = {
             username: formUsername,
             name: formName,
@@ -157,9 +153,7 @@ export default function CreateUserDialog({
 
     const deleteMutation = useMutation({
         mutationFn: () => {
-            return axios.delete(
-                "http://10.3.227.44:8087/user/delete/" + selectedUser?.id
-            );
+            return axiosInstance.delete("user/delete/" + selectedUser?.id);
         },
         onSuccess: () => {
             handleClose();
