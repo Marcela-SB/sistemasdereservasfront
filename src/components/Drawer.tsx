@@ -7,6 +7,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import Container from "@mui/material/Container";
 
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import BookmarkRemoveIcon from "@mui/icons-material/BookmarkRemove";
@@ -32,6 +33,7 @@ import { RoomT } from "../types/RoomT";
 import ModifyRoomListD from "./ModifyRoomListD";
 import ModifyUserListD from "./ModifyUserListD";
 import { StateContext } from "../context/ReactContext";
+import { Button } from "@mui/material";
 
 type Props = {
     isOpen: boolean;
@@ -77,15 +79,23 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
 
     React.useEffect(() => {
         if (loggedUser) {
-            if(loggedUser.role == "ADMIN"){
-                setUserPower(3)
-            } else if(loggedUser.role == "SUPERVISOR"){
-                setUserPower(2)
-            } else if(loggedUser.role == "TRAINEE"){
-                setUserPower(1)
+            if (loggedUser.role == "ADMIN") {
+                setUserPower(3);
+            } else if (loggedUser.role == "SUPERVISOR") {
+                setUserPower(2);
+            } else if (loggedUser.role == "TRAINEE") {
+                setUserPower(1);
             }
         }
     }, [loggedUser]);
+
+    function logOff(
+        e: MouseEvent<HTMLButtonElement, MouseEvent>
+    ): React.MouseEventHandler<HTMLButtonElement> | undefined {
+        localStorage.removeItem("user");
+        location.reload();
+        e.preventDefault();
+    }
 
     return (
         <div>
@@ -257,6 +267,20 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
                             </List>
                         </>
                     ) : null}
+                    <Container>
+                        <Button
+                            variant="contained"
+                            fullWidth
+                            sx={{
+                                margin: "0 auto",
+                            }}
+                            onClick={(e) => {
+                                logOff(e);
+                            }}
+                        >
+                            Deslogar
+                        </Button>
+                    </Container>
                 </Box>
             </Drawer>
             <FullScreenActionDialog
