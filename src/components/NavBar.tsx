@@ -20,7 +20,7 @@ function NavBar() {
         }
     };
 
-    const [isLogged, setIsLogged] = React.useState(false);
+    const [isLogged, setIsLogged] = React.useState(localStorage.getItem("user") ? true : false);
 
     const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
 

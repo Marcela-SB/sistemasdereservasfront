@@ -52,8 +52,9 @@ export default function LoginDialog({ setIsOpen, isOpen, setIsLogged }: Props) {
         mutationFn: (header) => {
             return axiosInstance.post("auth/authenticate", header);
         },
-        onSuccess: (data) => {
-            setLoggedUser(data.data.user);
+        onSuccess: (response) => {
+            localStorage.setItem("user", JSON.stringify(response.data));
+            setLoggedUser(response.data.user);
             setIsSnackBarOpen(true);
             setIsLogged(true);
             closeDialog();

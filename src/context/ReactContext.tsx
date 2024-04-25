@@ -75,7 +75,11 @@ function ReactContext({ children }: Props) {
         },
     });
 
-    const [loggedUser, setLoggedUser] = React.useState<unknown | null>(null);
+    const [loggedUser, setLoggedUser] = React.useState<unknown | null>(
+        localStorage.getItem("user")
+            ? JSON.parse(localStorage.getItem("user")).user
+            : null
+    );
 
     const [snackBarText, setSnackBarText] = useState<string>("");
 
