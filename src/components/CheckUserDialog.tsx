@@ -80,7 +80,6 @@ export default function CheckUserDialog({
     const closeDialog = () => {
         loginMutation.reset();
         setIsOpen(false);
-        setUsername(null);
         setPassword(null);
     };
 

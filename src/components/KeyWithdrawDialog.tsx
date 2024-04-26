@@ -91,9 +91,9 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                 isKeyReturned: false,
             };
 
-            console.log(header);
-
             createMutation.mutate(header);
+
+            handleClose()
 
             setCheckSucess(false);
         }
