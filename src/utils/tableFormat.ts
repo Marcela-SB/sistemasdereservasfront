@@ -9,7 +9,7 @@ export default function tableFormat(
 ) {
     const dayOfWeek = date.day()-1
     if(dayOfWeek < 0 ){
-        console.log("domingo")
+
         return
     }
     let filteredReservations = reservationList;
@@ -86,7 +86,7 @@ export default function tableFormat(
                     if(h){
                         let isInBaseSchedule = false
                         baseSchedule.forEach((baseScheduleItem : any) => {
-                            console.log(baseScheduleItem[0])
+                   
                             if(baseScheduleItem[0]?.id == reserv.id){
                                         baseScheduleItem[1]++
                                         isInBaseSchedule = true

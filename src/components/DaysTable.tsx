@@ -16,6 +16,7 @@ import tableFormat from "../utils/tableFormat";
 import DaysTableCell from "./DaysTableCell";
 import { ReservationT } from "../types/ReservationT";
 import { RoomT } from "../types/RoomT";
+import daysTabledynamicSort from "../utils/dynamicSort";
 
 const OrangeTableRow = styled(TableRow)(({ theme }) => ({
     backgroundColor: theme.palette.primary.main,
@@ -49,7 +50,14 @@ export default function DaysTable() {
                 reservationList,
                 reservableRoomList
             );
-            setFinalSchedule(holder);
+            const holderSchedule = [];
+            for (let index = 0; index < holder[0].length; index++) {
+                holderSchedule.push([holder[0][index], holder[1][index]]);
+            }
+
+            holderSchedule?.sort(daysTabledynamicSort());
+
+            setFinalSchedule(holderSchedule);
         }
     }, [roomList, reservationList, selectedDate]);
 
@@ -124,39 +132,35 @@ export default function DaysTable() {
                         </OrangeTableRow>
                     </TableHead>
                     <TableBody>
-                        {finalSchedule[1]?.map(
-                            (array: ReservationT[], arrayIndex: number) => {
-                                return (
-                                    <TableRow
-                                        key={finalSchedule[0][arrayIndex]}
-                                    >
-                                        <TableCell align="center">
-                                            {finalSchedule[0][arrayIndex].name}{" "}
-                                            {
-                                                finalSchedule[0][arrayIndex]
-                                                    ?.roomNumber
-                                            }
-                                        </TableCell>
+                        {finalSchedule?.map(
+                            (
+                                rowContent: [RoomT, any[]],
+                                roomArrayIndex: number
+                            ) => {
+                                const room = rowContent[0];
+                                const roomSchedule = rowContent[1];
 
-                                        {array?.map(
-                                            (
-                                                schedule: any[],
-                                                index: number
-                                            ) => {
+                                return (
+                                    <TableRow key={room.id + "-row"}>
+                                        <TableCell align="center">
+                                            {room.name + " " + room.roomNumber}
+                                        </TableCell>
+                                        {roomSchedule.map(
+                                            (hourschedule, dayIndex) => {
+                                                console.log(hourschedule)
                                                 let passedSchedule = null;
                                                 let passedSpan = 1;
-                                                if (schedule[0]) {
-                                                    passedSchedule =
-                                                        schedule[0];
-                                                    passedSpan = schedule[1];
+                                                if (hourschedule[0]) {
+                                                    passedSchedule = hourschedule[0];
+                                                    passedSpan = hourschedule[1];
                                                 }
                                                 return (
                                                     <DaysTableCell
-                                                        key={`daystablecell ${finalSchedule[0]}-${arrayIndex}-${index}`}
+                                                        key={`daystablecell ${room.id}-${roomArrayIndex}-${dayIndex}`}
                                                         schedule={
                                                             passedSchedule
                                                         }
-                                                        index={index}
+                                                        index={dayIndex}
                                                         span={passedSpan}
                                                     />
                                                 );
@@ -165,6 +169,7 @@ export default function DaysTable() {
                                     </TableRow>
                                 );
                             }
+                            
                         )}
                     </TableBody>
                 </Table>
