@@ -147,7 +147,6 @@ export default function DaysTable() {
                                         </TableCell>
                                         {roomSchedule.map(
                                             (hourschedule, dayIndex) => {
-                                                console.log(hourschedule)
                                                 let passedSchedule = null;
                                                 let passedSpan = 1;
                                                 if (hourschedule[0]) {

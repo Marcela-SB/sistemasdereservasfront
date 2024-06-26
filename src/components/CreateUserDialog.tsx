@@ -171,6 +171,11 @@ export default function CreateUserDialog({
         deleteMutation.mutate();
     };
 
+    const [isRequestPending, setIsRequestPending] = useState(false)
+    React.useEffect(() => {
+        setIsRequestPending(createMutation.isPending || editMutation.isPending || deleteMutation.isPending)
+    },[createMutation, editMutation, deleteMutation])
+
     return (
         <React.Fragment>
             <Dialog
@@ -189,14 +194,14 @@ export default function CreateUserDialog({
                         >
                             Novo usuario
                         </Typography>
-                        <Button color="inherit" onClick={handleClose}>
+                        <Button color="inherit" onClick={handleClose} disabled={isRequestPending}>
                             cancelar
                         </Button>
-                        <Button color="success" onClick={onSubmit}>
+                        <Button color="success" onClick={onSubmit} disabled={isRequestPending}>
                             salvar
                         </Button>
                         {selectedUser ? (
-                            <Button color="error" onClick={onRemove}>
+                            <Button color="error" onClick={onRemove} disabled={isRequestPending}>
                                 excluir
                             </Button>
                         ) : null}

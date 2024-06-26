@@ -162,6 +162,7 @@ export default function CheckUserDialog({
                             variant="contained"
                             onClick={LoginTentative}
                             sx={{ marginTop: 1 }}
+                            disabled={loginMutation.isPending}
                         >
                             login
                         </Button>

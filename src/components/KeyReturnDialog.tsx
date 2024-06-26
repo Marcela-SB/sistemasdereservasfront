@@ -127,6 +127,11 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
         }
     }, [checkSucess]);
 
+    const [isRequestPending, setIsRequestPending] = useState(false)
+    React.useEffect(() => {
+        setIsRequestPending( editMutation.isPending)
+    },[ editMutation])
+
     return (
         <React.Fragment>
             <Dialog
@@ -143,7 +148,7 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
                         >
                             Retirada de chave
                         </Typography>
-                        <Button color="inherit" onClick={handleClose}>
+                        <Button color="inherit" onClick={handleClose} disabled={isRequestPending}>
                             cancelar
                         </Button>
                     </Toolbar>
@@ -239,6 +244,7 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
                     variant="contained"
                     sx={{ marginX: 6, marginY: 2 }}
                     onClick={submitReturn}
+                    disabled={isRequestPending}
                 >
                     Criar devolução
                 </Button>

@@ -152,6 +152,7 @@ export default function LoginDialog({ setIsOpen, isOpen, setIsLogged }: Props) {
                             variant="contained"
                             onClick={LoginTentative}
                             sx={{ marginTop: 1 }}
+                            disabled={loginMutation.isPending}
                         >
                             login
                         </Button>

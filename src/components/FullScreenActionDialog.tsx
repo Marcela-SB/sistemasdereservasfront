@@ -223,6 +223,15 @@ export default function FullScreenActionDialog({
         deleteMutation.mutate();
     };
 
+    const [isRequestPending, setIsRequestPending] = useState(false);
+    React.useEffect(() => {
+        setIsRequestPending(
+            createMutation.isPending ||
+                editMutation.isPending ||
+                deleteMutation.isPending
+        );
+    }, [createMutation, editMutation, deleteMutation]);
+
     return (
         <React.Fragment>
             <Dialog
@@ -240,14 +249,26 @@ export default function FullScreenActionDialog({
                         >
                             {text.toUpperCase()}
                         </Typography>
-                        <Button color="inherit" onClick={handleClose}>
+                        <Button
+                            color="inherit"
+                            onClick={handleClose}
+                            disabled={isRequestPending}
+                        >
                             cancelar
                         </Button>
-                        <Button color="success" onClick={onSubmit}>
+                        <Button
+                            color="success"
+                            onClick={onSubmit}
+                            disabled={isRequestPending}
+                        >
                             salvar
                         </Button>
                         {selectedReservation ? (
-                            <Button color="error" onClick={onRemove}>
+                            <Button
+                                color="error"
+                                onClick={onRemove}
+                                disabled={isRequestPending}
+                            >
                                 excluir
                             </Button>
                         ) : null}

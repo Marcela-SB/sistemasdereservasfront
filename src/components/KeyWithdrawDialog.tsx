@@ -190,6 +190,7 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                     variant="contained"
                     sx={{ marginX: 6, marginY: 2 }}
                     onClick={submitWithdraw}
+                    disabled={createMutation.isPending}
                 >
                     Criar retirada
                 </Button>
