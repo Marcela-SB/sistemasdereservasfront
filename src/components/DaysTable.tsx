@@ -7,7 +7,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { tableSchedule } from "../types/tableSchedules";
-import { Container, Tooltip, styled } from "@mui/material";
+import { Box, Container, Tooltip, styled } from "@mui/material";
 import { StateContext } from "../context/ReactContext";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -72,10 +72,10 @@ export default function DaysTable({setReservationToDetail, setReserDIsOpen}: Pro
     }
 
     return (
-        <Container>
+        <Box>
             <DemoContainer
                 components={["DatePicker"]}
-                sx={{ marginLeft: 2, marginBottom: 1 }}
+                sx={{ marginLeft: 0, marginBottom: 1 }}
             >
                 <DatePicker
                     value={selectedDate}
@@ -101,7 +101,6 @@ export default function DaysTable({setReservationToDetail, setReserDIsOpen}: Pro
                         pointerEvents: "none",
                     },
                     width: "100%",
-                    maxWidth: 1250,
                     margin: "auto",
                 }}
             >
@@ -184,6 +183,6 @@ export default function DaysTable({setReservationToDetail, setReserDIsOpen}: Pro
                     </TableBody>
                 </Table>
             </TableContainer>
-        </Container>
+        </Box>
     );
 }

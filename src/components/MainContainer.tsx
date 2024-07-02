@@ -1,4 +1,4 @@
-import { Container } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import React, { useState } from "react";
 import DaysTable from "./DaysTable";
 import ReservationDetailsDialog from "./ReservationDetailsDialog";
@@ -12,7 +12,7 @@ function MainContainer({}: Props) {
         useState<null | ReservationT>(null);
 
     return (
-        <Container>
+        <Box p={0} >
             <DaysTable
                 setReserDIsOpen={setReserDIsOpen}
                 setReservationToDetail={setReservationToDetail}
@@ -24,7 +24,7 @@ function MainContainer({}: Props) {
                     setIsOpen={setReserDIsOpen}
                 />
             ) : null}
-        </Container>
+        </Box>
     );
 }
 
