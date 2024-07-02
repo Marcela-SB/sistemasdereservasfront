@@ -77,7 +77,7 @@ function ModifyUserListD({
                 </Toolbar>
             </AppBar>
             <List>
-                <Stack sx={{ paddingX: 1 }}>
+                
                     <FilteredUserList
                         selectUser={selectUser}
                         inputText={searchedText}
@@ -103,7 +103,6 @@ function ModifyUserListD({
                             )}
                         </InputMask>
                     </FormControl>
-                </Stack>
             </List>
         </Dialog>
     );

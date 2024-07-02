@@ -3,6 +3,7 @@ import { StateContext } from "../context/ReactContext";
 import { UserT } from "../types/UserT";
 import { Divider, IconButton, List, ListItem, ListItemSecondaryAction } from "@mui/material";
 import { Send } from "@mui/icons-material";
+import userDynamicSort from "../utils/usersDynamicSort";
 
 type Props = {
     inputText: string;
@@ -25,7 +26,7 @@ function FilteredUserList({ inputText, selectUser}: Props) {
             const splitedText = inputText.split("_");
             return user.username?.toLowerCase().includes(splitedText[0]);
         }
-    });
+    }).sort(userDynamicSort());
     return (
         <List
             sx={{
@@ -33,7 +34,7 @@ function FilteredUserList({ inputText, selectUser}: Props) {
             }}
         >
             {filteredUserList?.map((user: UserT) => (
-                <>
+                <span key={user.id}>
                     <ListItem key={user.id}>
                         {user.name}
                         <ListItemSecondaryAction>
@@ -43,7 +44,7 @@ function FilteredUserList({ inputText, selectUser}: Props) {
                         </ListItemSecondaryAction>
                     </ListItem>
                     <Divider variant="middle" />
-                </>
+                </span>
             ))}
         </List>
     );
