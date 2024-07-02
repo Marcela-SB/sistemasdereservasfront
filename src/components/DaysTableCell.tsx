@@ -12,9 +12,10 @@ type Props = {
     schedule: ReservationT | null;
     index: number;
     span: number;
+    handleClick: (r:ReservationT) => void;
 };
 
-function DaysTableCell({ schedule, index, span = 1 }: Props) {
+function DaysTableCell({ schedule, index, handleClick, span = 1 }: Props) {
     const { userList } = useContext(StateContext);
 
     let tooltipTitle = null;
@@ -44,6 +45,7 @@ function DaysTableCell({ schedule, index, span = 1 }: Props) {
                     size="medium"
                     align="center"
                     colSpan={span}
+                    onClick={() => {handleClick(schedule)}}
                 >
                     <div
                         style={{
@@ -62,7 +64,8 @@ function DaysTableCell({ schedule, index, span = 1 }: Props) {
                     size="medium"
                     align="center"
                     sx={{
-                        borderLeft: "1px solid rgba(81, 81, 81, 1);",
+                        borderLeft: "1px solid hsl(0, 0%, 60%);",
+                        borderBottom: "1px solid hsl(0, 0%, 60%);",
                     }}
                     colSpan={span}
                 >

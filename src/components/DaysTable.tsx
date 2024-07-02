@@ -7,7 +7,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { tableSchedule } from "../types/tableSchedules";
-import { Tooltip, styled } from "@mui/material";
+import { Container, Tooltip, styled } from "@mui/material";
 import { StateContext } from "../context/ReactContext";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -16,13 +16,18 @@ import tableFormat from "../utils/tableFormat";
 import DaysTableCell from "./DaysTableCell";
 import { ReservationT } from "../types/ReservationT";
 import { RoomT } from "../types/RoomT";
-import daysTabledynamicSort from "../utils/dynamicSort";
+import daysTabledynamicSort from "../utils/daysTabledynamicSort";
 
 const OrangeTableRow = styled(TableRow)(({ theme }) => ({
     backgroundColor: theme.palette.primary.main,
 }));
 
-export default function DaysTable() {
+type Props = {
+    setReservationToDetail: (r: ReservationT) => void;
+    setReserDIsOpen: (b: boolean) => void;
+};
+
+export default function DaysTable({setReservationToDetail, setReserDIsOpen}: Props) {
     const { roomList, reservationList } = React.useContext(StateContext);
 
     const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(
@@ -61,8 +66,13 @@ export default function DaysTable() {
         }
     }, [roomList, reservationList, selectedDate]);
 
+    const handleCellClick = (reservation : ReservationT) => {
+        setReservationToDetail(reservation)
+        setReserDIsOpen(true)
+    }
+
     return (
-        <>
+        <Container>
             <DemoContainer
                 components={["DatePicker"]}
                 sx={{ marginLeft: 2, marginBottom: 1 }}
@@ -161,6 +171,7 @@ export default function DaysTable() {
                                                         }
                                                         index={dayIndex}
                                                         span={passedSpan}
+                                                        handleClick={handleCellClick}
                                                     />
                                                 );
                                             }
@@ -173,6 +184,6 @@ export default function DaysTable() {
                     </TableBody>
                 </Table>
             </TableContainer>
-        </>
+        </Container>
     );
 }

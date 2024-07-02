@@ -5,12 +5,12 @@ import { ThemeProvider } from '@emotion/react';
 
 export const themeOptions: ThemeOptions = {
   palette: {
-    mode: 'dark',
+    mode: 'light',
     primary: {
-      main: '#ea580c',
+      main: '#004586',
     },
     secondary: {
-      main: '#ea580c',
+      main: '#fc0313',
     },
   },
 };
