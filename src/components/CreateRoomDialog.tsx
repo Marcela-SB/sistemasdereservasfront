@@ -20,6 +20,7 @@ import axiosInstance from "../utils/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../utils/queryClient";
 import { RoomT } from "../types/RoomT";
+import ConfirmationDialog from "./ConfirmationDialog";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -109,6 +110,8 @@ export default function CreateRoomDialog({
     const [key, setKey] = useState(false);
 
     const [reservable, setReservable] = useState(false);
+
+    const [isConfirmationDOpen, setIsConfirmationDOpen] = useState(false);
 
     const handleChangeAir = (event: React.ChangeEvent<HTMLInputElement>) => {
         setAirConditioner(event.target.checked);
@@ -276,31 +279,48 @@ export default function CreateRoomDialog({
                             variant="h6"
                             component="div"
                         >
-                            {selectedRoom ? "Modificar espaço" : "Novo espaço"}
+                            {selectedRoom ? "Consultar espaço" : "Novo espaço"}
                         </Typography>
-                        <Button
-                            color="inherit"
-                            onClick={handleClose}
-                            disabled={isRequestPending}
-                        >
-                            cancelar
-                        </Button>
-                        <Button
-                            color="success"
-                            onClick={onSubmit}
-                            disabled={isRequestPending}
-                        >
-                            salvar
-                        </Button>
-                        {selectedRoom ? (
+                        <Stack direction={"row"} spacing={1} >
                             <Button
-                                color="error"
-                                onClick={onRemove}
+                                color="inherit"
+                                onClick={handleClose}
                                 disabled={isRequestPending}
                             >
-                                excluir
+                                voltar
                             </Button>
-                        ) : null}
+                            <Button
+                                color="info"
+                                onClick={handleClose}
+                                disabled={isRequestPending}
+                                variant="outlined"
+                                sx={{ fontWeight: "600" }}
+                            >
+                                Historico
+                            </Button>
+                            <Button
+                                color="success"
+                                onClick={onSubmit}
+                                disabled={isRequestPending}
+                                variant="outlined"
+                                sx={{ fontWeight: "600" }}
+                            >
+                                editar
+                            </Button>
+                            {selectedRoom ? (
+                                <Button
+                                    color="error"
+                                    onClick={() => {
+                                        setIsConfirmationDOpen(true);
+                                    }}
+                                    disabled={isRequestPending}
+                                    variant="outlined"
+                                    sx={{ fontWeight: "600" }}
+                                >
+                                    excluir
+                                </Button>
+                            ) : null}
+                        </Stack>
                     </Toolbar>
                 </AppBar>
                 <Box sx={{ padding: 2, flexGrow: 1 }}>
@@ -473,6 +493,14 @@ export default function CreateRoomDialog({
                         </Stack>
                     </Stack>
                 </Box>
+                {selectedRoom ? (
+                    <ConfirmationDialog
+                        setIsOpen={setIsConfirmationDOpen}
+                        isOpen={isConfirmationDOpen}
+                        toExclude={selectedRoom.name}
+                        excludeFunction={onRemove}
+                    />
+                ) : null}
             </Dialog>
         </React.Fragment>
     );

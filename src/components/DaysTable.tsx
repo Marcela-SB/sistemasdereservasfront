@@ -7,7 +7,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { tableSchedule } from "../types/tableSchedules";
-import { Box, Container, Tooltip, styled } from "@mui/material";
+import { Box, Container, Tooltip, Typography, styled } from "@mui/material";
 import { StateContext } from "../context/ReactContext";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -27,21 +27,15 @@ type Props = {
     setReserDIsOpen: (b: boolean) => void;
 };
 
-export default function DaysTable({setReservationToDetail, setReserDIsOpen}: Props) {
+export default function DaysTable({
+    setReservationToDetail,
+    setReserDIsOpen,
+}: Props) {
     const { roomList, reservationList } = React.useContext(StateContext);
 
     const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(
         dayjs()
     );
-
-    const currentTime = dayjs();
-    let percent = "0%";
-    if (currentTime.hour() > 6) {
-        percent =
-            ((currentTime.hour() * 60 + currentTime.minute() - 7 * 60) / 915) *
-                100 +
-            3.5;
-    }
 
     const [finalSchedule, setFinalSchedule] = React.useState([]);
 
@@ -66,10 +60,10 @@ export default function DaysTable({setReservationToDetail, setReserDIsOpen}: Pro
         }
     }, [roomList, reservationList, selectedDate]);
 
-    const handleCellClick = (reservation : ReservationT) => {
-        setReservationToDetail(reservation)
-        setReserDIsOpen(true)
-    }
+    const handleCellClick = (reservation: ReservationT) => {
+        setReservationToDetail(reservation);
+        setReserDIsOpen(true);
+    };
 
     return (
         <Box>
@@ -87,19 +81,6 @@ export default function DaysTable({setReservationToDetail, setReserDIsOpen}: Pro
                 component={Paper}
                 sx={{
                     position: "relative",
-                    "--width": `${percent}%`,
-                    "::before": {
-                        content: '""',
-                        position: "absolute",
-                        backgroundColor: "hsla(120, 100%, 25%, 0.2)",
-                        display: "flex",
-                        width: "var(--width, 0)",
-                        minWidth: "9rem",
-                        height: "100%",
-                        overflow: "hidden",
-                        borderRight: "0.1rem solid hsla(120, 100%, 25%, 1)",
-                        pointerEvents: "none",
-                    },
                     width: "100%",
                     margin: "auto",
                 }}
@@ -107,8 +88,41 @@ export default function DaysTable({setReservationToDetail, setReserDIsOpen}: Pro
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                         <OrangeTableRow>
-                            <TableCell></TableCell>
+                            <TableCell size="small" align="center">
+                                <Box component="span" fontWeight="600">
+                                    Salas
+                                </Box>
+                            </TableCell>
                             {tableSchedule.map((schedule) => {
+                                let color = "#7dc6ed";
+                                if (schedule.shift == "T") {
+                                    color = "#ffd320";
+                                } else if (schedule.shift == "N") {
+                                    color = "#4969f3";
+                                }
+
+                                const currentTime = dayjs();
+
+                                let percentageWidth = 0;
+                                let borderRight = "0rem solid hsla(120, 100%, 25%, 1)"
+
+                                const currentDay =
+                                    currentTime.format("YYYY-MM-DD");
+
+                                const startTime = dayjs(`${currentDay} ${schedule.startTime}`)
+                                const endTime = dayjs(`${currentDay} ${schedule.endTime}`)
+                                if(currentTime.isAfter(startTime, 'minute') && currentTime.isBefore(endTime, 'minute')){
+                                    const currentMinutes = currentTime.minute() + currentTime.hour() *60
+                                    const startMinutes = startTime.minute() + startTime.hour() *60
+                                    const subtractedMinutes = currentMinutes - startMinutes
+                                    percentageWidth = ((subtractedMinutes / 50) * 100)
+                                    borderRight = ".15rem solid hsla(120, 100%, 25%, 1)"
+                                } else if(currentTime.isBefore(startTime, 'minute')){
+                                    percentageWidth = 0;
+                                } else if(currentTime.isAfter(endTime, 'minute') || currentTime.isSame(endTime, 'minute')){
+                                    percentageWidth = 100;
+                                }
+
                                 return (
                                     <>
                                         <Tooltip
@@ -129,10 +143,34 @@ export default function DaysTable({setReservationToDetail, setReserDIsOpen}: Pro
                                                 sx={{
                                                     borderLeft:
                                                         "1px solid rgba(81, 81, 81, 1);",
+                                                    borderBottom:
+                                                        "1px solid rgba(81, 81, 81, 1);",
+                                                    backgroundColor: color,
+                                                    position: "relative",
+                                                    "::before": {
+                                                        content: '""',
+                                                        position: "absolute",
+                                                        left: 0,
+                                                        top: 0,
+                                                        backgroundColor:
+                                                            "hsla(120, 100%, 25%, 0.2)",
+                                                        display: "flex",
+                                                        width: `${percentageWidth}%`,
+                                                        height: "100%",
+                                                        overflow: "hidden",
+                                                        borderRight:
+                                                            `${borderRight}`,
+                                                        pointerEvents: "none",
+                                                    },
                                                 }}
                                             >
-                                                {schedule.shift +
-                                                    schedule.hourly}
+                                                <Box
+                                                    component="span"
+                                                    fontWeight="600"
+                                                >
+                                                    {schedule.shift +
+                                                        schedule.hourly}
+                                                </Box>
                                             </TableCell>
                                         </Tooltip>
                                     </>
@@ -159,8 +197,10 @@ export default function DaysTable({setReservationToDetail, setReserDIsOpen}: Pro
                                                 let passedSchedule = null;
                                                 let passedSpan = 1;
                                                 if (hourschedule[0]) {
-                                                    passedSchedule = hourschedule[0];
-                                                    passedSpan = hourschedule[1];
+                                                    passedSchedule =
+                                                        hourschedule[0];
+                                                    passedSpan =
+                                                        hourschedule[1];
                                                 }
                                                 return (
                                                     <DaysTableCell
@@ -170,7 +210,9 @@ export default function DaysTable({setReservationToDetail, setReserDIsOpen}: Pro
                                                         }
                                                         index={dayIndex}
                                                         span={passedSpan}
-                                                        handleClick={handleCellClick}
+                                                        handleClick={
+                                                            handleCellClick
+                                                        }
                                                     />
                                                 );
                                             }
@@ -178,7 +220,6 @@ export default function DaysTable({setReservationToDetail, setReserDIsOpen}: Pro
                                     </TableRow>
                                 );
                             }
-                            
                         )}
                     </TableBody>
                 </Table>

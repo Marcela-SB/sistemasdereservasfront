@@ -29,6 +29,7 @@ import { ReservationT } from "../types/ReservationT";
 import getRoomById from "../utils/getRoomById";
 import getUserById from "../utils/getUserById";
 import { queryClient } from "../utils/queryClient";
+import ConfirmationDialog from "./ConfirmationDialog";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -65,6 +66,7 @@ export default function FullScreenActionDialog({
         setFormSchedule(baseInternalSchedule);
         setFormIsOneDay(true);
         setSelectedReservation(null);
+        setFormComment("")
     };
 
     const {
@@ -232,6 +234,8 @@ export default function FullScreenActionDialog({
         );
     }, [createMutation, editMutation, deleteMutation]);
 
+    const [isConfirmationDOpen, setIsConfirmationDOpen] = useState(false);
+
     return (
         <React.Fragment>
             <Dialog
@@ -254,19 +258,19 @@ export default function FullScreenActionDialog({
                             onClick={handleClose}
                             disabled={isRequestPending}
                         >
-                            cancelar
+                            voltar
                         </Button>
                         <Button
                             color="success"
                             onClick={onSubmit}
                             disabled={isRequestPending}
                         >
-                            salvar
+                            editar
                         </Button>
                         {selectedReservation ? (
                             <Button
                                 color="error"
-                                onClick={onRemove}
+                                onClick={() => {setIsConfirmationDOpen(true)}}
                                 disabled={isRequestPending}
                             >
                                 excluir
@@ -432,6 +436,14 @@ export default function FullScreenActionDialog({
                         </Grid>
                     </Grid>
                 </Box>
+                {selectedReservation ? (
+                    <ConfirmationDialog
+                        setIsOpen={setIsConfirmationDOpen}
+                        isOpen={isConfirmationDOpen}
+                        toExclude={selectedReservation.name}
+                        excludeFunction={onRemove}
+                    />
+                ) : null}
             </Dialog>
         </React.Fragment>
     );

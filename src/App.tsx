@@ -17,7 +17,7 @@ function App() {
                     <ThemeContext>
                         <DateContext>
                             <>
-                                <Container maxWidth={false} sx={{ marginTop:10 }} p={0}>
+                                <Container maxWidth={false} sx={{ marginTop:10 }}>
                                     <NavBar />
                                     <MainContainer />
                                     <GlobalSnackBar />

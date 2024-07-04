@@ -27,6 +27,7 @@ import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../utils/queryClient";
 import InputMask from "react-input-mask";
 import { VisibilityOff, Visibility } from "@mui/icons-material";
+import ConfirmationDialog from "./ConfirmationDialog";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -79,6 +80,8 @@ export default function CreateUserDialog({
     const [formRole, setFormRole] = useState("USER");
 
     const [showPassword, setShowPassword] = React.useState(false);
+
+    const [isConfirmationDOpen, setIsConfirmationDOpen] = useState(false);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -171,10 +174,14 @@ export default function CreateUserDialog({
         deleteMutation.mutate();
     };
 
-    const [isRequestPending, setIsRequestPending] = useState(false)
+    const [isRequestPending, setIsRequestPending] = useState(false);
     React.useEffect(() => {
-        setIsRequestPending(createMutation.isPending || editMutation.isPending || deleteMutation.isPending)
-    },[createMutation, editMutation, deleteMutation])
+        setIsRequestPending(
+            createMutation.isPending ||
+                editMutation.isPending ||
+                deleteMutation.isPending
+        );
+    }, [createMutation, editMutation, deleteMutation]);
 
     return (
         <React.Fragment>
@@ -194,17 +201,37 @@ export default function CreateUserDialog({
                         >
                             Novo usuario
                         </Typography>
-                        <Button color="inherit" onClick={handleClose} disabled={isRequestPending}>
-                            cancelar
-                        </Button>
-                        <Button color="success" onClick={onSubmit} disabled={isRequestPending}>
-                            salvar
-                        </Button>
-                        {selectedUser ? (
-                            <Button color="error" onClick={onRemove} disabled={isRequestPending}>
-                                excluir
+                        <Stack direction={"row"} spacing={1}>
+                            <Button
+                                color="inherit"
+                                onClick={handleClose}
+                                disabled={isRequestPending}
+                            >
+                                voltar
                             </Button>
-                        ) : null}
+                            <Button
+                                color="success"
+                                onClick={onSubmit}
+                                disabled={isRequestPending}
+                                variant="outlined"
+                                sx={{ fontWeight: "600" }}
+                            >
+                                editar
+                            </Button>
+                            {selectedUser ? (
+                                <Button
+                                    color="error"
+                                    onClick={() => {
+                                        setIsConfirmationDOpen(true);
+                                    }}
+                                    disabled={isRequestPending}
+                                    variant="outlined"
+                                    sx={{ fontWeight: "600" }}
+                                >
+                                    excluir
+                                </Button>
+                            ) : null}
+                        </Stack>
                     </Toolbar>
                 </AppBar>
                 <Box sx={{ padding: 2, flexGrow: 1 }}>
@@ -298,6 +325,14 @@ export default function CreateUserDialog({
                         </Select>
                     </Stack>
                 </Box>
+                {selectedUser ? (
+                    <ConfirmationDialog
+                        setIsOpen={setIsConfirmationDOpen}
+                        isOpen={isConfirmationDOpen}
+                        toExclude={selectedUser.name}
+                        excludeFunction={onRemove}
+                    />
+                ) : null}
             </Dialog>
         </React.Fragment>
     );

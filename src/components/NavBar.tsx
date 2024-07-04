@@ -56,7 +56,7 @@ function NavBar() {
                                 sx={{ p: 0 }}
                             >
                                 {isLogged ? (
-                                    <Avatar alt="Deart" sx={{bgcolor: orange[700]}}  />
+                                    <Avatar alt="Deart"/>
                                 ) : (
                                     <Avatar alt="Deart">D</Avatar>
                                 )}

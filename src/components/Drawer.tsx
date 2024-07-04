@@ -10,7 +10,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Container from "@mui/material/Container";
 
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
-import BookmarkRemoveIcon from "@mui/icons-material/BookmarkRemove";
+import BookmarksIcon from '@mui/icons-material/Bookmarks';
 
 import KeyIcon from "@mui/icons-material/Key";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
@@ -130,7 +130,7 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
                                     </ListItemButton>
                                 </ListItem>
                                 <ListItem
-                                    key={"Excluir reserva"}
+                                    key={"Consultar reservas"}
                                     disablePadding
                                 >
                                     <ListItemButton
@@ -139,10 +139,10 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
                                         }}
                                     >
                                         <ListItemIcon>
-                                            <BookmarkRemoveIcon />
+                                            <BookmarksIcon />
                                         </ListItemIcon>
                                         <ListItemText
-                                            primary={"Modificar reserva"}
+                                            primary={"Consultar reservas"}
                                         />
                                     </ListItemButton>
                                 </ListItem>
@@ -210,7 +210,7 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
                                     </ListItemButton>
                                 </ListItem>
                                 <ListItem
-                                    key={"Modificar espaço"}
+                                    key={"Consultar espaços"}
                                     disablePadding
                                 >
                                     <ListItemButton
@@ -222,7 +222,7 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
                                             <RoomPreferences />
                                         </ListItemIcon>
                                         <ListItemText
-                                            primary={"Modificar espaço"}
+                                            primary={"Consultar espaços"}
                                         />
                                     </ListItemButton>
                                 </ListItem>
@@ -248,7 +248,7 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
                                     </ListItemButton>
                                 </ListItem>
                                 <ListItem
-                                    key={"Modificar usuario"}
+                                    key={"Consultar usuarios"}
                                     disablePadding
                                 >
                                     <ListItemButton
@@ -260,7 +260,7 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
                                             <ManageAccounts />
                                         </ListItemIcon>
                                         <ListItemText
-                                            primary={"Modificar usuario"}
+                                            primary={"Consultar usuarios"}
                                         />
                                     </ListItemButton>
                                 </ListItem>
@@ -286,14 +286,14 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
             <FullScreenActionDialog
                 isOpen={reservationDIsOpen}
                 setIsOpen={setReservationDIsOpen}
-                text="criar"
+                text="deart"
                 selectedReservation={selectedReservation}
                 setSelectedReservation={setSelectedReservation}
             />
             <FullScreenDialogList
                 isOpen={reservationDListIsOpen}
                 setIsOpen={setReservationDListIsOpen}
-                text="reserva"
+                text="reservas"
                 setSelectedReservation={setSelectedReservation}
                 setReservationDIsOpen={setReservationDIsOpen}
             />
