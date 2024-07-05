@@ -21,6 +21,7 @@ import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../utils/queryClient";
 import { RoomT } from "../types/RoomT";
 import ConfirmationDialog from "./ConfirmationDialog";
+import HistoricDialog from "./HistoricDialog";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -112,6 +113,8 @@ export default function CreateRoomDialog({
     const [reservable, setReservable] = useState(false);
 
     const [isConfirmationDOpen, setIsConfirmationDOpen] = useState(false);
+
+    const [isHistoricOpen, setIsHistoricOpen] = useState(false);
 
     const handleChangeAir = (event: React.ChangeEvent<HTMLInputElement>) => {
         setAirConditioner(event.target.checked);
@@ -281,7 +284,7 @@ export default function CreateRoomDialog({
                         >
                             {selectedRoom ? "Consultar espaço" : "Novo espaço"}
                         </Typography>
-                        <Stack direction={"row"} spacing={1} >
+                        <Stack direction={"row"} spacing={1}>
                             <Button
                                 color="inherit"
                                 onClick={handleClose}
@@ -289,15 +292,20 @@ export default function CreateRoomDialog({
                             >
                                 voltar
                             </Button>
-                            <Button
-                                color="info"
-                                onClick={handleClose}
-                                disabled={isRequestPending}
-                                variant="outlined"
-                                sx={{ fontWeight: "600" }}
-                            >
-                                Historico
-                            </Button>
+                            {selectedRoom ? (
+                                <Button
+                                    color="info"
+                                    onClick={() => {
+                                        setIsHistoricOpen(true);
+                                    }}
+                                    disabled={isRequestPending}
+                                    variant="outlined"
+                                    sx={{ fontWeight: "600" }}
+                                >
+                                    Historico
+                                </Button>
+                            ) : null}
+
                             <Button
                                 color="success"
                                 onClick={onSubmit}
@@ -494,12 +502,19 @@ export default function CreateRoomDialog({
                     </Stack>
                 </Box>
                 {selectedRoom ? (
-                    <ConfirmationDialog
-                        setIsOpen={setIsConfirmationDOpen}
-                        isOpen={isConfirmationDOpen}
-                        toExclude={selectedRoom.name}
-                        excludeFunction={onRemove}
-                    />
+                    <>
+                        <ConfirmationDialog
+                            setIsOpen={setIsConfirmationDOpen}
+                            isOpen={isConfirmationDOpen}
+                            toExclude={selectedRoom.name}
+                            excludeFunction={onRemove}
+                        />
+                        <HistoricDialog
+                            isOpen={isHistoricOpen}
+                            setIsOpen={setIsHistoricOpen}
+                            selectedRoom={selectedRoom}
+                        />
+                    </>
                 ) : null}
             </Dialog>
         </React.Fragment>

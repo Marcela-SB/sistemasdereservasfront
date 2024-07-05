@@ -153,7 +153,7 @@ export default function DaysTable({
                                                         left: 0,
                                                         top: 0,
                                                         backgroundColor:
-                                                            "hsla(120, 100%, 25%, 0.2)",
+                                                            "hsla(120, 100%, 25%, 0.4)",
                                                         display: "flex",
                                                         width: `${percentageWidth}%`,
                                                         height: "100%",
