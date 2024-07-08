@@ -74,8 +74,13 @@ export default function CreateRoomDialog({
         setAirConditioner(false);
         setIsAirConditionerWorking(false);
 
+        setKey(false)
+
         setProjector(false);
         setIsProjectorWorking(false);
+
+        setReservable(false)
+        setAdministrative(false)
 
         setIsOpen(false);
     };
@@ -111,6 +116,8 @@ export default function CreateRoomDialog({
     const [key, setKey] = useState(false);
 
     const [reservable, setReservable] = useState(false);
+
+    const [administrative, setAdministrative] = useState(false)
 
     const [isConfirmationDOpen, setIsConfirmationDOpen] = useState(false);
 
@@ -162,13 +169,14 @@ export default function CreateRoomDialog({
             setSinks(selectedRoom.sinks);
 
             setAirConditioner(selectedRoom.airConditioning);
-            setIsAirConditionerWorking(selectedRoom.isAirConditioningWorking);
+            setIsAirConditionerWorking(selectedRoom.airConditioningWorking);
 
             setProjector(selectedRoom.projector);
-            setIsProjectorWorking(selectedRoom.isProjectorWorking);
+            setIsProjectorWorking(selectedRoom.projectorWorking);
 
             setKey(selectedRoom.hasKey);
             setReservable(selectedRoom.reservable);
+            setAdministrative(selectedRoom.administrative)
         }
     }, [selectedRoom]);
 
@@ -219,13 +227,14 @@ export default function CreateRoomDialog({
             chairQuantity: formChairQuantity,
             computerQuantity: formComputerQuantity,
             airConditioning: airConditioner,
-            isAirConditioningWorking: isAirConditionerWorking,
+            airConditioningWorking: isAirConditionerWorking,
             projector: projector,
-            isProjectorWorking: isProjectorWorking,
+            projectorWorking: isProjectorWorking,
             bigTables: bigTables,
             sinks: sinks,
             hasKey: key,
             reservable: reservable,
+            administrative: administrative,
         };
 
         console.log(header);
@@ -313,7 +322,7 @@ export default function CreateRoomDialog({
                                 variant="outlined"
                                 sx={{ fontWeight: "600" }}
                             >
-                                editar
+                                {selectedRoom ? "Editar" : "Salvar"}
                             </Button>
                             {selectedRoom ? (
                                 <Button
@@ -481,6 +490,19 @@ export default function CreateRoomDialog({
                                             event: React.ChangeEvent<HTMLInputElement>
                                         ) => {
                                             setKey(event.target.checked);
+                                        }}
+                                    />
+                                }
+                            />
+                            <FormControlLabel
+                                label="Sala administrativa / projeto"
+                                control={
+                                    <Checkbox
+                                        checked={administrative}
+                                        onChange={(
+                                            event: React.ChangeEvent<HTMLInputElement>
+                                        ) => {
+                                            setAdministrative(event.target.checked);
                                         }}
                                     />
                                 }

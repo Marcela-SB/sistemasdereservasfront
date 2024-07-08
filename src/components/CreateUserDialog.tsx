@@ -216,7 +216,7 @@ export default function CreateUserDialog({
                                 variant="outlined"
                                 sx={{ fontWeight: "600" }}
                             >
-                                editar
+                                {selectedUser ? "editar" : "salvar"}
                             </Button>
                             {selectedUser ? (
                                 <Button

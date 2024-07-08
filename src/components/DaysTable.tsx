@@ -39,6 +39,8 @@ export default function DaysTable({
 
     const [finalSchedule, setFinalSchedule] = React.useState([]);
 
+    const [isDomingo, setIsDomingo] = React.useState(false);
+
     React.useEffect(() => {
         if (roomList && reservationList && selectedDate) {
             const reservableRoomList = roomList.filter(
@@ -50,11 +52,13 @@ export default function DaysTable({
                 reservableRoomList
             );
             const holderSchedule = [];
-            for (let index = 0; index < holder[0].length; index++) {
-                holderSchedule.push([holder[0][index], holder[1][index]]);
-            }
+            if (selectedDate.day() != 0) {
+                for (let index = 0; index < holder[0].length; index++) {
+                    holderSchedule.push([holder[0][index], holder[1][index]]);
+                }
 
-            holderSchedule?.sort(daysTabledynamicSort());
+                holderSchedule?.sort(daysTabledynamicSort());
+            }
 
             setFinalSchedule(holderSchedule);
         }
@@ -104,22 +108,42 @@ export default function DaysTable({
                                 const currentTime = dayjs();
 
                                 let percentageWidth = 0;
-                                let borderRight = "0rem solid hsla(120, 100%, 25%, 1)"
+                                let borderRight =
+                                    "0rem solid hsla(120, 100%, 25%, 1)";
 
                                 const currentDay =
                                     currentTime.format("YYYY-MM-DD");
 
-                                const startTime = dayjs(`${currentDay} ${schedule.startTime}`)
-                                const endTime = dayjs(`${currentDay} ${schedule.endTime}`)
-                                if(currentTime.isAfter(startTime, 'minute') && currentTime.isBefore(endTime, 'minute')){
-                                    const currentMinutes = currentTime.minute() + currentTime.hour() *60
-                                    const startMinutes = startTime.minute() + startTime.hour() *60
-                                    const subtractedMinutes = currentMinutes - startMinutes
-                                    percentageWidth = ((subtractedMinutes / 50) * 100)
-                                    borderRight = ".15rem solid hsla(120, 100%, 25%, 1)"
-                                } else if(currentTime.isBefore(startTime, 'minute')){
+                                const startTime = dayjs(
+                                    `${currentDay} ${schedule.startTime}`
+                                );
+                                const endTime = dayjs(
+                                    `${currentDay} ${schedule.endTime}`
+                                );
+                                if (
+                                    currentTime.isAfter(startTime, "minute") &&
+                                    currentTime.isBefore(endTime, "minute")
+                                ) {
+                                    const currentMinutes =
+                                        currentTime.minute() +
+                                        currentTime.hour() * 60;
+                                    const startMinutes =
+                                        startTime.minute() +
+                                        startTime.hour() * 60;
+                                    const subtractedMinutes =
+                                        currentMinutes - startMinutes;
+                                    percentageWidth =
+                                        (subtractedMinutes / 50) * 100;
+                                    borderRight =
+                                        ".15rem solid hsla(120, 100%, 25%, 1)";
+                                } else if (
+                                    currentTime.isBefore(startTime, "minute")
+                                ) {
                                     percentageWidth = 0;
-                                } else if(currentTime.isAfter(endTime, 'minute') || currentTime.isSame(endTime, 'minute')){
+                                } else if (
+                                    currentTime.isAfter(endTime, "minute") ||
+                                    currentTime.isSame(endTime, "minute")
+                                ) {
                                     percentageWidth = 100;
                                 }
 
@@ -158,8 +182,7 @@ export default function DaysTable({
                                                         width: `${percentageWidth}%`,
                                                         height: "100%",
                                                         overflow: "hidden",
-                                                        borderRight:
-                                                            `${borderRight}`,
+                                                        borderRight: `${borderRight}`,
                                                         pointerEvents: "none",
                                                     },
                                                 }}
@@ -179,47 +202,57 @@ export default function DaysTable({
                         </OrangeTableRow>
                     </TableHead>
                     <TableBody>
-                        {finalSchedule?.map(
-                            (
-                                rowContent: [RoomT, any[]],
-                                roomArrayIndex: number
-                            ) => {
-                                const room = rowContent[0];
-                                const roomSchedule = rowContent[1];
+                        {selectedDate?.day() == 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={16} align="center">
+                                    Sem reservas aos domingos
+                                </TableCell>
+                            </TableRow>
+                        ) : (
+                            finalSchedule?.map(
+                                (
+                                    rowContent: [RoomT, any[]],
+                                    roomArrayIndex: number
+                                ) => {
+                                    const room = rowContent[0];
+                                    const roomSchedule = rowContent[1];
 
-                                return (
-                                    <TableRow key={room.id + "-row"}>
-                                        <TableCell align="center">
-                                            {room.name + " " + room.roomNumber}
-                                        </TableCell>
-                                        {roomSchedule.map(
-                                            (hourschedule, dayIndex) => {
-                                                let passedSchedule = null;
-                                                let passedSpan = 1;
-                                                if (hourschedule[0]) {
-                                                    passedSchedule =
-                                                        hourschedule[0];
-                                                    passedSpan =
-                                                        hourschedule[1];
+                                    return (
+                                        <TableRow key={room.id + "-row"}>
+                                            <TableCell align="center">
+                                                {room.name +
+                                                    " " +
+                                                    room.roomNumber}
+                                            </TableCell>
+                                            {roomSchedule.map(
+                                                (hourschedule, dayIndex) => {
+                                                    let passedSchedule = null;
+                                                    let passedSpan = 1;
+                                                    if (hourschedule[0]) {
+                                                        passedSchedule =
+                                                            hourschedule[0];
+                                                        passedSpan =
+                                                            hourschedule[1];
+                                                    }
+                                                    return (
+                                                        <DaysTableCell
+                                                            key={`daystablecell ${room.id}-${roomArrayIndex}-${dayIndex}`}
+                                                            schedule={
+                                                                passedSchedule
+                                                            }
+                                                            index={dayIndex}
+                                                            span={passedSpan}
+                                                            handleClick={
+                                                                handleCellClick
+                                                            }
+                                                        />
+                                                    );
                                                 }
-                                                return (
-                                                    <DaysTableCell
-                                                        key={`daystablecell ${room.id}-${roomArrayIndex}-${dayIndex}`}
-                                                        schedule={
-                                                            passedSchedule
-                                                        }
-                                                        index={dayIndex}
-                                                        span={passedSpan}
-                                                        handleClick={
-                                                            handleCellClick
-                                                        }
-                                                    />
-                                                );
-                                            }
-                                        )}
-                                    </TableRow>
-                                );
-                            }
+                                            )}
+                                        </TableRow>
+                                    );
+                                }
+                            )
                         )}
                     </TableBody>
                 </Table>

@@ -6,12 +6,13 @@ export type RoomT = {
     chairQuantity: number;
     computerQuantity: number;
     airConditioning: boolean;
-    isAirConditioningWorking: boolean;
+    airConditioningWorking: boolean;
     projector: boolean;
-    isProjectorWorking: boolean;
+    projectorWorking: boolean;
     bigTables: boolean;
     sinks: boolean;
     hasKey:boolean;
     reservable:boolean;
+    administrative:boolean;
   };
   

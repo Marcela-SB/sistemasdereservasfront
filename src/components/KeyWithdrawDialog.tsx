@@ -71,7 +71,13 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
             //TODO setIsSnackBarOpen(true);
             handleClose();
             queryClient.invalidateQueries({ queryKey: ["keyListContext"] });
+            setSnackBarText("Entrega de chave criada com sucesso");
+            setSnackBarSeverity("success");
         },
+        onError: (error) => {
+            setSnackBarText(error.response.data);
+            setSnackBarSeverity("error");
+        }
     });
 
     const submitWithdraw = () => {
