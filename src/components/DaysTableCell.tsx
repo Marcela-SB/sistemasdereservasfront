@@ -6,13 +6,16 @@ import { useContext } from "react";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     backgroundColor: theme.palette.primary.main,
+
+    borderLeft: "1px solid hsl(0, 0%, 60%);",
+    borderBottom: "1px solid hsl(0, 0%, 60%);",
 }));
 
 type Props = {
     schedule: ReservationT | null;
     index: number;
     span: number;
-    handleClick: (r:ReservationT) => void;
+    handleClick: (r: ReservationT) => void;
 };
 
 function DaysTableCell({ schedule, index, handleClick, span = 1 }: Props) {
@@ -45,7 +48,9 @@ function DaysTableCell({ schedule, index, handleClick, span = 1 }: Props) {
                     size="medium"
                     align="center"
                     colSpan={span}
-                    onClick={() => {handleClick(schedule)}}
+                    onClick={() => {
+                        handleClick(schedule);
+                    }}
                 >
                     <div
                         style={{
@@ -54,7 +59,9 @@ function DaysTableCell({ schedule, index, handleClick, span = 1 }: Props) {
                             justifyContent: "right",
                         }}
                     >
-                        <Typography noWrap>{schedule?.name}</Typography>
+                        <Typography noWrap color={"white"}>
+                            {schedule?.name}
+                        </Typography>
                     </div>
                 </StyledTableCell>
             ) : (

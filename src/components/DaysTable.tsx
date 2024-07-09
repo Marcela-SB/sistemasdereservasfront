@@ -93,9 +93,18 @@ export default function DaysTable({
                     <TableHead>
                         <OrangeTableRow>
                             <TableCell size="small" align="center">
-                                <Box component="span" fontWeight="600">
-                                    Salas
-                                </Box>
+                                <Typography
+                                    variant="h6"
+                                    noWrap
+                                    sx={{
+                                        fontFamily: "monospace",
+                                        fontWeight: 700,
+                                        color: "white",
+                                        textDecoration: "none",
+                                    }}
+                                >
+                                    SALAS
+                                </Typography>
                             </TableCell>
                             {tableSchedule.map((schedule) => {
                                 let color = "#7dc6ed";
@@ -219,7 +228,14 @@ export default function DaysTable({
 
                                     return (
                                         <TableRow key={room.id + "-row"}>
-                                            <TableCell align="center">
+                                            <TableCell
+                                                align="center"
+                                                sx={{
+                                                    bgcolor: "#004586",
+                                                    color: "white",
+                                                    fontWeight: 600,
+                                                }}
+                                            >
                                                 {room.name +
                                                     " " +
                                                     room.roomNumber}
