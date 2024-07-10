@@ -29,9 +29,7 @@ function FilteredUserList({ inputText, selectUser}: Props) {
     }).sort(userDynamicSort());
     return (
         <List
-            sx={{
-                height: "16rem",
-            }}
+            
         >
             {filteredUserList?.map((user: UserT) => (
                 <span key={user.id}>

@@ -1,3 +1,5 @@
+import { Courses } from "./Courses";
+
 export type ReservationT = {
     id: string;
     roomId: string;
@@ -9,5 +11,6 @@ export type ReservationT = {
     reservationEnd: string; 
     name:string;
     comment:string;
+    course: Courses;
   };
   

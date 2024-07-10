@@ -69,41 +69,40 @@ function ModifyUserListD({
                         variant="h6"
                         component="div"
                     >
-                        Selecione um espaço
+                        Selecione um usuario
                     </Typography>
                     <Button color="inherit" onClick={handleClose}>
                         cancelar
                     </Button>
                 </Toolbar>
             </AppBar>
-            <List>
-                
-                    <FilteredUserList
-                        selectUser={selectUser}
-                        inputText={searchedText}
-                    />
-                    <FormControl>
-                        <InputMask
-                            mask={"999.999.999-99"}
-                            value={searchedText}
-                            onChange={(
-                                event: React.ChangeEvent<HTMLInputElement>
-                            ) => {
-                                setSearchedText(event.target.value);
-                            }}
-                        >
-                            {() => (
-                                <TextField
-                                    label="CPF"
-                                    sx={{
-                                        margin: 2,
-                                    }}
-                                    InputProps={{ sx: { borderRadius: 6 } }}
-                                />
-                            )}
-                        </InputMask>
-                    </FormControl>
-            </List>
+            <Stack direction={'column'} >
+                <FilteredUserList
+                    selectUser={selectUser}
+                    inputText={searchedText}
+                />
+                <FormControl>
+                    <InputMask
+                        mask={"999.999.999-99"}
+                        value={searchedText}
+                        onChange={(
+                            event: React.ChangeEvent<HTMLInputElement>
+                        ) => {
+                            setSearchedText(event.target.value);
+                        }}
+                    >
+                        {() => (
+                            <TextField
+                                label="CPF"
+                                sx={{
+                                    margin: 2,
+                                }}
+                                InputProps={{ sx: { borderRadius: 6 } }}
+                            />
+                        )}
+                    </InputMask>
+                </FormControl>
+            </Stack>
         </Dialog>
     );
 }

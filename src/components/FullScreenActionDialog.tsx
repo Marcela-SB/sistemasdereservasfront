@@ -15,8 +15,14 @@ import { baseInternalSchedule } from "../types/tableSchedules";
 import {
     Autocomplete,
     Box,
+    FormControl,
     FormControlLabel,
     Grid,
+    InputLabel,
+    makeStyles,
+    MenuItem,
+    Select,
+    styled,
     Switch,
     TextField,
 } from "@mui/material";
@@ -30,6 +36,7 @@ import getRoomById from "../utils/getRoomById";
 import getUserById from "../utils/getUserById";
 import { queryClient } from "../utils/queryClient";
 import ConfirmationDialog from "./ConfirmationDialog";
+import { Courses } from "../types/Courses";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -39,6 +46,24 @@ const Transition = React.forwardRef(function Transition(
 ) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
+
+const autoCompleteCourseOptions = [
+    ["Teatro", 0],
+    ["Artes Visuais", 1],
+    ["Desing", 2],
+    ["Dança", 3],
+    ["Sem curso relacionado", 4],
+];
+
+const StyledFormControl = styled(FormControl)(({theme}) => ({
+    formControl: {
+        margin: theme.spacing(1),
+        minWidth: 120,
+    },
+    selectEmpty: {
+        marginTop: theme.spacing(2),
+    },
+}));
 
 type Props = {
     isOpen: boolean;
@@ -55,18 +80,20 @@ export default function FullScreenActionDialog({
     selectedReservation,
     setSelectedReservation,
 }: Props) {
+
     const handleClose = () => {
         createMutation.reset();
         setIsOpen(false);
         setFormName("");
         setFormRoom(null);
+        setFormCourse(Courses.NULL);
         setFormStartDay(dayjs());
         setFormEndDay(dayjs());
         setFormReservatedTo(null);
         setFormSchedule(baseInternalSchedule);
         setFormIsOneDay(true);
         setSelectedReservation(null);
-        setFormComment("")
+        setFormComment("");
     };
 
     const {
@@ -80,6 +107,8 @@ export default function FullScreenActionDialog({
     const [formName, setFormName] = useState("");
 
     const [formRoom, setFormRoom] = useState<RoomT | null>(null);
+
+    const [formCourse, setFormCourse] = useState<Courses>(Courses.NULL);
 
     const [formStartDay, setFormStartDay] = useState<Dayjs | null>(dayjs());
 
@@ -105,6 +134,10 @@ export default function FullScreenActionDialog({
                 roomList
             );
             setFormRoom(room);
+
+            console.log(selectedReservation.course)
+            console.log(selectedReservation.course as Courses)
+            setFormCourse(selectedReservation.course);
 
             setFormStartDay(dayjs(selectedReservation.reservationStart));
 
@@ -186,6 +219,7 @@ export default function FullScreenActionDialog({
         const header = {
             name: formName,
             roomId: formRoom!.id,
+            course: formCourse,
             reservationStart: formatedStart,
             reservationEnd: formatedEnd,
             reservatedToId: formReservatedTo!.id,
@@ -265,12 +299,14 @@ export default function FullScreenActionDialog({
                             onClick={onSubmit}
                             disabled={isRequestPending}
                         >
-                            editar
+                            {selectedReservation ? "editar" : "salvar"}
                         </Button>
                         {selectedReservation ? (
                             <Button
                                 color="error"
-                                onClick={() => {setIsConfirmationDOpen(true)}}
+                                onClick={() => {
+                                    setIsConfirmationDOpen(true);
+                                }}
                                 disabled={isRequestPending}
                             >
                                 excluir
@@ -280,7 +316,7 @@ export default function FullScreenActionDialog({
                 </AppBar>
                 <Box sx={{ padding: 2, flexGrow: 1 }}>
                     <Grid container>
-                        <Grid xs={5} paddingX={1}>
+                        <Grid xs={4} paddingX={1}>
                             <TextField
                                 id="outlined-controlled"
                                 label="Nome da reserva"
@@ -293,7 +329,7 @@ export default function FullScreenActionDialog({
                                 fullWidth
                             />
                         </Grid>
-                        <Grid xs={5} paddingX={1}>
+                        <Grid xs={3} paddingX={1}>
                             <Autocomplete
                                 value={formRoom}
                                 onChange={(
@@ -319,6 +355,55 @@ export default function FullScreenActionDialog({
                                     />
                                 )}
                             />
+                        </Grid>
+                        <Grid xs={3} paddingX={1}>
+                            {/*
+                            <Autocomplete
+                                value={autoCompleteCourseOptions[formCourse]}
+                                onChange={(
+                                    _event: any,
+                                    newValue: [string, number]
+                                ) => {
+                                    setFormCourse(newValue[1]);
+                                }}
+                                id="controllable-states-demo"
+                                options={[
+                                    ["Teatro", 0],
+                                    ["Artes Visuais", 1],
+                                    ["Desing", 2],
+                                    ["Dança", 3],
+                                    ["Sem curso relacionado", 4],
+                                ]}
+                                getOptionLabel={(course: [string, number]) => {
+                                    return course[0];
+                                }}
+                                sx={{ flexGrow: 1 }}
+                                renderInput={(params) => (
+                                    <TextField {...params} label="Curso" />
+                                )}
+                            />*/}
+                            <StyledFormControl
+                                variant="outlined"
+                                fullWidth
+                            >
+                                <InputLabel id="demo-simple-select-filled-label">
+                                    Curso
+                                </InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-filled-label"
+                                    id="demo-simple-select-filled"
+                                    value={formCourse}
+                                    onChange={(event) => {
+                                        setFormCourse(event.target.value)
+                                    }}
+                                >
+                                    <MenuItem value={Courses.TEATRO}>Teatro</MenuItem>
+                                    <MenuItem value={Courses.ARTES}>Artes Visuais</MenuItem>
+                                    <MenuItem value={Courses.DESING}>Desing</MenuItem>
+                                    <MenuItem value={Courses.DANÇA}>Dança</MenuItem>
+                                    <MenuItem value={Courses.NOCOURSE}>Sem curso relacionado</MenuItem>
+                                </Select>
+                            </StyledFormControl>
                         </Grid>
 
                         <Grid xs={2} paddingX={1}>

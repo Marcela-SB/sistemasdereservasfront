@@ -138,6 +138,7 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
                 open={isOpen}
                 onClose={handleClose}
                 TransitionComponent={Transition}
+                maxWidth="xl"
             >
                 <AppBar sx={{ position: "relative" }}>
                     <Toolbar>

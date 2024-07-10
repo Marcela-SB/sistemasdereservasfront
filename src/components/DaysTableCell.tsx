@@ -2,10 +2,18 @@ import { Tooltip, TableCell, Typography, styled } from "@mui/material";
 import { ReservationT } from "../types/ReservationT";
 import getUserById from "../utils/getUserById";
 import { StateContext } from "../context/ReactContext";
-import { useContext } from "react";
+import { useContext, useRef } from "react";
+
+const courseColors = {
+    TEATRO:"#a4c2f4",
+    ARTES:"#ffe599",
+    DESING:"#b6d7a8",
+    DANÇA:"#f4cccc",
+    NOCOURSE:"#004586"
+}
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    backgroundColor: theme.palette.primary.main,
+    
 
     borderLeft: "1px solid hsl(0, 0%, 60%);",
     borderBottom: "1px solid hsl(0, 0%, 60%);",
@@ -37,38 +45,48 @@ function DaysTableCell({ schedule, index, handleClick, span = 1 }: Props) {
         );
     }
 
-    const widthCellSize = 2 * span;
+    const widthCellSize = 2.5 * span;
+
+    const parentElement = useRef(null)
+
+    
+    console.log(parentElement.current)
 
     return (
         <Tooltip title={tooltipTitle}>
             {schedule ? (
                 <StyledTableCell
-                    padding="normal"
+                    padding="none"
                     key={schedule?.id + index}
-                    size="medium"
+                    size="small"
                     align="center"
                     colSpan={span}
                     onClick={() => {
                         handleClick(schedule);
                     }}
+                    sx={{
+                        backgroundColor: courseColors[schedule.course],
+                    }}
+                    ref={parentElement}
                 >
                     <div
                         style={{
                             width: widthCellSize + "rem",
                             display: "flex",
                             justifyContent: "right",
+                            
                         }}
                     >
-                        <Typography noWrap color={"white"}>
+                        <Typography noWrap sx={{width : '100%', mx:1}} >
                             {schedule?.name}
                         </Typography>
                     </div>
                 </StyledTableCell>
             ) : (
                 <TableCell
-                    padding="normal"
+                    padding="none"
                     key={schedule?.id + index}
-                    size="medium"
+                    size="small"
                     align="center"
                     sx={{
                         borderLeft: "1px solid hsl(0, 0%, 60%);",
