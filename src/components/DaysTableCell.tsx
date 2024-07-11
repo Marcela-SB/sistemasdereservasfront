@@ -2,19 +2,18 @@ import { Tooltip, TableCell, Typography, styled } from "@mui/material";
 import { ReservationT } from "../types/ReservationT";
 import getUserById from "../utils/getUserById";
 import { StateContext } from "../context/ReactContext";
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { Courses } from "../types/Courses";
 
 const courseColors = {
-    TEATRO:"#a4c2f4",
-    ARTES:"#ffe599",
-    DESING:"#b6d7a8",
-    DANÇA:"#f4cccc",
-    NOCOURSE:"#004586"
-}
+    TEATRO: "#a4c2f4",
+    ARTES: "#ffe599",
+    DESING: "#b6d7a8",
+    DANÇA: "#f4cccc",
+    NOCOURSE: "#004586",
+};
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    
-
     borderLeft: "1px solid hsl(0, 0%, 60%);",
     borderBottom: "1px solid hsl(0, 0%, 60%);",
 }));
@@ -47,10 +46,15 @@ function DaysTableCell({ schedule, index, handleClick, span = 1 }: Props) {
 
     const widthCellSize = 2.5 * span;
 
-    const parentElement = useRef(null)
+    const parentElement = useRef(null);
 
+    const [width, setWidth] = useState(0)
+
+    useEffect(() => {
+        setWidth(parentElement.current?.offsetWidth)
     
-    console.log(parentElement.current)
+    }, [])
+    
 
     return (
         <Tooltip title={tooltipTitle}>
@@ -58,26 +62,29 @@ function DaysTableCell({ schedule, index, handleClick, span = 1 }: Props) {
                 <StyledTableCell
                     padding="none"
                     key={schedule?.id + index}
-                    size="small"
+                    
                     align="center"
                     colSpan={span}
                     onClick={() => {
                         handleClick(schedule);
                     }}
                     sx={{
-                        backgroundColor: courseColors[schedule.course],
+                        backgroundColor: schedule.course
+                            ? courseColors[schedule.course]
+                            : courseColors[Courses.NOCOURSE],
+                        maxWidth: width
                     }}
                     ref={parentElement}
+                    
                 >
                     <div
                         style={{
-                            width: widthCellSize + "rem",
+                            width: '100%',
                             display: "flex",
                             justifyContent: "right",
-                            
                         }}
                     >
-                        <Typography noWrap sx={{width : '100%', mx:1}} >
+                        <Typography noWrap sx={{ width: "100%", px: 1 }}>
                             {schedule?.name}
                         </Typography>
                     </div>
@@ -86,19 +93,20 @@ function DaysTableCell({ schedule, index, handleClick, span = 1 }: Props) {
                 <TableCell
                     padding="none"
                     key={schedule?.id + index}
-                    size="small"
+                    
                     align="center"
                     sx={{
                         borderLeft: "1px solid hsl(0, 0%, 60%);",
                         borderBottom: "1px solid hsl(0, 0%, 60%);",
                     }}
                     colSpan={span}
+                    ref={parentElement}
                 >
                     <div
                         style={{
                             overflow: "hidden",
                             textOverflow: "ellipsis",
-                            width: widthCellSize + "rem",
+                            minWidth:width - 5
                         }}
                     >
                         <Typography noWrap>{schedule?.name}</Typography>

@@ -76,31 +76,26 @@ function ModifyUserListD({
                     </Button>
                 </Toolbar>
             </AppBar>
-            <Stack direction={'column'} >
+            <Stack direction={"column"}>
                 <FilteredUserList
                     selectUser={selectUser}
                     inputText={searchedText}
                 />
                 <FormControl>
-                    <InputMask
-                        mask={"999.999.999-99"}
+                    <TextField
+                        label="Nome"
+                        placeholder="Digite o nome do usuario"
+                        sx={{
+                            margin: 2,
+                            borderRadius: 6,
+                        }}
                         value={searchedText}
                         onChange={(
                             event: React.ChangeEvent<HTMLInputElement>
                         ) => {
                             setSearchedText(event.target.value);
                         }}
-                    >
-                        {() => (
-                            <TextField
-                                label="CPF"
-                                sx={{
-                                    margin: 2,
-                                }}
-                                InputProps={{ sx: { borderRadius: 6 } }}
-                            />
-                        )}
-                    </InputMask>
+                    ></TextField>
                 </FormControl>
             </Stack>
         </Dialog>

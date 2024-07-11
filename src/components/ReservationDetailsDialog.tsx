@@ -13,6 +13,8 @@ import { StateContext } from "../context/ReactContext";
 import getUserById from "../utils/getUserById";
 import dayjs from "dayjs";
 import ReservationDetailsTable from "./ReservationDetailsTable";
+import { Courses } from "../types/Courses";
+import textfyCourse from "../utils/textfyCourse";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -93,6 +95,9 @@ export default function ReservationDetailsDialog({
                                     Nome da reserva: {reservation.name}
                                 </Typography>
                                 <Typography variant="body1" noWrap>
+                                    Curso: {textfyCourse(reservation.course)}
+                                </Typography>
+                                <Typography variant="body1" noWrap>
                                     Reservador por:
                                     {
                                         getUserById(
@@ -124,8 +129,12 @@ export default function ReservationDetailsDialog({
                             </Box>
 
                             <Box>
-                                <Typography variant="body2" >Observações:</Typography>
-                                <Typography variant="body2" >{reservation.comment}</Typography>
+                                <Typography variant="body2">
+                                    Observações:
+                                </Typography>
+                                <Typography variant="body2">
+                                    {reservation.comment}
+                                </Typography>
                             </Box>
                         </Stack>
 

@@ -7,7 +7,14 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { tableSchedule } from "../types/tableSchedules";
-import { Box, Container, Tooltip, Typography, styled } from "@mui/material";
+import {
+    Box,
+    Container,
+    Stack,
+    Tooltip,
+    Typography,
+    styled,
+} from "@mui/material";
 import { StateContext } from "../context/ReactContext";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { DatePicker } from "@mui/x-date-pickers";
@@ -17,6 +24,7 @@ import DaysTableCell from "./DaysTableCell";
 import { ReservationT } from "../types/ReservationT";
 import { RoomT } from "../types/RoomT";
 import daysTabledynamicSort from "../utils/daysTabledynamicSort";
+import PersonIcon from "@mui/icons-material/Person";
 
 const OrangeTableRow = styled(TableRow)(({ theme }) => ({
     backgroundColor: theme.palette.primary.main,
@@ -39,7 +47,7 @@ export default function DaysTable({
 
     const [finalSchedule, setFinalSchedule] = React.useState([]);
 
-    const [isDomingo, setIsDomingo] = React.useState(false);
+    
 
     React.useEffect(() => {
         if (roomList && reservationList && selectedDate) {
@@ -51,6 +59,7 @@ export default function DaysTable({
                 reservationList,
                 reservableRoomList
             );
+            console.log(holder)
             const holderSchedule = [];
             if (selectedDate.day() != 0) {
                 for (let index = 0; index < holder[0].length; index++) {
@@ -70,7 +79,7 @@ export default function DaysTable({
     };
 
     return (
-        <Box>
+        <Box mb={2}>
             <DemoContainer
                 components={["DatePicker"]}
                 sx={{ marginLeft: 0, marginBottom: 1 }}
@@ -89,14 +98,13 @@ export default function DaysTable({
                     margin: "auto",
                 }}
             >
-                <Table sx={{ minWidth: 650, mb: 2 }} aria-label="simple table">
+                <Table sx={{ minWidth: 650}} aria-label="simple table">
                     <TableHead>
                         <OrangeTableRow>
                             <TableCell
                                 size="small"
-                                align="left"
+                                align="center"
                                 padding="none"
-                                sx={{ pl: 2 }}
                             >
                                 <Typography
                                     variant="body1"
@@ -203,7 +211,7 @@ export default function DaysTable({
                                                 <Box
                                                     component="span"
                                                     fontWeight="600"
-                                                    color={'white'}
+                                                    color={"white"}
                                                 >
                                                     {schedule.shift +
                                                         schedule.hourly}
@@ -217,9 +225,8 @@ export default function DaysTable({
                         <OrangeTableRow>
                             <TableCell
                                 size="small"
-                                align="left"
+                                align="center"
                                 padding="none"
-                                sx={{ pl: 2 }}
                             >
                                 <Typography
                                     variant="body1"
@@ -251,25 +258,53 @@ export default function DaysTable({
                                 ) => {
                                     const room = rowContent[0];
                                     const roomSchedule = rowContent[1];
-
                                     return (
                                         <TableRow key={room.id + "-row"}>
                                             <TableCell
                                                 padding="none"
                                                 align="left"
                                                 sx={{
+                                                    width: "15%",
                                                     bgcolor: "#004586",
-                                                    color: "white",
-                                                    fontWeight: 600,
-                                                    pl: 2,
                                                 }}
                                             >
-                                                {room.name +
-                                                    " " +
-                                                    room.roomNumber}
+                                                <Stack direction={"row"} width={'100%'} justifyContent={'space-between'} spacing={2}>
+                                                    <Typography
+                                                        sx={{
+                                                            color: "white",
+                                                            fontWeight: 600,
+                                                            pl: 2,
+                                                            
+                                                        }}
+                                                        variant="body2"
+                                                        noWrap
+                                                    >
+                                                        {room.name +
+                                                            " " +
+                                                            room.roomNumber}
+                                                    </Typography>
+                                                    <Box display={'inline-flex'} pr={2} alignItems={'end'} >
+                                                        <PersonIcon fontSize="small" sx={{ color: 'white' }} />
+                                                        <Typography
+                                                            sx={{
+                                                                color: "white",
+                                                                fontWeight: 600,
+                                                            }}
+                                                            variant="caption"
+                                                            lineHeight={1.5}
+                                                        >
+                                                            {room.capacity}
+                                                            
+                                                        </Typography>
+                                                    </Box>
+                                                </Stack>
                                             </TableCell>
                                             {roomSchedule.map(
                                                 (hourschedule, dayIndex) => {
+
+
+/////////////////////////////////////
+
                                                     let passedSchedule = null;
                                                     let passedSpan = 1;
                                                     if (hourschedule[0]) {
@@ -302,9 +337,8 @@ export default function DaysTable({
                         <OrangeTableRow>
                             <TableCell
                                 size="small"
-                                align="left"
+                                align="center"
                                 padding="none"
-                                sx={{ pl: 2 }}
                             >
                                 <Typography
                                     variant="body1"
@@ -411,7 +445,7 @@ export default function DaysTable({
                                                 <Box
                                                     component="span"
                                                     fontWeight="600"
-                                                    color={'white'}
+                                                    color={"white"}
                                                 >
                                                     {schedule.shift +
                                                         schedule.hourly}
@@ -425,9 +459,8 @@ export default function DaysTable({
                         <OrangeTableRow>
                             <TableCell
                                 size="small"
-                                align="left"
+                                align="center"
                                 padding="none"
-                                sx={{ pl: 2 }}
                             >
                                 <Typography
                                     variant="body1"
