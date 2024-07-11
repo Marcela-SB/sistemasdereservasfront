@@ -86,7 +86,7 @@ export default function FullScreenActionDialog({
         setIsOpen(false);
         setFormName("");
         setFormRoom(null);
-        setFormCourse(Courses.NULL);
+        setFormCourse(Courses.NOCOURSE);
         setFormStartDay(dayjs());
         setFormEndDay(dayjs());
         setFormReservatedTo(null);
@@ -108,7 +108,7 @@ export default function FullScreenActionDialog({
 
     const [formRoom, setFormRoom] = useState<RoomT | null>(null);
 
-    const [formCourse, setFormCourse] = useState<Courses>(Courses.NULL);
+    const [formCourse, setFormCourse] = useState<Courses>(Courses.NOCOURSE);
 
     const [formStartDay, setFormStartDay] = useState<Dayjs | null>(dayjs());
 
@@ -135,8 +135,6 @@ export default function FullScreenActionDialog({
             );
             setFormRoom(room);
 
-            console.log(selectedReservation.course)
-            console.log(selectedReservation.course as Courses)
             setFormCourse(selectedReservation.course);
 
             setFormStartDay(dayjs(selectedReservation.reservationStart));

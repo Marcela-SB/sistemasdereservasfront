@@ -87,6 +87,7 @@ export default function FullScreenDialogList({
 
     const submitReservation = () => {
         setSelectedReservation(selectedInternalReservation);
+        setSelectedInternalReservation(null)
         handleClose();
         setReservationDIsOpen(true);
     };

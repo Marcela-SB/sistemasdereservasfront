@@ -10,7 +10,7 @@ const courseColors = {
     ARTES: "#ffe599",
     DESING: "#b6d7a8",
     DANÇA: "#f4cccc",
-    NOCOURSE: "#004586",
+    NOCOURSE: "#e4ecf7",
 };
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
