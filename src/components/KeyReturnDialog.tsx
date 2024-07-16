@@ -53,6 +53,8 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
 
     const [selectedKey, setSelectedKey] = useState<KeyT | null>(null);
 
+    const [selectedKeyList, setSelectedKeyList] = useState<KeyT[]>([]);
+
     const [formRoom, setFormRoom] = useState<RoomT | null>(null);
 
     const [formReturnTimePrevision, setFormReturnTimePrevision] =
@@ -73,7 +75,7 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
     const editMutation = useMutation({
         mutationFn: (header) => {
             return axiosInstance.put(
-                "keydelivery/edit/" + selectedKey?.id,
+                "keydelivery/edit/" + header.id,
                 header
             );
         },
@@ -115,22 +117,24 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
         if (checkSucess) {
             const returnTime = dayjs().format("YYYY-MM-DDTHH:mm:ss");
 
-            const header = {
-                isKeyReturned: true,
-                keyReturnedById: formReturnedBy?.id,
-                returnTime: returnTime,
-            };
-
-            editMutation.mutate(header);
+            selectedKeyList.forEach((key) => {
+                const header = {
+                    isKeyReturned: true,
+                    keyReturnedById: formReturnedBy?.id,
+                    returnTime: returnTime,
+                    id: key.id
+                };
+                editMutation.mutate(header);
+            });
 
             setCheckSucess(false);
         }
     }, [checkSucess]);
 
-    const [isRequestPending, setIsRequestPending] = useState(false)
+    const [isRequestPending, setIsRequestPending] = useState(false);
     React.useEffect(() => {
-        setIsRequestPending( editMutation.isPending)
-    },[ editMutation])
+        setIsRequestPending(editMutation.isPending);
+    }, [editMutation]);
 
     return (
         <React.Fragment>
@@ -149,14 +153,22 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
                         >
                             Retirada de chave
                         </Typography>
-                        <Button color="inherit" onClick={handleClose} disabled={isRequestPending}>
+                        <Button
+                            color="inherit"
+                            onClick={handleClose}
+                            disabled={isRequestPending}
+                        >
                             cancelar
                         </Button>
                     </Toolbar>
                 </AppBar>
 
                 <Stack direction={"row"}>
-                    <KeyScrollableList setSelectedKey={setSelectedKey} />
+                    <KeyScrollableList
+                        setSelectedKey={setSelectedKey}
+                        selectedKeyList={selectedKeyList}
+                        setSelectedKeyList={setSelectedKeyList}
+                    />
                     <Stack
                         direction={"column"}
                         justifyContent={"space-between"}

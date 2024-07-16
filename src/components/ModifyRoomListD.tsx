@@ -1,5 +1,6 @@
 import {
     AppBar,
+    Box,
     Button,
     Dialog,
     Divider,
@@ -19,9 +20,14 @@ type Props = {
     isOpen: boolean;
     setIsOpen: (b: boolean) => void;
     setSelectedRoom: (r: RoomT) => void;
-    setCreateRoom: (b : boolean) => void
+    setCreateRoom: (b: boolean) => void;
 };
-function ModifyRoomListD({ isOpen, setIsOpen, setSelectedRoom, setCreateRoom }: Props) {
+function ModifyRoomListD({
+    isOpen,
+    setIsOpen,
+    setSelectedRoom,
+    setCreateRoom,
+}: Props) {
     const { roomList } = React.useContext(StateContext);
 
     const [scrollableRoomArray, setScrollableRoomArray] = useState<RoomT[]>([]);
@@ -34,8 +40,8 @@ function ModifyRoomListD({ isOpen, setIsOpen, setSelectedRoom, setCreateRoom }: 
         if (roomList) {
             const holder = [...roomList];
             holder.sort((a, b) => {
-                const nameA = a.name.toUpperCase(); 
-                const nameB = b.name.toUpperCase(); 
+                const nameA = a.name.toUpperCase();
+                const nameB = b.name.toUpperCase();
                 if (nameA < nameB) {
                     return -1;
                 }
@@ -49,11 +55,11 @@ function ModifyRoomListD({ isOpen, setIsOpen, setSelectedRoom, setCreateRoom }: 
         }
     }, [roomList]);
 
-    const selectRoom = (room : RoomT) => {
-        setSelectedRoom(room)
-        handleClose()
-        setCreateRoom(true)
-    }
+    const selectRoom = (room: RoomT) => {
+        setSelectedRoom(room);
+        handleClose();
+        setCreateRoom(true);
+    };
 
     return (
         <Dialog open={isOpen} onClose={handleClose} maxWidth="xs" fullWidth>
@@ -71,25 +77,34 @@ function ModifyRoomListD({ isOpen, setIsOpen, setSelectedRoom, setCreateRoom }: 
                     </Button>
                 </Toolbar>
             </AppBar>
-            <List>
-                {scrollableRoomArray?.map((room) => {
-                    return (
-                        <>
-                            <ListItem key={`modroomlist-${room.id}`}>
-                                {room.name} {room.roomNumber}
-                                <ListItemSecondaryAction>
-                                    <IconButton
-                                        onClick={() => selectRoom(room)}
-                                    >
-                                        <Send></Send>
-                                    </IconButton>
-                                </ListItemSecondaryAction>
-                            </ListItem>
-                            <Divider variant="middle" />
-                        </>
-                    );
-                })}
-            </List>
+           
+                <List
+                    sx={{
+                        overflow: "auto",
+                        maxHeight: "32rem",
+                    }}
+                >
+                    {scrollableRoomArray?.map((room) => {
+                        return (
+                            <>
+                                <ListItem key={`modroomlist-${room.id}`}>
+                                    {room.name} {room.roomNumber}
+                                    <ListItemSecondaryAction>
+                                        <IconButton
+                                            onClick={() => selectRoom(room)}
+                                        >
+                                            <Send></Send>
+                                        </IconButton>
+                                    </ListItemSecondaryAction>
+                                </ListItem>
+                                <Divider
+                                    key={`modroomlistdivider-${room.id}`}
+                                    variant="middle"
+                                />
+                            </>
+                        );
+                    })}
+                </List>
         </Dialog>
     );
 }

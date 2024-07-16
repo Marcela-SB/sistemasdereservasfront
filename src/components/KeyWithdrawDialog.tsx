@@ -8,7 +8,17 @@ import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
 import { ReservationT } from "../types/ReservationT";
 import { StateContext } from "../context/ReactContext";
-import { Autocomplete, Stack, TextField } from "@mui/material";
+import {
+    Autocomplete,
+    Checkbox,
+    Divider,
+    IconButton,
+    List,
+    ListItem,
+    ListItemSecondaryAction,
+    Stack,
+    TextField,
+} from "@mui/material";
 import { useState } from "react";
 import { RoomT } from "../types/RoomT";
 import dayjs, { Dayjs } from "dayjs";
@@ -19,6 +29,7 @@ import axiosInstance from "../utils/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../utils/queryClient";
 import CheckUserDialog from "./CheckUserDialog";
+import { Send } from "@mui/icons-material";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -39,14 +50,14 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
 
     const handleClose = () => {
         setIsOpen(false);
-        setFormRoom(null);
+        setFormRoom([]);
         setFormReturnTime(dayjs());
         setFormReservatedTo(null);
         setFormResponsible(null);
         setSelectedInternalReservation(null);
     };
 
-    const [formRoom, setFormRoom] = useState<RoomT | null>(null);
+    const [formRoom, setFormRoom] = useState<RoomT[]>([]);
 
     const [formReturnTime, setFormReturnTime] = useState<Dayjs | null>(dayjs());
 
@@ -77,33 +88,71 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
         onError: (error) => {
             setSnackBarText(error.response.data);
             setSnackBarSeverity("error");
-        }
+        },
     });
 
     const submitWithdraw = () => {
         setCheckDialogIsOpen(true);
     };
 
+    const [scrollableRoomArray, setScrollableRoomArray] = useState<RoomT[]>([]);
+
+    React.useEffect(() => {
+        if (roomList) {
+            const holder = [...roomList];
+            holder.sort((a, b) => {
+                const nameA = a.name.toUpperCase();
+                const nameB = b.name.toUpperCase();
+                if (nameA < nameB) {
+                    return -1;
+                }
+                if (nameA > nameB) {
+                    return 1;
+                }
+
+                return 0;
+            });
+            setScrollableRoomArray(holder);
+        }
+    }, [roomList]);
+
     React.useEffect(() => {
         if (checkSucess) {
             const formatedStart = formReturnTime!.format("YYYY-MM-DDTHH:mm:ss");
+            
+            const headersList :object[] = []
 
-            const header = {
-                roomId: formRoom?.id,
-                returnPrevision: formatedStart,
-                withdrawResponsibleId: loggedUser.id,
-                responsibleForTheKeyId: formReservatedTo?.id,
-                withdrawTime: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
-                isKeyReturned: false,
-            };
+            formRoom.forEach((room) => {
+                const header = {
+                    roomId: room.id,
+                    returnPrevision: formatedStart,
+                    withdrawResponsibleId: loggedUser.id,
+                    responsibleForTheKeyId: formReservatedTo?.id,
+                    withdrawTime: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
+                    isKeyReturned: false,
+                };
+                headersList.push(header)
+                createMutation.mutate(header);
+            })
 
-            createMutation.mutate(header);
-
-            handleClose()
+            handleClose();
 
             setCheckSucess(false);
         }
     }, [checkSucess]);
+
+    const changeRoomList = (room : RoomT) => {
+        const holder = formRoom
+
+        const roomIndex = holder?.findIndex(holderRoom => holderRoom.id == room.id)
+
+        if(roomIndex > -1){
+            holder?.splice(roomIndex, 1)
+        } else {
+            holder?.push(room)
+        }
+        setFormRoom(holder)
+    }
 
     return (
         <React.Fragment>
@@ -126,66 +175,74 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                         </Button>
                     </Toolbar>
                 </AppBar>
-
                 <Stack
-                    direction={"column"}
+                    direction={"row"}
                     justifyContent={"space-between"}
                     marginX={2}
                     gap={2}
                     marginTop={2}
                 >
-                    <Autocomplete
-                        value={formRoom}
-                        onChange={(_event: any, newValue: RoomT | null) => {
-                            setFormRoom(newValue);
-                        }}
-                        id="controllable-states-demo"
-                        options={roomList}
-                        getOptionLabel={(room: RoomT) => {
-                            let roomN = "";
-                            if (room.roomNumber) {
-                                roomN = room.roomNumber;
-                            }
-                            return `${room.name} ${roomN}`;
-                        }}
-                        renderInput={(params) => (
-                            <TextField {...params} label="Sala reservada" />
-                        )}
-                    />
-                    <Autocomplete
-                        value={formReservatedTo}
-                        onChange={(_event: any, newValue: UserT | null) => {
-                            setFormReservatedTo(newValue);
-                        }}
-                        id="controllable-states-demo"
-                        options={userList}
-                        getOptionLabel={(user: UserT) => {
-                            return user.name;
-                        }}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label="Sala reservada para..."
-                            />
-                        )}
-                    />
-                    <TextField
-                        id="outlined-controlled"
-                        label="Supervisor da reserva"
-                        value={loggedUser?.name}
-                        disabled
-                        fullWidth
-                    />
-
-                    <DemoContainer components={["TimePicker"]}>
-                        <TimePicker
-                            label="Previsão de retorno"
-                            value={formReturnTime}
-                            onChange={(newValue) => setFormReturnTime(newValue)}
-                            sx={{ width: "100%" }}
+                    <List sx={{ overflow: "auto", maxHeight: "24rem" }}>
+                        {scrollableRoomArray?.map((room) => {
+                            return (
+                                <>
+                                    <ListItem key={`modroomlist-${room.id}`}>
+                                        {room.name} {room.roomNumber}
+                                        <ListItemSecondaryAction>
+                                            <Checkbox onChange={() => {changeRoomList(room)}} ></Checkbox>
+                                        </ListItemSecondaryAction>
+                                    </ListItem>
+                                    <Divider
+                                        key={`modroomlistdivider-${room.id}`}
+                                        variant="middle"
+                                    />
+                                </>
+                            );
+                        })}
+                    </List>
+                    <Stack
+                        direction={"column"}
+                        justifyContent={"space-evenly"}
+                        gap={4}
+                    >
+                        <Autocomplete
+                            value={formReservatedTo}
+                            onChange={(_event: any, newValue: UserT | null) => {
+                                setFormReservatedTo(newValue);
+                            }}
+                            id="controllable-states-demo"
+                            options={userList}
+                            getOptionLabel={(user: UserT) => {
+                                return user.name;
+                            }}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label="Sala reservada para..."
+                                />
+                            )}
                         />
-                    </DemoContainer>
+                        <TextField
+                            id="outlined-controlled"
+                            label="Supervisor da reserva"
+                            value={loggedUser?.name}
+                            disabled
+                            fullWidth
+                        />
+
+                        <DemoContainer components={["TimePicker"]}>
+                            <TimePicker
+                                label="Previsão de retorno"
+                                value={formReturnTime}
+                                onChange={(newValue) =>
+                                    setFormReturnTime(newValue)
+                                }
+                                sx={{ width: "100%" }}
+                            />
+                        </DemoContainer>
+                    </Stack>
                 </Stack>
+
                 <CheckUserDialog
                     isOpen={checkDialogIsOpen}
                     setIsOpen={setCheckDialogIsOpen}
