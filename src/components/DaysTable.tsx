@@ -47,8 +47,6 @@ export default function DaysTable({
 
     const [finalSchedule, setFinalSchedule] = React.useState([]);
 
-    
-
     React.useEffect(() => {
         if (roomList && reservationList && selectedDate) {
             const reservableRoomList = roomList.filter(
@@ -59,7 +57,7 @@ export default function DaysTable({
                 reservationList,
                 reservableRoomList
             );
-            console.log(holder)
+            console.log(holder);
             const holderSchedule = [];
             if (selectedDate.day() != 0) {
                 for (let index = 0; index < holder[0].length; index++) {
@@ -98,7 +96,7 @@ export default function DaysTable({
                     margin: "auto",
                 }}
             >
-                <Table sx={{ minWidth: 650}} aria-label="simple table">
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                         <OrangeTableRow>
                             <TableCell
@@ -258,6 +256,10 @@ export default function DaysTable({
                                 ) => {
                                     const room = rowContent[0];
                                     const roomSchedule = rowContent[1];
+
+                                    let cellsToIgnore = 0;
+                                    let cellsIgnored = 0;
+
                                     return (
                                         <TableRow key={room.id + "-row"}>
                                             <TableCell
@@ -268,13 +270,19 @@ export default function DaysTable({
                                                     bgcolor: "#004586",
                                                 }}
                                             >
-                                                <Stack direction={"row"} width={'100%'} justifyContent={'space-between'} spacing={2}>
+                                                <Stack
+                                                    direction={"row"}
+                                                    width={"100%"}
+                                                    justifyContent={
+                                                        "space-between"
+                                                    }
+                                                    spacing={2}
+                                                >
                                                     <Typography
                                                         sx={{
                                                             color: "white",
                                                             fontWeight: 600,
                                                             pl: 2,
-                                                            
                                                         }}
                                                         variant="body2"
                                                         noWrap
@@ -283,8 +291,17 @@ export default function DaysTable({
                                                             " " +
                                                             room.roomNumber}
                                                     </Typography>
-                                                    <Box display={'inline-flex'} pr={2} alignItems={'end'} >
-                                                        <PersonIcon fontSize="small" sx={{ color: 'white' }} />
+                                                    <Box
+                                                        display={"inline-flex"}
+                                                        pr={2}
+                                                        alignItems={"end"}
+                                                    >
+                                                        <PersonIcon
+                                                            fontSize="small"
+                                                            sx={{
+                                                                color: "white",
+                                                            }}
+                                                        />
                                                         <Typography
                                                             sx={{
                                                                 color: "white",
@@ -294,16 +311,19 @@ export default function DaysTable({
                                                             lineHeight={1.5}
                                                         >
                                                             {room.capacity}
-                                                            
                                                         </Typography>
                                                     </Box>
                                                 </Stack>
                                             </TableCell>
                                             {roomSchedule.map(
                                                 (hourschedule, dayIndex) => {
+                                                    /////////////////////////////////////
 
-
-/////////////////////////////////////
+                                                    if (cellsToIgnore > 0) {
+                                                        cellsToIgnore--;
+                                                        cellsIgnored++;
+                                                        return;
+                                                    }
 
                                                     let passedSchedule = null;
                                                     let passedSpan = 1;
@@ -312,6 +332,8 @@ export default function DaysTable({
                                                             hourschedule[0];
                                                         passedSpan =
                                                             hourschedule[1];
+                                                        cellsToIgnore =
+                                                            hourschedule[1] - 1;
                                                     }
                                                     return (
                                                         <DaysTableCell
@@ -327,6 +349,23 @@ export default function DaysTable({
                                                         />
                                                     );
                                                 }
+                                            )}
+                                            {[...Array(cellsIgnored)].map(
+                                                (e, i) => (
+                                                    <DaysTableCell
+                                                        key={`daystablecell ${
+                                                            room.id
+                                                        }-${roomArrayIndex}-${
+                                                            cellsIgnored + i
+                                                        }`}
+                                                        schedule={null}
+                                                        index={cellsIgnored + i}
+                                                        span={1}
+                                                        handleClick={
+                                                            handleCellClick
+                                                        }
+                                                    />
+                                                )
                                             )}
                                         </TableRow>
                                     );

@@ -86,7 +86,6 @@ export default function tableFormat(
                     if(h){
                         let isInBaseSchedule = false
                         baseSchedule.forEach((baseScheduleItem : any) => {
-                   
                             if(baseScheduleItem[0]?.id == reserv.id){
                                         baseScheduleItem[1]++
                                         isInBaseSchedule = true
