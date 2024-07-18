@@ -29,7 +29,7 @@ import axiosInstance from "../utils/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../utils/queryClient";
 import CheckUserDialog from "./CheckUserDialog";
-import { Send } from "@mui/icons-material";
+import { Close, Send } from "@mui/icons-material";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -119,8 +119,8 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
     React.useEffect(() => {
         if (checkSucess) {
             const formatedStart = formReturnTime!.format("YYYY-MM-DDTHH:mm:ss");
-            
-            const headersList :object[] = []
+
+            const headersList: object[] = [];
 
             formRoom.forEach((room) => {
                 const header = {
@@ -131,9 +131,9 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                     withdrawTime: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
                     isKeyReturned: false,
                 };
-                headersList.push(header)
+                headersList.push(header);
                 createMutation.mutate(header);
-            })
+            });
 
             handleClose();
 
@@ -141,18 +141,20 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
         }
     }, [checkSucess]);
 
-    const changeRoomList = (room : RoomT) => {
-        const holder = formRoom
+    const changeRoomList = (room: RoomT) => {
+        const holder = formRoom;
 
-        const roomIndex = holder?.findIndex(holderRoom => holderRoom.id == room.id)
+        const roomIndex = holder?.findIndex(
+            (holderRoom) => holderRoom.id == room.id
+        );
 
-        if(roomIndex > -1){
-            holder?.splice(roomIndex, 1)
+        if (roomIndex > -1) {
+            holder?.splice(roomIndex, 1);
         } else {
-            holder?.push(room)
+            holder?.push(room);
         }
-        setFormRoom(holder)
-    }
+        setFormRoom(holder);
+    };
 
     return (
         <React.Fragment>
@@ -160,6 +162,8 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                 open={isOpen}
                 onClose={handleClose}
                 TransitionComponent={Transition}
+                fullWidth
+                maxWidth="sm"
             >
                 <AppBar sx={{ position: "relative" }}>
                     <Toolbar>
@@ -170,9 +174,14 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                         >
                             Retirada de chave
                         </Typography>
-                        <Button color="inherit" onClick={handleClose}>
-                            cancelar
-                        </Button>
+                        <IconButton
+                            edge="start"
+                            color="inherit"
+                            onClick={handleClose}
+                            aria-label="close"
+                        >
+                            <Close />
+                        </IconButton>
                     </Toolbar>
                 </AppBar>
                 <Stack
@@ -189,7 +198,11 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                                     <ListItem key={`modroomlist-${room.id}`}>
                                         {room.name} {room.roomNumber}
                                         <ListItemSecondaryAction>
-                                            <Checkbox onChange={() => {changeRoomList(room)}} ></Checkbox>
+                                            <Checkbox
+                                                onChange={() => {
+                                                    changeRoomList(room);
+                                                }}
+                                            ></Checkbox>
                                         </ListItemSecondaryAction>
                                     </ListItem>
                                     <Divider

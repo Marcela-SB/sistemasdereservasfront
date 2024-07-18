@@ -13,6 +13,7 @@ import {
     Checkbox,
     Divider,
     FormControlLabel,
+    IconButton,
     Stack,
     TextField,
 } from "@mui/material";
@@ -22,6 +23,7 @@ import { queryClient } from "../utils/queryClient";
 import { RoomT } from "../types/RoomT";
 import ConfirmationDialog from "./ConfirmationDialog";
 import HistoricDialog from "./HistoricDialog";
+import { Close } from "@mui/icons-material";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -74,13 +76,13 @@ export default function CreateRoomDialog({
         setAirConditioner(false);
         setIsAirConditionerWorking(false);
 
-        setKey(false)
+        setKey(false);
 
         setProjector(false);
         setIsProjectorWorking(false);
 
-        setReservable(false)
-        setAdministrative(false)
+        setReservable(false);
+        setAdministrative(false);
 
         setIsOpen(false);
     };
@@ -117,7 +119,7 @@ export default function CreateRoomDialog({
 
     const [reservable, setReservable] = useState(false);
 
-    const [administrative, setAdministrative] = useState(false)
+    const [administrative, setAdministrative] = useState(false);
 
     const [isConfirmationDOpen, setIsConfirmationDOpen] = useState(false);
 
@@ -176,7 +178,7 @@ export default function CreateRoomDialog({
 
             setKey(selectedRoom.hasKey);
             setReservable(selectedRoom.reservable);
-            setAdministrative(selectedRoom.administrative)
+            setAdministrative(selectedRoom.administrative);
         }
     }, [selectedRoom]);
 
@@ -278,11 +280,11 @@ export default function CreateRoomDialog({
     return (
         <React.Fragment>
             <Dialog
-                maxWidth={"md"}
-                fullWidth
                 open={isOpen}
                 onClose={handleClose}
                 TransitionComponent={Transition}
+                fullWidth
+                maxWidth="sm"
             >
                 <AppBar sx={{ position: "relative" }}>
                     <Toolbar>
@@ -294,13 +296,6 @@ export default function CreateRoomDialog({
                             {selectedRoom ? "Consultar espaço" : "Novo espaço"}
                         </Typography>
                         <Stack direction={"row"} spacing={1}>
-                            <Button
-                                color="inherit"
-                                onClick={handleClose}
-                                disabled={isRequestPending}
-                            >
-                                voltar
-                            </Button>
                             {selectedRoom ? (
                                 <Button
                                     color="info"
@@ -308,7 +303,7 @@ export default function CreateRoomDialog({
                                         setIsHistoricOpen(true);
                                     }}
                                     disabled={isRequestPending}
-                                    variant="outlined"
+                                    variant="contained"
                                     sx={{ fontWeight: "600" }}
                                 >
                                     Historico
@@ -317,9 +312,10 @@ export default function CreateRoomDialog({
 
                             <Button
                                 color="success"
+                                
                                 onClick={onSubmit}
                                 disabled={isRequestPending}
-                                variant="outlined"
+                                variant="contained"
                                 sx={{ fontWeight: "600" }}
                             >
                                 {selectedRoom ? "Editar" : "Salvar"}
@@ -331,12 +327,21 @@ export default function CreateRoomDialog({
                                         setIsConfirmationDOpen(true);
                                     }}
                                     disabled={isRequestPending}
-                                    variant="outlined"
+                                    variant="contained"
                                     sx={{ fontWeight: "600" }}
                                 >
                                     excluir
                                 </Button>
                             ) : null}
+                            <IconButton
+                                edge="start"
+                                color="inherit"
+                                onClick={handleClose}
+                                disabled={isRequestPending}
+                                aria-label="close"
+                            >
+                                <Close />
+                            </IconButton>
                         </Stack>
                     </Toolbar>
                 </AppBar>
@@ -502,7 +507,9 @@ export default function CreateRoomDialog({
                                         onChange={(
                                             event: React.ChangeEvent<HTMLInputElement>
                                         ) => {
-                                            setAdministrative(event.target.checked);
+                                            setAdministrative(
+                                                event.target.checked
+                                            );
                                         }}
                                     />
                                 }

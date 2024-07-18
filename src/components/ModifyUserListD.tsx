@@ -3,6 +3,7 @@ import {
     Button,
     Dialog,
     FormControl,
+    IconButton,
     List,
     Stack,
     TextField,
@@ -15,6 +16,7 @@ import { UserT } from "../types/UserT";
 import FilteredUserList from "./FilteredUserList";
 
 import InputMask from "react-input-mask";
+import { Close } from "@mui/icons-material";
 
 type Props = {
     isOpen: boolean;
@@ -56,12 +58,12 @@ function ModifyUserListD({
 
     const selectUser = (room: UserT) => {
         setSelectedUser(room);
-        handleClose();
         setCreateUserIsOpen(true);
     };
 
     return (
-        <Dialog open={isOpen} onClose={handleClose} maxWidth="xs" fullWidth>
+        <Dialog open={isOpen} onClose={handleClose} fullWidth
+        maxWidth="sm">
             <AppBar sx={{ position: "relative" }}>
                 <Toolbar>
                     <Typography
@@ -71,9 +73,14 @@ function ModifyUserListD({
                     >
                         Selecione um usuario
                     </Typography>
-                    <Button color="inherit" onClick={handleClose}>
-                        cancelar
-                    </Button>
+                    <IconButton
+                        edge="start"
+                        color="inherit"
+                        onClick={handleClose}
+                        aria-label="close"
+                    >
+                        <Close />
+                    </IconButton>
                 </Toolbar>
             </AppBar>
             <Stack direction={"column"}>
@@ -83,7 +90,7 @@ function ModifyUserListD({
                 />
                 <FormControl>
                     <TextField
-                        label="Nome"
+                        label="Nome do usuario"
                         placeholder="Digite o nome do usuario"
                         sx={{
                             margin: 2,

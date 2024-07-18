@@ -4,17 +4,21 @@ import {
     Button,
     Dialog,
     Divider,
+    FormControl,
     IconButton,
     List,
     ListItem,
     ListItemSecondaryAction,
+    Stack,
+    TextField,
     Toolbar,
     Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { StateContext } from "../context/ReactContext";
-import { Send } from "@mui/icons-material";
+import { Close, Send } from "@mui/icons-material";
 import { RoomT } from "../types/RoomT";
+import roomDynamicSort from "../utils/roomDynamicSort";
 
 type Props = {
     isOpen: boolean;
@@ -32,37 +36,38 @@ function ModifyRoomListD({
 
     const [scrollableRoomArray, setScrollableRoomArray] = useState<RoomT[]>([]);
 
+    const [searchedText, setSearchedText] = useState("");
+
     const handleClose = () => {
         setIsOpen(false);
     };
 
     useEffect(() => {
         if (roomList) {
-            const holder = [...roomList];
-            holder.sort((a, b) => {
-                const nameA = a.name.toUpperCase();
-                const nameB = b.name.toUpperCase();
-                if (nameA < nameB) {
-                    return -1;
-                }
-                if (nameA > nameB) {
-                    return 1;
-                }
+            const filteredRoomList = roomList
+                ?.filter((room: RoomT) => {
+                    //if no input the return the original
+                    if (searchedText === "") {
+                        return room;
+                    }
 
-                return 0;
-            });
-            setScrollableRoomArray(holder);
+                    //return the item which contains the room input
+                    else {
+                        return room.name?.toLowerCase().includes(searchedText);
+                    }
+                })
+                .sort(roomDynamicSort());
+            setScrollableRoomArray(filteredRoomList);
         }
-    }, [roomList]);
+    }, [searchedText, roomList]);
 
     const selectRoom = (room: RoomT) => {
         setSelectedRoom(room);
-        handleClose();
         setCreateRoom(true);
     };
 
     return (
-        <Dialog open={isOpen} onClose={handleClose} maxWidth="xs" fullWidth>
+        <Dialog open={isOpen} onClose={handleClose} fullWidth maxWidth="sm">
             <AppBar sx={{ position: "relative" }}>
                 <Toolbar>
                     <Typography
@@ -72,18 +77,18 @@ function ModifyRoomListD({
                     >
                         Selecione um espaço
                     </Typography>
-                    <Button color="inherit" onClick={handleClose}>
-                        cancelar
-                    </Button>
+                    <IconButton
+                        edge="start"
+                        color="inherit"
+                        onClick={handleClose}
+                        aria-label="close"
+                    >
+                        <Close />
+                    </IconButton>
                 </Toolbar>
             </AppBar>
-           
-                <List
-                    sx={{
-                        overflow: "auto",
-                        maxHeight: "32rem",
-                    }}
-                >
+            <Stack direction={"column"}>
+                <List sx={{ overflow: "auto", maxHeight: "20rem" }}>
                     {scrollableRoomArray?.map((room) => {
                         return (
                             <>
@@ -105,6 +110,23 @@ function ModifyRoomListD({
                         );
                     })}
                 </List>
+                <FormControl>
+                    <TextField
+                        label="Nome do espaço"
+                        placeholder="Digite o nome do espaço"
+                        sx={{
+                            margin: 2,
+                            borderRadius: 6,
+                        }}
+                        value={searchedText}
+                        onChange={(
+                            event: React.ChangeEvent<HTMLInputElement>
+                        ) => {
+                            setSearchedText(event.target.value);
+                        }}
+                    ></TextField>
+                </FormControl>
+            </Stack>
         </Dialog>
     );
 }

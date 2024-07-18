@@ -18,10 +18,12 @@ import {
     FormControl,
     FormControlLabel,
     Grid,
+    IconButton,
     InputLabel,
     makeStyles,
     MenuItem,
     Select,
+    Stack,
     styled,
     Switch,
     TextField,
@@ -37,6 +39,7 @@ import getUserById from "../utils/getUserById";
 import { queryClient } from "../utils/queryClient";
 import ConfirmationDialog from "./ConfirmationDialog";
 import { Courses } from "../types/Courses";
+import { Close } from "@mui/icons-material";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -55,7 +58,7 @@ const autoCompleteCourseOptions = [
     ["Sem curso relacionado", 4],
 ];
 
-const StyledFormControl = styled(FormControl)(({theme}) => ({
+const StyledFormControl = styled(FormControl)(({ theme }) => ({
     formControl: {
         margin: theme.spacing(1),
         minWidth: 120,
@@ -80,7 +83,6 @@ export default function FullScreenActionDialog({
     selectedReservation,
     setSelectedReservation,
 }: Props) {
-
     const handleClose = () => {
         createMutation.reset();
         setIsOpen(false);
@@ -285,31 +287,37 @@ export default function FullScreenActionDialog({
                         >
                             {text.toUpperCase()}
                         </Typography>
-                        <Button
-                            color="inherit"
-                            onClick={handleClose}
-                            disabled={isRequestPending}
-                        >
-                            voltar
-                        </Button>
-                        <Button
-                            color="success"
-                            onClick={onSubmit}
-                            disabled={isRequestPending}
-                        >
-                            {selectedReservation ? "editar" : "salvar"}
-                        </Button>
-                        {selectedReservation ? (
+                        <Stack direction={"row"} spacing={1}>
                             <Button
-                                color="error"
-                                onClick={() => {
-                                    setIsConfirmationDOpen(true);
-                                }}
+                                color="success"
+                                onClick={onSubmit}
                                 disabled={isRequestPending}
+                                variant="contained"
                             >
-                                excluir
+                                {selectedReservation ? "editar" : "salvar"}
                             </Button>
-                        ) : null}
+                            {selectedReservation ? (
+                                <Button
+                                    color="error"
+                                    variant="contained"
+                                    onClick={() => {
+                                        setIsConfirmationDOpen(true);
+                                    }}
+                                    disabled={isRequestPending}
+                                >
+                                    excluir
+                                </Button>
+                            ) : null}
+                            <IconButton
+                                edge="start"
+                                color="inherit"
+                                onClick={handleClose}
+                                disabled={isRequestPending}
+                                aria-label="close"
+                            >
+                                <Close />
+                            </IconButton>
+                        </Stack>
                     </Toolbar>
                 </AppBar>
                 <Box sx={{ padding: 2, flexGrow: 1 }}>
@@ -355,35 +363,7 @@ export default function FullScreenActionDialog({
                             />
                         </Grid>
                         <Grid xs={3} paddingX={1}>
-                            {/*
-                            <Autocomplete
-                                value={autoCompleteCourseOptions[formCourse]}
-                                onChange={(
-                                    _event: any,
-                                    newValue: [string, number]
-                                ) => {
-                                    setFormCourse(newValue[1]);
-                                }}
-                                id="controllable-states-demo"
-                                options={[
-                                    ["Teatro", 0],
-                                    ["Artes Visuais", 1],
-                                    ["Desing", 2],
-                                    ["Dança", 3],
-                                    ["Sem curso relacionado", 4],
-                                ]}
-                                getOptionLabel={(course: [string, number]) => {
-                                    return course[0];
-                                }}
-                                sx={{ flexGrow: 1 }}
-                                renderInput={(params) => (
-                                    <TextField {...params} label="Curso" />
-                                )}
-                            />*/}
-                            <StyledFormControl
-                                variant="outlined"
-                                fullWidth
-                            >
+                            <StyledFormControl variant="outlined" fullWidth>
                                 <InputLabel id="demo-simple-select-filled-label">
                                     Curso
                                 </InputLabel>
@@ -392,14 +372,24 @@ export default function FullScreenActionDialog({
                                     id="demo-simple-select-filled"
                                     value={formCourse}
                                     onChange={(event) => {
-                                        setFormCourse(event.target.value)
+                                        setFormCourse(event.target.value);
                                     }}
                                 >
-                                    <MenuItem value={Courses.TEATRO}>Teatro</MenuItem>
-                                    <MenuItem value={Courses.ARTES}>Artes Visuais</MenuItem>
-                                    <MenuItem value={Courses.DESING}>Desing</MenuItem>
-                                    <MenuItem value={Courses.DANÇA}>Dança</MenuItem>
-                                    <MenuItem value={Courses.NOCOURSE}>Sem curso relacionado</MenuItem>
+                                    <MenuItem value={Courses.TEATRO}>
+                                        Teatro
+                                    </MenuItem>
+                                    <MenuItem value={Courses.ARTES}>
+                                        Artes Visuais
+                                    </MenuItem>
+                                    <MenuItem value={Courses.DESING}>
+                                        Desing
+                                    </MenuItem>
+                                    <MenuItem value={Courses.DANÇA}>
+                                        Dança
+                                    </MenuItem>
+                                    <MenuItem value={Courses.NOCOURSE}>
+                                        Sem curso relacionado
+                                    </MenuItem>
                                 </Select>
                             </StyledFormControl>
                         </Grid>

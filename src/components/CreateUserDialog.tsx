@@ -26,7 +26,7 @@ import axiosInstance from "../utils/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../utils/queryClient";
 import InputMask from "react-input-mask";
-import { VisibilityOff, Visibility } from "@mui/icons-material";
+import { VisibilityOff, Visibility, Close } from "@mui/icons-material";
 import ConfirmationDialog from "./ConfirmationDialog";
 
 const Transition = React.forwardRef(function Transition(
@@ -186,11 +186,11 @@ export default function CreateUserDialog({
     return (
         <React.Fragment>
             <Dialog
-                maxWidth={"xs"}
-                fullWidth
                 open={isOpen}
                 onClose={handleClose}
                 TransitionComponent={Transition}
+                fullWidth
+                maxWidth="sm"
             >
                 <AppBar sx={{ position: "relative" }}>
                     <Toolbar>
@@ -203,17 +203,10 @@ export default function CreateUserDialog({
                         </Typography>
                         <Stack direction={"row"} spacing={1}>
                             <Button
-                                color="inherit"
-                                onClick={handleClose}
-                                disabled={isRequestPending}
-                            >
-                                voltar
-                            </Button>
-                            <Button
                                 color="success"
                                 onClick={onSubmit}
                                 disabled={isRequestPending}
-                                variant="outlined"
+                                variant="contained"
                                 sx={{ fontWeight: "600" }}
                             >
                                 {selectedUser ? "editar" : "salvar"}
@@ -225,12 +218,21 @@ export default function CreateUserDialog({
                                         setIsConfirmationDOpen(true);
                                     }}
                                     disabled={isRequestPending}
-                                    variant="outlined"
+                                    variant="contained"
                                     sx={{ fontWeight: "600" }}
                                 >
                                     excluir
                                 </Button>
                             ) : null}
+                            <IconButton
+                                edge="start"
+                                color="inherit"
+                                onClick={handleClose}
+                                disabled={isRequestPending}
+                                aria-label="close"
+                            >
+                                <Close />
+                            </IconButton>
                         </Stack>
                     </Toolbar>
                 </AppBar>

@@ -8,7 +8,7 @@ import Slide from "@mui/material/Slide";
 import { TransitionProps } from "@mui/material/transitions";
 
 import { StateContext } from "../context/ReactContext";
-import { Autocomplete, Stack, TextField } from "@mui/material";
+import { Autocomplete, IconButton, Stack, TextField } from "@mui/material";
 import { useState } from "react";
 import { RoomT } from "../types/RoomT";
 import dayjs, { Dayjs } from "dayjs";
@@ -23,6 +23,7 @@ import getRoomById from "../utils/getRoomById";
 import getUserById from "../utils/getUserById";
 import CheckUserDialog from "./CheckUserDialog";
 import { queryClient } from "../utils/queryClient";
+import { Close } from "@mui/icons-material";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -74,10 +75,7 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
 
     const editMutation = useMutation({
         mutationFn: (header) => {
-            return axiosInstance.put(
-                "keydelivery/edit/" + header.id,
-                header
-            );
+            return axiosInstance.put("keydelivery/edit/" + header.id, header);
         },
         onSuccess: () => {
             //TODO setIsSnackBarOpen(true);
@@ -122,7 +120,7 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
                     isKeyReturned: true,
                     keyReturnedById: formReturnedBy?.id,
                     returnTime: returnTime,
-                    id: key.id
+                    id: key.id,
                 };
                 editMutation.mutate(header);
             });
@@ -142,7 +140,7 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
                 open={isOpen}
                 onClose={handleClose}
                 TransitionComponent={Transition}
-                maxWidth="xl"
+                maxWidth="md"
             >
                 <AppBar sx={{ position: "relative" }}>
                     <Toolbar>
@@ -151,15 +149,16 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
                             variant="h6"
                             component="div"
                         >
-                            Retirada de chave
+                            Devolução de chave
                         </Typography>
-                        <Button
+                        <IconButton
+                            edge="start"
                             color="inherit"
                             onClick={handleClose}
-                            disabled={isRequestPending}
+                            aria-label="close"
                         >
-                            cancelar
-                        </Button>
+                            <Close />
+                        </IconButton>
                     </Toolbar>
                 </AppBar>
 
