@@ -12,5 +12,6 @@ export type ReservationT = {
     name:string;
     comment:string;
     course: Courses;
+    slots: number;
   };
   

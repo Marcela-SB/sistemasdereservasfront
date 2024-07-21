@@ -95,6 +95,12 @@ export default function ReservationDetailsDialog({
                                     Nome da reserva: {reservation.name}
                                 </Typography>
                                 <Typography variant="body1" noWrap>
+                                    Vagas da reserva:
+                                    {
+                                        reservation.slots
+                                    }
+                                </Typography>
+                                <Typography variant="body1" noWrap>
                                     Curso: {textfyCourse(reservation.course)}
                                 </Typography>
                                 <Typography variant="body1" noWrap>
@@ -118,7 +124,7 @@ export default function ReservationDetailsDialog({
                                         : null}
                                 </Typography>
                                 <Typography variant="body1" noWrap>
-                                    Responsavel pela reserva:
+                                    Responsavel pela reserva: 
                                     {
                                         getUserById(
                                             reservation.reservationResponsibleId,

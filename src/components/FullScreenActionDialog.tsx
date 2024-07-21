@@ -50,13 +50,19 @@ const Transition = React.forwardRef(function Transition(
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const autoCompleteCourseOptions = [
-    ["Teatro", 0],
-    ["Artes Visuais", 1],
-    ["Desing", 2],
-    ["Dança", 3],
-    ["Sem curso relacionado", 4],
-];
+const inputNumberStyle = {
+    "& input[type=number]": {
+        "-moz-appearance": "textfield",
+    },
+    "& input[type=number]::-webkit-outer-spin-button": {
+        "-webkit-appearance": "none",
+        margin: 0,
+    },
+    "& input[type=number]::-webkit-inner-spin-button": {
+        "-webkit-appearance": "none",
+        margin: 0,
+    },
+};
 
 const StyledFormControl = styled(FormControl)(({ theme }) => ({
     formControl: {
@@ -96,6 +102,7 @@ export default function FullScreenActionDialog({
         setFormIsOneDay(true);
         setSelectedReservation(null);
         setFormComment("");
+        setFormSlots(null)
     };
 
     const {
@@ -107,6 +114,8 @@ export default function FullScreenActionDialog({
     } = React.useContext(StateContext);
 
     const [formName, setFormName] = useState("");
+
+    const [formSlots, setFormSlots] = useState<number | null>(null);
 
     const [formRoom, setFormRoom] = useState<RoomT | null>(null);
 
@@ -163,6 +172,8 @@ export default function FullScreenActionDialog({
             setFormSchedule(selectedReservation.schedule);
 
             setFormComment(selectedReservation.comment);
+
+            setFormSlots(selectedReservation.slots)
         }
     }, [selectedReservation]);
 
@@ -226,6 +237,7 @@ export default function FullScreenActionDialog({
             reservationResponsibleId: loggedUser.id,
             schedule: formSchedule,
             comment: formComment,
+            slots: formSlots
         };
 
         if (selectedReservation) {
@@ -322,7 +334,7 @@ export default function FullScreenActionDialog({
                 </AppBar>
                 <Box sx={{ padding: 2, flexGrow: 1 }}>
                     <Grid container>
-                        <Grid xs={4} paddingX={1}>
+                        <Grid xs={3} paddingX={1}>
                             <TextField
                                 id="outlined-controlled"
                                 label="Nome da reserva"
@@ -334,6 +346,21 @@ export default function FullScreenActionDialog({
                                 }}
                                 fullWidth
                             />
+                        </Grid>
+                        <Grid xs={2} paddingX={1}>
+                            <TextField
+                                label="Vagas"
+                                value={formSlots}
+                                type="number"
+                                sx={inputNumberStyle}
+                                onChange={(
+                                    event: React.ChangeEvent<HTMLInputElement>
+                                ) => {
+                                    setFormSlots(
+                                        event.target.value as unknown as number
+                                    );
+                                }}
+                            ></TextField>
                         </Grid>
                         <Grid xs={3} paddingX={1}>
                             <Autocomplete
@@ -362,7 +389,7 @@ export default function FullScreenActionDialog({
                                 )}
                             />
                         </Grid>
-                        <Grid xs={3} paddingX={1}>
+                        <Grid xs={2} paddingX={1}>
                             <StyledFormControl variant="outlined" fullWidth>
                                 <InputLabel id="demo-simple-select-filled-label">
                                     Curso
@@ -416,7 +443,7 @@ export default function FullScreenActionDialog({
                                 />
                             </DemoContainer>
                         </Grid>
-                        <Grid xs={1.5} paddingX={0} paddingTop={1}>
+                        <Grid xs={2} paddingX={0} paddingTop={1.5}>
                             <FormControlLabel
                                 control={
                                     <Switch
@@ -431,9 +458,11 @@ export default function FullScreenActionDialog({
                                         }}
                                     />
                                 }
-                                labelPlacement="bottom"
+                                labelPlacement="top"
                                 label="Reserva unitária"
-                                sx={{ width: "100%" }}
+                                sx={{ width: "100%",
+                                    marginX:0
+                                 }}
                             />
                         </Grid>
                         {formIsOneDay == true ? (
