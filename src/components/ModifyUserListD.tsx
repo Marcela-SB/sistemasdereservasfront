@@ -17,6 +17,8 @@ import FilteredUserList from "./FilteredUserList";
 
 import InputMask from "react-input-mask";
 import { Close } from "@mui/icons-material";
+import PaperComponent from "./PaperComponent";
+import DraggablePaper from "./DraggablePaper";
 
 type Props = {
     isOpen: boolean;
@@ -62,50 +64,74 @@ function ModifyUserListD({
     };
 
     return (
-        <Dialog open={isOpen} onClose={handleClose} fullWidth
-        maxWidth="sm">
-            <AppBar sx={{ position: "relative" }}>
-                <Toolbar>
-                    <Typography
-                        sx={{ ml: 0, flex: 1 }}
-                        variant="h6"
-                        component="div"
-                    >
-                        Selecione um usuario
-                    </Typography>
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        onClick={handleClose}
-                        aria-label="close"
-                    >
-                        <Close />
-                    </IconButton>
-                </Toolbar>
-            </AppBar>
-            <Stack direction={"column"}>
-                <FilteredUserList
-                    selectUser={selectUser}
-                    inputText={searchedText}
-                />
-                <FormControl>
-                    <TextField
-                        label="Nome do usuario"
-                        placeholder="Digite o nome do usuario"
-                        sx={{
-                            margin: 2,
-                            borderRadius: 6,
-                        }}
-                        value={searchedText}
-                        onChange={(
-                            event: React.ChangeEvent<HTMLInputElement>
-                        ) => {
-                            setSearchedText(event.target.value);
-                        }}
-                    ></TextField>
-                </FormControl>
-            </Stack>
-        </Dialog>
+        <DraggablePaper>
+            <Dialog
+                open={isOpen}
+                onClose={handleClose}
+                fullWidth
+                maxWidth="sm"
+                PaperComponent={PaperComponent}
+                hideBackdrop
+                PaperProps={{
+                    elevation: 0,
+                    sx: {
+                        border: "solid 1px #004586",
+                    },
+                }}
+                disableEnforceFocus
+                style={{
+                    top: "30%",
+                    left: "30%",
+                    height: "fit-content",
+                    width:'36.5rem',
+                }}
+            >
+                <AppBar
+                    sx={{ position: "relative" }}
+                    className="draggable-dialog"
+                >
+                    <Toolbar>
+                        <Typography
+                            sx={{ ml: 0, flex: 1 }}
+                            variant="h6"
+                            component="div"
+                        >
+                            Selecione um usuario
+                        </Typography>
+                        <IconButton
+                            edge="start"
+                            color="inherit"
+                            onClick={handleClose}
+                            aria-label="close"
+                        >
+                            <Close />
+                        </IconButton>
+                    </Toolbar>
+                </AppBar>
+                <Stack direction={"column"}>
+                    <FilteredUserList
+                        selectUser={selectUser}
+                        inputText={searchedText}
+                    />
+                    <FormControl>
+                        <TextField
+                            label="Nome do usuario"
+                            placeholder="Digite o nome do usuario"
+                            sx={{
+                                margin: 2,
+                                borderRadius: 6,
+                            }}
+                            value={searchedText}
+                            onChange={(
+                                event: React.ChangeEvent<HTMLInputElement>
+                            ) => {
+                                setSearchedText(event.target.value);
+                            }}
+                        ></TextField>
+                    </FormControl>
+                </Stack>
+            </Dialog>
+        </DraggablePaper>
     );
 }
 

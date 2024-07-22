@@ -24,6 +24,8 @@ import getUserById from "../utils/getUserById";
 import CheckUserDialog from "./CheckUserDialog";
 import { queryClient } from "../utils/queryClient";
 import { Close } from "@mui/icons-material";
+import DraggablePaper from "./DraggablePaper";
+import PaperComponent from "./PaperComponent";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -135,138 +137,166 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
     }, [editMutation]);
 
     return (
-        <React.Fragment>
-            <Dialog
-                open={isOpen}
-                onClose={handleClose}
-                TransitionComponent={Transition}
-                maxWidth="md"
-            >
-                <AppBar sx={{ position: "relative" }}>
-                    <Toolbar>
-                        <Typography
-                            sx={{ ml: 2, flex: 1, mr: 4 }}
-                            variant="h6"
-                            component="div"
-                        >
-                            Devolução de chave
-                        </Typography>
-                        <IconButton
-                            edge="start"
-                            color="inherit"
-                            onClick={handleClose}
-                            aria-label="close"
-                        >
-                            <Close />
-                        </IconButton>
-                    </Toolbar>
-                </AppBar>
-
-                <Stack direction={"row"}>
-                    <KeyScrollableList
-                        setSelectedKey={setSelectedKey}
-                        selectedKeyList={selectedKeyList}
-                        setSelectedKeyList={setSelectedKeyList}
-                    />
-                    <Stack
-                        direction={"column"}
-                        justifyContent={"space-between"}
-                        marginX={2}
-                        gap={2}
-                        marginTop={2}
-                    >
-                        <Autocomplete
-                            value={formRoom}
-                            disabled
-                            id="controllable-states-demo"
-                            options={roomList}
-                            getOptionLabel={(room: RoomT) => {
-                                let roomN = "";
-                                if (room.roomNumber) {
-                                    roomN = room.roomNumber;
-                                }
-                                return `${room.name} ${roomN}`;
-                            }}
-                            renderInput={(params) => (
-                                <TextField {...params} label="Sala reservada" />
-                            )}
-                        />
-                        <Autocomplete
-                            value={formReservatedTo}
-                            disabled
-                            id="controllable-states-demo"
-                            options={userList}
-                            getOptionLabel={(user: UserT) => {
-                                return user.name;
-                            }}
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    label="Sala reservada para"
-                                />
-                            )}
-                        />
-
-                        <Autocomplete
-                            value={formResponsible}
-                            disabled
-                            id="controllable-states-demo"
-                            options={userList}
-                            getOptionLabel={(user: UserT) => {
-                                return user.name;
-                            }}
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    label="Supervisor da reserva"
-                                />
-                            )}
-                        />
-
-                        <DemoContainer components={["TimePicker"]}>
-                            <TimePicker
-                                label="Previsão de retorno"
-                                value={formReturnTimePrevision}
-                                onChange={(newValue) =>
-                                    setFormReturnTimePrevision(newValue)
-                                }
-                                disabled
-                                sx={{ width: "100%" }}
-                            />
-                        </DemoContainer>
-                    </Stack>
-                </Stack>
-                <Autocomplete
-                    sx={{ margin: 2 }}
-                    value={formReturnedBy}
-                    onChange={(_event: any, newValue: UserT | null) => {
-                        setFormReturnedBy(newValue);
+        <>
+            <DraggablePaper>
+                <Dialog
+                    open={isOpen}
+                    onClose={handleClose}
+                    TransitionComponent={Transition}
+                    maxWidth="md"
+                    PaperComponent={PaperComponent}
+                    hideBackdrop
+                    PaperProps={{
+                        elevation: 0,
+                        sx: {
+                            border: "solid 1px #004586",
+                        },
                     }}
-                    id="controllable-states-demo"
-                    options={userList}
-                    getOptionLabel={(user: UserT) => {
-                        return user.name;
+                    disableEnforceFocus
+                    style={{
+                        top: "30%",
+                        left: "30%",
+                        height: "fit-content",
+                        width: "fit-content",
                     }}
-                    renderInput={(params) => (
-                        <TextField {...params} label="Chave retornada por..." />
-                    )}
-                />
-
-                <Button
-                    variant="contained"
-                    sx={{ marginX: 6, marginY: 2 }}
-                    onClick={submitReturn}
-                    disabled={isRequestPending}
                 >
-                    Criar devolução
-                </Button>
-            </Dialog>
-            <CheckUserDialog
-                isOpen={checkDialogIsOpen}
-                setIsOpen={setCheckDialogIsOpen}
-                chekedUser={formReturnedBy}
-                setCheckSucess={setCheckSucess}
-            />
-        </React.Fragment>
+                    <AppBar
+                        className="draggable-dialog"
+                        sx={{ position: "relative" }}
+                    >
+                        <Toolbar>
+                            <Typography
+                                sx={{ ml: 2, flex: 1, mr: 4 }}
+                                variant="h6"
+                                component="div"
+                            >
+                                Devolução de chave
+                            </Typography>
+                            <IconButton
+                                edge="start"
+                                color="inherit"
+                                onClick={handleClose}
+                                aria-label="close"
+                            >
+                                <Close />
+                            </IconButton>
+                        </Toolbar>
+                    </AppBar>
+
+                    <Stack direction={"row"}>
+                        <KeyScrollableList
+                            setSelectedKey={setSelectedKey}
+                            selectedKeyList={selectedKeyList}
+                            setSelectedKeyList={setSelectedKeyList}
+                        />
+                        <Stack
+                            direction={"column"}
+                            justifyContent={"space-between"}
+                            marginX={2}
+                            gap={2}
+                            marginTop={2}
+                        >
+                            <Autocomplete
+                                value={formRoom}
+                                disabled
+                                id="controllable-states-demo"
+                                options={roomList}
+                                getOptionLabel={(room: RoomT) => {
+                                    let roomN = "";
+                                    if (room.roomNumber) {
+                                        roomN = room.roomNumber;
+                                    }
+                                    return `${room.name} ${roomN}`;
+                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label="Sala reservada"
+                                    />
+                                )}
+                            />
+                            <Autocomplete
+                                value={formReservatedTo}
+                                disabled
+                                id="controllable-states-demo"
+                                options={userList}
+                                getOptionLabel={(user: UserT) => {
+                                    return user.name;
+                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label="Sala reservada para"
+                                    />
+                                )}
+                            />
+
+                            <Autocomplete
+                                value={formResponsible}
+                                disabled
+                                id="controllable-states-demo"
+                                options={userList}
+                                getOptionLabel={(user: UserT) => {
+                                    return user.name;
+                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label="Supervisor da reserva"
+                                    />
+                                )}
+                            />
+
+                            <DemoContainer components={["TimePicker"]}>
+                                <TimePicker
+                                    label="Previsão de retorno"
+                                    value={formReturnTimePrevision}
+                                    onChange={(newValue) =>
+                                        setFormReturnTimePrevision(newValue)
+                                    }
+                                    disabled
+                                    sx={{ width: "100%" }}
+                                />
+                            </DemoContainer>
+                        </Stack>
+                    </Stack>
+                    <Autocomplete
+                        sx={{ margin: 2 }}
+                        value={formReturnedBy}
+                        onChange={(_event: any, newValue: UserT | null) => {
+                            setFormReturnedBy(newValue);
+                        }}
+                        id="controllable-states-demo"
+                        options={userList}
+                        getOptionLabel={(user: UserT) => {
+                            return user.name;
+                        }}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                label="Chave retornada por..."
+                            />
+                        )}
+                    />
+
+                    <Button
+                        variant="contained"
+                        sx={{ marginX: 6, marginY: 2 }}
+                        onClick={submitReturn}
+                        disabled={isRequestPending}
+                    >
+                        Criar devolução
+                    </Button>
+                </Dialog>
+            </DraggablePaper>
+            <DraggablePaper>
+                <CheckUserDialog
+                    isOpen={checkDialogIsOpen}
+                    setIsOpen={setCheckDialogIsOpen}
+                    chekedUser={formReturnedBy}
+                    setCheckSucess={setCheckSucess}
+                />
+            </DraggablePaper>
+        </>
     );
 }

@@ -28,6 +28,8 @@ import { queryClient } from "../utils/queryClient";
 import InputMask from "react-input-mask";
 import { VisibilityOff, Visibility, Close } from "@mui/icons-material";
 import ConfirmationDialog from "./ConfirmationDialog";
+import PaperComponent from "./PaperComponent";
+import DraggablePaper from "./DraggablePaper";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -184,15 +186,34 @@ export default function CreateUserDialog({
     }, [createMutation, editMutation, deleteMutation]);
 
     return (
-        <React.Fragment>
+        <DraggablePaper>
             <Dialog
                 open={isOpen}
                 onClose={handleClose}
                 TransitionComponent={Transition}
                 fullWidth
                 maxWidth="sm"
+                PaperComponent={PaperComponent}
+                hideBackdrop
+                PaperProps={{
+                    elevation: 0,
+                    sx: {
+                        border: "solid 1px #004586",
+                    },
+                }}
+                disableEnforceFocus
+                style={{
+                    top: "30%",
+                    left: "30%",
+                    height: "fit-content",
+                    width:'36.5rem',
+                }}
             >
-                <AppBar sx={{ position: "relative" }}>
+                <AppBar
+                    sx={{ position: "relative"  }}
+                    className="draggable-dialog"
+                    
+                >
                     <Toolbar>
                         <Typography
                             sx={{ ml: 0, flex: 1 }}
@@ -336,6 +357,6 @@ export default function CreateUserDialog({
                     />
                 ) : null}
             </Dialog>
-        </React.Fragment>
+        </DraggablePaper>
     );
 }

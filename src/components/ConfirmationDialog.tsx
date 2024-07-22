@@ -5,6 +5,8 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import DraggablePaper from "./DraggablePaper";
+import PaperComponent from "./PaperComponent";
 
 type Props = {
     isOpen: boolean;
@@ -29,21 +31,41 @@ export default function ConfirmationDialog({
     };
 
     return (
-        <Dialog open={isOpen} onClose={handleClose}>
-            <DialogTitle>
-                Tem certeza que deseja excluir {toExclude} ?
-            </DialogTitle>
-            <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                    Ao excluir esse item todos os seus dados serão perdidos.
-                </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={handleClose}>Não</Button>
-                <Button onClick={agreeFunc} autoFocus>
-                    Sim
-                </Button>
-            </DialogActions>
-        </Dialog>
+        <DraggablePaper>
+            <Dialog
+                open={isOpen}
+                onClose={handleClose}
+                PaperComponent={PaperComponent}
+                hideBackdrop
+                PaperProps={{
+                    elevation: 0,
+                    sx: {
+                        border: "solid 1px #004586",
+                    },
+                }}
+                disableEnforceFocus
+                style={{
+                    top: "30%",
+                    left: "30%",
+                    height: "fit-content",
+                    width: "fit-content",
+                }}
+            >
+                <DialogTitle className="draggable-dialog">
+                    Tem certeza que deseja excluir {toExclude} ?
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Ao excluir esse item todos os seus dados serão perdidos.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Não</Button>
+                    <Button onClick={agreeFunc} autoFocus>
+                        Sim
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </DraggablePaper>
     );
 }

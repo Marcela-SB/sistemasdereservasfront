@@ -16,6 +16,8 @@ import dayjs, { Dayjs } from "dayjs";
 import { UserT } from "../types/UserT";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { DatePicker } from "@mui/x-date-pickers";
+import PaperComponent from "./PaperComponent";
+import DraggablePaper from "./DraggablePaper";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -41,7 +43,6 @@ export default function FullScreenDialogList({
     setSelectedReservation,
     setReservationDIsOpen,
 }: Props) {
-
     const handleClose = () => {
         setIsOpen(false);
     };
@@ -87,7 +88,7 @@ export default function FullScreenDialogList({
 
     const submitReservation = () => {
         setSelectedReservation(selectedInternalReservation);
-        setSelectedInternalReservation(null)
+        setSelectedInternalReservation(null);
         handleClose();
         setReservationDIsOpen(true);
     };
@@ -161,8 +162,8 @@ export default function FullScreenDialogList({
                                     hourlySchedule: boolean,
                                     hourlyIndex: number
                                 ) => {
-                                    console.log(hourlySchedule)
-                                    console.log(formSchedule[hourlyIndex])
+                                    console.log(hourlySchedule);
+                                    console.log(formSchedule[hourlyIndex]);
                                     if (
                                         hourlySchedule &&
                                         formSchedule[hourlyIndex]
@@ -191,13 +192,31 @@ export default function FullScreenDialogList({
     ]);
 
     return (
-        <React.Fragment>
+        <DraggablePaper>
             <Dialog
                 open={isOpen}
                 onClose={handleClose}
                 TransitionComponent={Transition}
+                PaperComponent={PaperComponent}
+                hideBackdrop
+                PaperProps={{
+                    elevation: 0,
+                    sx: {
+                        border: "solid 1px #004586",
+                    },
+                }}
+                disableEnforceFocus
+                style={{
+                    top: "30%",
+                    left: "30%",
+                    height: "fit-content",
+                    width: "36.5rem",
+                }}
             >
-                <AppBar sx={{ position: "relative" }}>
+                <AppBar
+                    sx={{ position: "relative" }}
+                    className="draggable-dialog"
+                >
                     <Toolbar>
                         <Typography
                             sx={{ ml: 2, flex: 1 }}
@@ -325,6 +344,6 @@ export default function FullScreenDialogList({
                     Continuar
                 </Button>
             </Dialog>
-        </React.Fragment>
+        </DraggablePaper>
     );
 }

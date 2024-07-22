@@ -1,6 +1,6 @@
 import * as React from "react";
 import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
+import Dialog, { DialogProps } from "@mui/material/Dialog";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -30,6 +30,8 @@ import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../utils/queryClient";
 import CheckUserDialog from "./CheckUserDialog";
 import { Close, Send } from "@mui/icons-material";
+import DraggablePaper from "./DraggablePaper";
+import PaperComponent from "./PaperComponent";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -48,7 +50,8 @@ type Props = {
 export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
     const { roomList, userList, loggedUser } = React.useContext(StateContext);
 
-    const handleClose = () => {
+    const handleClose: DialogProps["onClose"] = (event, reason) => {
+        if (reason && reason === "backdropClick") return;
         setIsOpen(false);
         setFormRoom([]);
         setFormReturnTime(dayjs());
@@ -157,15 +160,33 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
     };
 
     return (
-        <React.Fragment>
+        <DraggablePaper>
             <Dialog
                 open={isOpen}
                 onClose={handleClose}
                 TransitionComponent={Transition}
                 fullWidth
                 maxWidth="sm"
+                PaperComponent={PaperComponent}
+                hideBackdrop
+                PaperProps={{
+                    elevation: 0,
+                    sx: {
+                        border: "solid 1px #004586",
+                    },
+                }}
+                disableEnforceFocus
+                style={{
+                    top: "30%",
+                    left: "30%",
+                    height: "fit-content",
+                    width: "fit-content",
+                }}
             >
-                <AppBar sx={{ position: "relative" }}>
+                <AppBar
+                    sx={{ position: "relative" }}
+                    className="draggable-dialog"
+                >
                     <Toolbar>
                         <Typography
                             sx={{ ml: 2, flex: 1, mr: 4 }}
@@ -271,6 +292,6 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                     Criar retirada
                 </Button>
             </Dialog>
-        </React.Fragment>
+        </DraggablePaper>
     );
 }

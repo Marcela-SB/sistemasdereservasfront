@@ -15,6 +15,8 @@ import dayjs from "dayjs";
 import ReservationDetailsTable from "./ReservationDetailsTable";
 import { Courses } from "../types/Courses";
 import textfyCourse from "../utils/textfyCourse";
+import PaperComponent from "./PaperComponent";
+import DraggablePaper from "./DraggablePaper";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -53,15 +55,33 @@ export default function ReservationDetailsDialog({
     console.log(reservation);
 
     return (
-        <React.Fragment>
+        <DraggablePaper>
             <Dialog
                 maxWidth={"md"}
                 fullWidth
                 open={isOpen}
                 onClose={handleClose}
                 TransitionComponent={Transition}
+                PaperComponent={PaperComponent}
+                hideBackdrop
+                PaperProps={{
+                    elevation: 0,
+                    sx: {
+                        border: "solid 1px #004586",
+                    },
+                }}
+                disableEnforceFocus
+                style={{
+                    top: "30%",
+                    left: "30%",
+                    height: "fit-content",
+                    width: "fit-content",
+                }}
             >
-                <AppBar sx={{ position: "relative" }}>
+                <AppBar
+                    sx={{ position: "relative" }}
+                    className="draggable-dialog"
+                >
                     <Toolbar>
                         <Typography
                             sx={{ ml: 0, flex: 1 }}
@@ -96,9 +116,7 @@ export default function ReservationDetailsDialog({
                                 </Typography>
                                 <Typography variant="body1" noWrap>
                                     Vagas da reserva:
-                                    {
-                                        reservation.slots
-                                    }
+                                    {reservation.slots}
                                 </Typography>
                                 <Typography variant="body1" noWrap>
                                     Curso: {textfyCourse(reservation.course)}
@@ -124,7 +142,7 @@ export default function ReservationDetailsDialog({
                                         : null}
                                 </Typography>
                                 <Typography variant="body1" noWrap>
-                                    Responsavel pela reserva: 
+                                    Responsavel pela reserva:
                                     {
                                         getUserById(
                                             reservation.reservationResponsibleId,
@@ -150,6 +168,6 @@ export default function ReservationDetailsDialog({
                     </Stack>
                 </Box>
             </Dialog>
-        </React.Fragment>
+        </DraggablePaper>
     );
 }

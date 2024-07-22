@@ -22,6 +22,8 @@ import axiosInstance from "../utils/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
 import { UserT } from "../types/UserT";
 import { Close } from "@mui/icons-material";
+import DraggablePaper from "./DraggablePaper";
+import PaperComponent from "./PaperComponent";
 
 type Props = {
     setIsOpen: (b: boolean) => void;
@@ -57,10 +59,7 @@ export default function CheckUserDialog({
 
     const loginMutation = useMutation({
         mutationFn: (header) => {
-            return axiosInstance.post(
-                "auth/authenticate",
-                header
-            );
+            return axiosInstance.post("auth/authenticate", header);
         },
         onSuccess: () => {
             closeDialog();
@@ -84,14 +83,29 @@ export default function CheckUserDialog({
     };
 
     return (
-        <>
+        <DraggablePaper>
             <Dialog
                 onClose={() => {
                     closeDialog;
                 }}
                 open={isOpen}
+                PaperComponent={PaperComponent}
+                hideBackdrop
+                PaperProps={{
+                    elevation: 0,
+                    sx: {
+                        border: "solid 1px #004586",
+                    },
+                }}
+                disableEnforceFocus
+                style={{
+                    top: "30%",
+                    left: "30%",
+                    height: "fit-content",
+                    width: "fit-content",
+                }}
             >
-                <Stack direction={"row"}>
+                <Stack direction={"row"} className="draggable-dialog">
                     <DialogTitle>Logue para completar</DialogTitle>
                     <DialogActions>
                         <IconButton onClick={closeDialog} aria-label="close">
@@ -169,6 +183,6 @@ export default function CheckUserDialog({
                     </Stack>
                 </DialogContent>
             </Dialog>
-        </>
+        </DraggablePaper>
     );
 }

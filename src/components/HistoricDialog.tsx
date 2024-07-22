@@ -20,6 +20,8 @@ import { KeyT } from "../types/KeyDeliveryT";
 import dayjs from "dayjs";
 import getUserById from "../utils/getUserById";
 import { Close } from "@mui/icons-material";
+import PaperComponent from "./PaperComponent";
+import DraggablePaper from "./DraggablePaper";
 
 type Props = {
     isOpen: boolean;
@@ -64,85 +66,112 @@ export default function HistoricDialog({
     }, [keyList]);
 
     return (
-        <Dialog open={isOpen} onClose={handleClose} fullWidth maxWidth="sm">
-            <AppBar sx={{ position: "relative" }}>
-                <Toolbar>
-                    <Typography
-                        sx={{ ml: 0, flex: 1 }}
-                        variant="h6"
-                        component="div"
-                    >
-                        Historico de chaves
-                    </Typography>
-                    <IconButton
-                        edge="start"
-                        color="inherit"
-                        onClick={handleClose}
-                        aria-label="close"
-                    >
-                        <Close />
-                    </IconButton>
-                </Toolbar>
-            </AppBar>
-            <List>
-                {scrollableRoomArray?.map((key) => {
-                    return (
-                        <>
-                            <ListItem key={`modkeylist-${key.id}`}>
-                                <Stack direction={"column"}>
-                                    <Typography>
-                                        Retirada de chave as{" "}
-                                        {dayjs(key.withdrawTime).format(
-                                            "HH:mm [no dia] DD/MM/YYYY"
-                                        )}
-                                    </Typography>
-                                    <Typography>
-                                        Previsão do retorno as{" "}
-                                        {dayjs(key.returnPrevision).format(
-                                            "HH:mm"
-                                        )}
-                                    </Typography>
-                                    {key.isKeyReturned ? (
+        <DraggablePaper>
+            <Dialog
+                open={isOpen}
+                onClose={handleClose}
+                fullWidth
+                maxWidth="sm"
+                PaperComponent={PaperComponent}
+                hideBackdrop
+                PaperProps={{
+                    elevation: 0,
+                    sx: {
+                        border: "solid 1px #004586",
+                    },
+                }}
+                disableEnforceFocus
+                style={{
+                    top: "30%",
+                    left: "30%",
+                    height: "fit-content",
+                    width: "fit-content",
+                }}
+            >
+                <AppBar
+                    sx={{ position: "relative" }}
+                    className="draggable-dialog"
+                >
+                    <Toolbar>
+                        <Typography
+                            sx={{ ml: 0, flex: 1 }}
+                            variant="h6"
+                            component="div"
+                        >
+                            Historico de chaves
+                        </Typography>
+                        <IconButton
+                            edge="start"
+                            color="inherit"
+                            onClick={handleClose}
+                            aria-label="close"
+                        >
+                            <Close />
+                        </IconButton>
+                    </Toolbar>
+                </AppBar>
+                <List>
+                    {scrollableRoomArray?.map((key) => {
+                        return (
+                            <>
+                                <ListItem key={`modkeylist-${key.id}`}>
+                                    <Stack direction={"column"}>
                                         <Typography>
-                                            Retorno de chave em{" "}
-                                            {dayjs(key.returnTime).format(
+                                            Retirada de chave as{" "}
+                                            {dayjs(key.withdrawTime).format(
                                                 "HH:mm [no dia] DD/MM/YYYY"
                                             )}
                                         </Typography>
-                                    ) : null}
-                                    <Typography>
-                                        Reserva feita para{" "}
-                                        {
-                                            getUserById(
-                                                key.responsibleForTheKeyId,
-                                                userList
-                                            )?.name
-                                        }{" "}
-                                        por{" "}
-                                        {
-                                            getUserById(
-                                                key.withdrawResponsibleId,
-                                                userList
-                                            )?.name
-                                        }
-                                    </Typography>
-                                </Stack>
-                                {key.isKeyReturned ? null : (
-                                    <ListItemSecondaryAction>
-                                        <Tooltip title={"Chave não retornada"}>
-                                            <PriorityHighRoundedIcon
-                                                color="error"
-                                                fontSize="large"
-                                            ></PriorityHighRoundedIcon>
-                                        </Tooltip>
-                                    </ListItemSecondaryAction>
-                                )}
-                            </ListItem>
-                            <Divider variant="middle" />
-                        </>
-                    );
-                })}
-            </List>
-        </Dialog>
+                                        <Typography>
+                                            Previsão do retorno as{" "}
+                                            {dayjs(key.returnPrevision).format(
+                                                "HH:mm"
+                                            )}
+                                        </Typography>
+                                        {key.isKeyReturned ? (
+                                            <Typography>
+                                                Retorno de chave em{" "}
+                                                {dayjs(key.returnTime).format(
+                                                    "HH:mm [no dia] DD/MM/YYYY"
+                                                )}
+                                            </Typography>
+                                        ) : null}
+                                        <Typography>
+                                            Reserva feita para{" "}
+                                            {
+                                                getUserById(
+                                                    key.responsibleForTheKeyId,
+                                                    userList
+                                                )?.name
+                                            }{" "}
+                                            por{" "}
+                                            {
+                                                getUserById(
+                                                    key.withdrawResponsibleId,
+                                                    userList
+                                                )?.name
+                                            }
+                                        </Typography>
+                                    </Stack>
+                                    {key.isKeyReturned ? null : (
+                                        <ListItemSecondaryAction>
+                                            <Tooltip
+                                                title={"Chave não retornada"}
+                                            >
+                                                <PriorityHighRoundedIcon
+                                                    color="error"
+                                                    fontSize="large"
+                                                ></PriorityHighRoundedIcon>
+                                            </Tooltip>
+                                        </ListItemSecondaryAction>
+                                    )}
+                                </ListItem>
+                                <Divider variant="middle" />
+                            </>
+                        );
+                    })}
+                </List>
+            </Dialog>
+        </DraggablePaper>
     );
 }

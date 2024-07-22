@@ -24,6 +24,8 @@ import { RoomT } from "../types/RoomT";
 import ConfirmationDialog from "./ConfirmationDialog";
 import HistoricDialog from "./HistoricDialog";
 import { Close } from "@mui/icons-material";
+import DraggablePaper from "./DraggablePaper";
+import PaperComponent from "./PaperComponent";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -278,15 +280,33 @@ export default function CreateRoomDialog({
     }, [createMutation, editMutation, deleteMutation]);
 
     return (
-        <React.Fragment>
+        <DraggablePaper>
             <Dialog
                 open={isOpen}
                 onClose={handleClose}
                 TransitionComponent={Transition}
                 fullWidth
                 maxWidth="sm"
+                PaperComponent={PaperComponent}
+                hideBackdrop
+                PaperProps={{
+                    elevation: 0,
+                    sx: {
+                        border: "solid 1px #004586",
+                    },
+                }}
+                disableEnforceFocus
+                style={{
+                    top: "30%",
+                    left: "30%",
+                    height: "fit-content",
+                    width:'40rem',
+                }}
             >
-                <AppBar sx={{ position: "relative" }}>
+                <AppBar
+                    sx={{ position: "relative" }}
+                    className="draggable-dialog"
+                >
                     <Toolbar>
                         <Typography
                             sx={{ ml: 0, flex: 1 }}
@@ -546,6 +566,6 @@ export default function CreateRoomDialog({
                     </>
                 ) : null}
             </Dialog>
-        </React.Fragment>
+        </DraggablePaper>
     );
 }

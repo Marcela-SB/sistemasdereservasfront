@@ -23,6 +23,8 @@ import axiosInstance from "../utils/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
 import { StateContext } from "../context/ReactContext";
 import { Close } from "@mui/icons-material";
+import PaperComponent from "./PaperComponent";
+import DraggablePaper from "./DraggablePaper";
 
 type Props = {
     setIsOpen: (b: boolean) => void;
@@ -77,88 +79,114 @@ export default function LoginDialog({ setIsOpen, isOpen, setIsLogged }: Props) {
 
     return (
         <>
-            <Dialog
-                onClose={() => {
-                    closeDialog;
-                }}
-                open={isOpen}
-            >
-                <Stack direction={"row"} justifyContent={"space-between"}>
-                    <DialogTitle>Login</DialogTitle>
-                    <DialogActions>
-                        <IconButton onClick={closeDialog} aria-label="close">
-                            <Close />
-                        </IconButton>
-                    </DialogActions>
-                </Stack>
-                <DialogContent>
-                    <Stack direction={"column"} gap={2}>
-                        <FormControl variant="outlined">
-                            <InputMask
-                                mask={"999.999.999-99"}
-                                value={username}
-                                onChange={(
-                                    event: React.ChangeEvent<HTMLInputElement>
-                                ) => {
-                                    setUsername(event.target.value);
-                                }}
+            <DraggablePaper>
+                <Dialog
+                    onClose={() => {
+                        closeDialog;
+                    }}
+                    open={isOpen}
+                    PaperComponent={PaperComponent}
+                    hideBackdrop
+                    PaperProps={{
+                        elevation: 0,
+                        sx: {
+                            border: "solid 1px #004586",
+                        },
+                    }}
+                    disableEnforceFocus
+                    style={{
+                        top: "30%",
+                        left: "30%",
+                        height: "fit-content",
+                        width: "fit-content",
+                    }}
+                >
+                    <Stack
+                        direction={"row"}
+                        justifyContent={"space-between"}
+                        className="draggable-dialog"
+                    >
+                        <DialogTitle>Login</DialogTitle>
+                        <DialogActions>
+                            <IconButton
+                                onClick={closeDialog}
+                                aria-label="close"
                             >
-                                {() => <TextField label="CPF" />}
-                            </InputMask>
-                        </FormControl>
-
-                        <FormControl variant="outlined">
-                            <InputLabel htmlFor="outlined-adornment-password">
-                                Password
-                            </InputLabel>
-                            <OutlinedInput
-                                id="outlined-adornment-password"
-                                type={showPassword ? "text" : "password"}
-                                value={password}
-                                onChange={(
-                                    event: React.ChangeEvent<HTMLInputElement>
-                                ) => {
-                                    setPassword(event.target.value);
-                                }}
-                                endAdornment={
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            aria-label="toggle password visibility"
-                                            onClick={handleClickShowPassword}
-                                            onMouseDown={
-                                                handleMouseDownPassword
-                                            }
-                                            edge="end"
-                                        >
-                                            {showPassword ? (
-                                                <VisibilityOff />
-                                            ) : (
-                                                <Visibility />
-                                            )}
-                                        </IconButton>
-                                    </InputAdornment>
-                                }
-                                label="Password"
-                            />
-                        </FormControl>
-
-                        {loginMutation.error && (
-                            <Alert severity="error">
-                                CPF ou senha incorretos
-                            </Alert>
-                        )}
-
-                        <Button
-                            variant="contained"
-                            onClick={LoginTentative}
-                            sx={{ marginTop: 1 }}
-                            disabled={loginMutation.isPending}
-                        >
-                            login
-                        </Button>
+                                <Close />
+                            </IconButton>
+                        </DialogActions>
                     </Stack>
-                </DialogContent>
-            </Dialog>
+                    <DialogContent>
+                        <Stack direction={"column"} gap={2}>
+                            <FormControl variant="outlined">
+                                <InputMask
+                                    mask={"999.999.999-99"}
+                                    value={username}
+                                    onChange={(
+                                        event: React.ChangeEvent<HTMLInputElement>
+                                    ) => {
+                                        setUsername(event.target.value);
+                                    }}
+                                >
+                                    {() => <TextField label="CPF" />}
+                                </InputMask>
+                            </FormControl>
+
+                            <FormControl variant="outlined">
+                                <InputLabel htmlFor="outlined-adornment-password">
+                                    Password
+                                </InputLabel>
+                                <OutlinedInput
+                                    id="outlined-adornment-password"
+                                    type={showPassword ? "text" : "password"}
+                                    value={password}
+                                    onChange={(
+                                        event: React.ChangeEvent<HTMLInputElement>
+                                    ) => {
+                                        setPassword(event.target.value);
+                                    }}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={
+                                                    handleClickShowPassword
+                                                }
+                                                onMouseDown={
+                                                    handleMouseDownPassword
+                                                }
+                                                edge="end"
+                                            >
+                                                {showPassword ? (
+                                                    <VisibilityOff />
+                                                ) : (
+                                                    <Visibility />
+                                                )}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }
+                                    label="Password"
+                                />
+                            </FormControl>
+
+                            {loginMutation.error && (
+                                <Alert severity="error">
+                                    CPF ou senha incorretos
+                                </Alert>
+                            )}
+
+                            <Button
+                                variant="contained"
+                                onClick={LoginTentative}
+                                sx={{ marginTop: 1 }}
+                                disabled={loginMutation.isPending}
+                            >
+                                login
+                            </Button>
+                        </Stack>
+                    </DialogContent>
+                </Dialog>
+            </DraggablePaper>
             <Snackbar
                 open={isSnackBarOpen}
                 autoHideDuration={3000}
