@@ -60,11 +60,21 @@ export default function KeyScrollableList({
                     "&::-webkit-scrollbar": { display: "none" },
                     marginLeft: 2,
                     marginTop: 2,
-                    borderRadius: "2%",
                     minWidth: 200,
+                    borderRadius: ".5rem .5rem  2% 2%",
+                    border: "solid 1px rgba(0, 0, 0, 0.26)",
+                    padding: 0,
                 }}
             >
-                <ListSubheader>Salas Administrativas</ListSubheader>
+                <ListSubheader
+                    sx={{
+                        backgroundColor: "#004586",
+                        color: "white",
+                        borderRadius: ".5rem .5rem 0 0 ",
+                    }}
+                >
+                    Salas Administrativas
+                </ListSubheader>
                 {keyList.map((item) => {
                     if (
                         getRoomById(item.roomId, roomList)?.administrative ==
@@ -135,11 +145,21 @@ export default function KeyScrollableList({
                     "&::-webkit-scrollbar": { display: "none" },
                     marginLeft: 2,
                     marginTop: 2,
-                    borderRadius: "2%",
                     minWidth: 200,
+                    borderRadius: ".5rem .5rem  2% 2%",
+                    border: "solid 1px rgba(0, 0, 0, 0.26)",
+                    padding: 0,
                 }}
             >
-                <ListSubheader>Salas de aula</ListSubheader>
+                <ListSubheader
+                    sx={{
+                        backgroundColor: "#004586",
+                        color: "white",
+                        borderRadius: ".5rem .5rem 0 0 ",
+                    }}
+                >
+                    Salas de aula
+                </ListSubheader>
                 {keyList.map((item) => {
                     if (getRoomById(item.roomId, roomList)?.administrative)
                         return;

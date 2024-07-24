@@ -180,7 +180,7 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                     top: "30%",
                     left: "30%",
                     height: "fit-content",
-                    width: "fit-content",
+                    width:'42rem',
                 }}
             >
                 <AppBar
@@ -189,11 +189,12 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                 >
                     <Toolbar>
                         <Typography
-                            sx={{ ml: 2, flex: 1, mr: 4 }}
+                            sx={{ ml: 2, flex: 1 }}
                             variant="h6"
                             component="div"
+                            textAlign={'center'}
                         >
-                            Retirada de chave
+                            RETIRADA DE CHAVE
                         </Typography>
                         <IconButton
                             edge="start"
