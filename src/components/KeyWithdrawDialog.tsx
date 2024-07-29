@@ -11,7 +11,7 @@ import { StateContext } from "../context/ReactContext";
 import {
     Autocomplete,
     Checkbox,
-    Divider,
+    Divider, FormControl,
     IconButton,
     List,
     ListItem,
@@ -19,7 +19,7 @@ import {
     Stack,
     TextField,
 } from "@mui/material";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import { RoomT } from "../types/RoomT";
 import dayjs, { Dayjs } from "dayjs";
 import { UserT } from "../types/UserT";
@@ -32,6 +32,7 @@ import CheckUserDialog from "./CheckUserDialog";
 import { Close, Send } from "@mui/icons-material";
 import DraggablePaper from "./DraggablePaper";
 import PaperComponent from "./PaperComponent";
+import roomDynamicSort from "../utils/roomDynamicSort.ts";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -59,6 +60,8 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
         setFormResponsible(null);
         setSelectedInternalReservation(null);
     };
+
+    const [searchedText, setSearchedText] = useState<string>("")
 
     const [formRoom, setFormRoom] = useState<RoomT[]>([]);
 
@@ -104,24 +107,24 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
 
     const [scrollableRoomArray, setScrollableRoomArray] = useState<RoomT[]>([]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (roomList) {
-            const holder = [...roomList];
-            holder.sort((a, b) => {
-                const nameA = a.name.toUpperCase();
-                const nameB = b.name.toUpperCase();
-                if (nameA < nameB) {
-                    return -1;
-                }
-                if (nameA > nameB) {
-                    return 1;
-                }
+            const filteredRoomList = roomList
+                ?.filter((room: RoomT) => {
+                    //if no input the return the original
+                    if (searchedText === "") {
+                        return room;
+                    }
 
-                return 0;
-            });
-            setScrollableRoomArray(holder);
+                    //return the item which contains the room input
+                    else {
+                        return room.name?.toLowerCase().includes(searchedText);
+                    }
+                })
+                .sort(roomDynamicSort());
+            setScrollableRoomArray(filteredRoomList);
         }
-    }, [roomList]);
+    }, [searchedText, roomList]);
 
     React.useEffect(() => {
         if (checkSucess) {
@@ -224,28 +227,47 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                     gap={2}
                     marginTop={2}
                 >
-                    <List sx={{ overflow: "auto", maxHeight: "24rem" }}>
-                        {scrollableRoomArray?.map((room) => {
-                            return (
-                                <>
-                                    <ListItem key={`modroomlist-${room.id}`}>
-                                        {room.name} {room.roomNumber}
-                                        <ListItemSecondaryAction>
-                                            <Checkbox
-                                                onChange={() => {
-                                                    changeRoomList(room);
-                                                }}
-                                            ></Checkbox>
-                                        </ListItemSecondaryAction>
-                                    </ListItem>
-                                    <Divider
-                                        key={`modroomlistdivider-${room.id}`}
-                                        variant="middle"
-                                    />
-                                </>
-                            );
-                        })}
-                    </List>
+                    <Stack direction={"column"} sx={{border: "solid 1px rgba(0, 0, 0, 0.26)", borderRadius:".5rem .5rem  2% 2%"}} >
+                        <List sx={{ overflow: "auto", height: "18rem"}}>
+                            {scrollableRoomArray?.map((room) => {
+                                return (
+                                    <>
+                                        <ListItem key={`modroomlist-${room.id}`}>
+                                            {room.name} {room.roomNumber}
+                                            <ListItemSecondaryAction>
+                                                <Checkbox
+                                                    onChange={() => {
+                                                        changeRoomList(room);
+                                                    }}
+                                                ></Checkbox>
+                                            </ListItemSecondaryAction>
+                                        </ListItem>
+                                        <Divider
+                                            key={`modroomlistdivider-${room.id}`}
+                                            variant="middle"
+                                        />
+                                    </>
+                                );
+                            })}
+                        </List>
+
+                        <FormControl>
+                            <TextField
+                                label="Nome do espaço"
+                                placeholder="Digite o nome do espaço"
+                                sx={{
+                                    margin: 2,
+                                    borderRadius: 6,
+                                }}
+                                value={searchedText}
+                                onChange={(
+                                    event: React.ChangeEvent<HTMLInputElement>
+                                ) => {
+                                    setSearchedText(event.target.value);
+                                }}
+                            ></TextField>
+                        </FormControl>
+                    </Stack>
                     <Stack
                         direction={"column"}
                         justifyContent={"space-evenly"}

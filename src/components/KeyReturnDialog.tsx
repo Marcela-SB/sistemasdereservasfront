@@ -62,6 +62,8 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
 
     const [selectedKey, setSelectedKey] = useState<KeyT | null>(null);
 
+    const [selectedKeyList, setSelectedKeyList] = useState<KeyT[]>([]);
+
     const [formRoom, setFormRoom] = useState<RoomT | null>(null);
 
     const [formReturnTimePrevision, setFormReturnTimePrevision] =
@@ -200,6 +202,8 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
                         <Stack direction={"row"}>
                             <KeyScrollableList
                                 setSelectedKey={setSelectedKey}
+                                selectedKeyList={selectedKeyList}
+                                setSelectedKeyList={setSelectedKeyList}
                             />
                             <Stack
                                 direction={"column"}
@@ -270,42 +274,40 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
                                         sx={{ width: "100%" }}
                                     />
                                 </DemoContainer>
+                                <Autocomplete
+                                    fullWidth
+                                    value={formReturnedBy}
+                                    onChange={(
+                                        _event: any,
+                                        newValue: UserT | null
+                                    ) => {
+                                        setFormReturnedBy(newValue);
+                                    }}
+                                    id="controllable-states-demo"
+                                    options={userList}
+                                    getOptionLabel={(user: UserT) => {
+                                        return user.name;
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Chave retornada por..."
+                                        />
+                                    )}
+                                />
+
+                                <Button
+                                    variant="contained"
+                                    sx={{ marginY: 2, flex:1, marginRight:1.5 }}
+                                    onClick={submitReturn}
+                                    disabled={isRequestPending}
+                                    fullWidth
+                                >
+                                    Criar devolução
+                                </Button>
                             </Stack>
                         </Stack>
-                        <Stack direction={'row'} width={'100%'} paddingLeft={1} paddingRight={3} gap={0} >
-                            <Autocomplete
-                                fullWidth
-                                sx={{ margin: 2, flex:2, marginRight:4 }}
-                                value={formReturnedBy}
-                                onChange={(
-                                    _event: any,
-                                    newValue: UserT | null
-                                ) => {
-                                    setFormReturnedBy(newValue);
-                                }}
-                                id="controllable-states-demo"
-                                options={userList}
-                                getOptionLabel={(user: UserT) => {
-                                    return user.name;
-                                }}
-                                renderInput={(params) => (
-                                    <TextField
-                                        {...params}
-                                        label="Chave retornada por..."
-                                    />
-                                )}
-                            />
 
-                            <Button
-                                variant="contained"
-                                sx={{ marginY: 2, flex:1, marginRight:1.5 }}
-                                onClick={submitReturn}
-                                disabled={isRequestPending}
-                                fullWidth
-                            >
-                                Criar devolução
-                            </Button>
-                        </Stack>
                     </Container>
                 </Dialog>
             </DraggablePaper>
