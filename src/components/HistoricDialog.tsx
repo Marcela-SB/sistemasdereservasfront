@@ -117,43 +117,55 @@ export default function HistoricDialog({
                                 <ListItem key={`modkeylist-${key.id}`}>
                                     <Stack direction={"column"}>
                                         <Typography>
-                                            Retirada de chave as{" "}
+                                            Retirada de chave:
                                             {dayjs(key.withdrawTime).format(
                                                 "HH:mm [no dia] DD/MM/YYYY"
                                             )}
                                         </Typography>
                                         <Typography>
-                                            Previsão do retorno as{" "}
+                                            Previsão do retorno:
                                             {dayjs(key.returnPrevision).format(
                                                 "HH:mm"
                                             )}
                                         </Typography>
                                         {key.isKeyReturned ? (
                                             <Typography>
-                                                Retorno de chave em{" "}
+                                                Retorno de chave:
                                                 {dayjs(key.returnTime).format(
                                                     "HH:mm [no dia] DD/MM/YYYY"
                                                 )}
                                             </Typography>
                                         ) : null}
                                         <Typography>
-                                            Reserva feita para{" "}
+                                            Responsavel pela reserva:
                                             {
                                                 getUserById(
                                                     key.responsibleForTheKeyId,
                                                     userList
                                                 )?.name
-                                            }{" "}
-                                            por{" "}
+                                            }
+                                        </Typography>
+                                        <Typography>
+                                            Reserva feita para:
                                             {
                                                 getUserById(
-                                                    key.withdrawResponsibleId,
+                                                    key.responsibleForTheKeyId,
                                                     userList
                                                 )?.name
                                             }
                                         </Typography>
+
                                     </Stack>
-                                    {key.isKeyReturned ? null : (
+                                    {key.isKeyReturned ?
+                                        <Typography>
+                                        Retorno feito por:
+                                        {
+                                            getUserById(
+                                                key.keyReturnedById,
+                                                userList
+                                            )?.name
+                                        }
+                                    </Typography> : (
                                         <ListItemSecondaryAction>
                                             <Tooltip
                                                 title={"Chave não retornada"}
@@ -165,6 +177,7 @@ export default function HistoricDialog({
                                             </Tooltip>
                                         </ListItemSecondaryAction>
                                     )}
+
                                 </ListItem>
                                 <Divider variant="middle" />
                             </>
