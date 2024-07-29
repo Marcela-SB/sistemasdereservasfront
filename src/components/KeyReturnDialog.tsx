@@ -62,8 +62,6 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
 
     const [selectedKey, setSelectedKey] = useState<KeyT | null>(null);
 
-
-
     const [formRoom, setFormRoom] = useState<RoomT | null>(null);
 
     const [formReturnTimePrevision, setFormReturnTimePrevision] =
@@ -86,7 +84,8 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
             return axiosInstance.put("keydelivery/edit/" + header.id, header);
         },
         onSuccess: () => {
-            //TODO setIsSnackBarOpen(true);
+            setSnackBarText("Devolução de chave criada com sucesso");
+            setSnackBarSeverity("success");
             handleClose();
             queryClient.invalidateQueries({ queryKey: ["keyListContext"] });
         },

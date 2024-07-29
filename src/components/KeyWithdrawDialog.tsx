@@ -151,8 +151,6 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
 
             });
 
-            handleClose();
-
             setCheckSucess(false);
         }
     }, [checkSucess]);
