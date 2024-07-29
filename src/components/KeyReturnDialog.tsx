@@ -62,7 +62,7 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
 
     const [selectedKey, setSelectedKey] = useState<KeyT | null>(null);
 
-    const [selectedKeyList, setSelectedKeyList] = useState<KeyT[]>([]);
+
 
     const [formRoom, setFormRoom] = useState<RoomT | null>(null);
 
@@ -201,8 +201,6 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
                         <Stack direction={"row"}>
                             <KeyScrollableList
                                 setSelectedKey={setSelectedKey}
-                                selectedKeyList={selectedKeyList}
-                                setSelectedKeyList={setSelectedKeyList}
                             />
                             <Stack
                                 direction={"column"}

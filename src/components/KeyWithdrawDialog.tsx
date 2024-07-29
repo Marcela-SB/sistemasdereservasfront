@@ -48,7 +48,7 @@ type Props = {
 };
 
 export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
-    const { roomList, userList, loggedUser } = React.useContext(StateContext);
+    const { roomList, userList, loggedUser, setSnackBarText, setSnackBarSeverity } = React.useContext(StateContext);
 
     const handleClose: DialogProps["onClose"] = (event, reason) => {
         if (reason && reason === "backdropClick") return;
@@ -82,7 +82,6 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
             return axiosInstance.post("keydelivery/create", header);
         },
         onSuccess: () => {
-            //TODO setIsSnackBarOpen(true);
             handleClose();
             queryClient.invalidateQueries({ queryKey: ["keyListContext"] });
             setSnackBarText("Entrega de chave criada com sucesso");
@@ -95,7 +94,12 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
     });
 
     const submitWithdraw = () => {
-        setCheckDialogIsOpen(true);
+        if(formReservatedTo) {
+            setCheckDialogIsOpen(true);
+        } else {
+            setSnackBarText("Preencha todos os campos");
+            setSnackBarSeverity("error");
+        }
     };
 
     const [scrollableRoomArray, setScrollableRoomArray] = useState<RoomT[]>([]);
@@ -125,7 +129,10 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
 
             const headersList: object[] = [];
 
+
+
             formRoom.forEach((room) => {
+
                 const header = {
                     roomId: room.id,
                     returnPrevision: formatedStart,
@@ -134,8 +141,14 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                     withdrawTime: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
                     isKeyReturned: false,
                 };
-                headersList.push(header);
-                createMutation.mutate(header);
+                if(Object.values(header).every((value) => value != null)) {
+                    headersList.push(header);
+                    createMutation.mutate(header);
+                } else {
+                    setSnackBarText("Preencha todos os campos");
+                    setSnackBarSeverity("error");
+                }
+
             });
 
             handleClose();

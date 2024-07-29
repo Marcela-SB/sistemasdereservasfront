@@ -22,16 +22,14 @@ import keyDynamicSort from "../utils/keyDynamicSort";
 
 type Props = {
     setSelectedKey: (k: KeyT) => void;
-    selectedKeyList: KeyT[];
-    setSelectedKeyList: (k: KeyT[]) => void;
 };
 
 export default function KeyScrollableList({
-    setSelectedKey,
-    selectedKeyList,
-    setSelectedKeyList,
+    setSelectedKey
 }: Props) {
     const { keyList, roomList } = React.useContext(StateContext);
+
+    const [selectedKeyList, setSelectedKeyList] = useState<KeyT[]>([]);
 
     const handleKeyListChange = (key: KeyT) => {
         const holder = selectedKeyList;
