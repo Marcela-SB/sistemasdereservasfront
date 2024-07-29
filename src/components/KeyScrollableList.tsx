@@ -17,6 +17,8 @@ import getRoomById from "../utils/getRoomById";
 import { Send } from "@mui/icons-material";
 import dayjs from "dayjs";
 import { KeyT } from "../types/KeyDeliveryT";
+import {useEffect, useState} from "react";
+import keyDynamicSort from "../utils/keyDynamicSort";
 
 type Props = {
     setSelectedKey: (k: KeyT) => void;
@@ -45,6 +47,14 @@ export default function KeyScrollableList({
         }
         setSelectedKeyList(holder);
     };
+
+    const [ordainedKeyList, setOrdainedKeyList] = useState<KeyT[]>([])
+
+    useEffect(() => {
+        if(keyList){
+            setOrdainedKeyList(keyList.sort(keyDynamicSort(roomList)));
+        }
+    }, [keyList]);
 
     return (
         <Stack direction={"row"}>
