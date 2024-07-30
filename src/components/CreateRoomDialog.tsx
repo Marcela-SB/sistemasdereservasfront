@@ -87,6 +87,8 @@ export default function CreateRoomDialog({
         setAdministrative(false);
 
         setIsOpen(false);
+        setIsHistoricOpen(false)
+        setIsConfirmationDOpen(false)
     };
 
     const { setSnackBarText, setSnackBarSeverity } =
@@ -280,292 +282,296 @@ export default function CreateRoomDialog({
     }, [createMutation, editMutation, deleteMutation]);
 
     return (
-        <DraggablePaper>
-            <Dialog
-                open={isOpen}
-                onClose={handleClose}
-                TransitionComponent={Transition}
-                fullWidth
-                maxWidth="sm"
-                PaperComponent={PaperComponent}
-                hideBackdrop
-                PaperProps={{
-                    elevation: 0,
-                    sx: {
-                        border: "solid 1px #004586",
-                    },
-                }}
-                disableEnforceFocus
-                style={{
-                    top: "30%",
-                    left: "30%",
-                    height: "fit-content",
-                    width:'40rem',
-                }}
-            >
-                <AppBar
-                    sx={{ position: "relative" }}
-                    className="draggable-dialog"
+
+        <>
+            <DraggablePaper>
+                <Dialog
+                    open={isOpen}
+                    onClose={handleClose}
+                    TransitionComponent={Transition}
+                    fullWidth
+                    maxWidth="sm"
+                    PaperComponent={PaperComponent}
+                    hideBackdrop
+                    PaperProps={{
+                        elevation: 0,
+                        sx: {
+                            border: "solid 1px #004586",
+                        },
+                    }}
+                    disableEnforceFocus
+                    style={{
+                        top: "30%",
+                        left: "30%",
+                        height: "fit-content",
+                        width:'40rem',
+                    }}
                 >
-                    <Toolbar>
-                        <Typography
-                            sx={{ ml: 0, flex: 1 }}
-                            variant="h6"
-                            component="div"
-                        >
-                            {selectedRoom ? "Consultar espaço" : "Novo espaço"}
-                        </Typography>
-                        <Stack direction={"row"} spacing={1}>
-                            {selectedRoom ? (
-                                <Button
-                                    color="info"
-                                    onClick={() => {
-                                        setIsHistoricOpen(true);
-                                    }}
-                                    disabled={isRequestPending}
-                                    variant="contained"
-                                    sx={{ fontWeight: "600" }}
-                                >
-                                    Historico
-                                </Button>
-                            ) : null}
-
-                            <Button
-                                color="success"
-                                
-                                onClick={onSubmit}
-                                disabled={isRequestPending}
-                                variant="contained"
-                                sx={{ fontWeight: "600" }}
-                            >
-                                {selectedRoom ? "Editar" : "Salvar"}
-                            </Button>
-                            {selectedRoom ? (
-                                <Button
-                                    color="error"
-                                    onClick={() => {
-                                        setIsConfirmationDOpen(true);
-                                    }}
-                                    disabled={isRequestPending}
-                                    variant="contained"
-                                    sx={{ fontWeight: "600" }}
-                                >
-                                    excluir
-                                </Button>
-                            ) : null}
-                            <IconButton
-                                edge="start"
-                                color="inherit"
-                                onClick={handleClose}
-                                disabled={isRequestPending}
-                                aria-label="close"
-                            >
-                                <Close />
-                            </IconButton>
-                        </Stack>
-                    </Toolbar>
-                </AppBar>
-                <Box sx={{ padding: 2, flexGrow: 1 }}>
-                    <Stack
-                        direction={"row"}
-                        gap={3}
-                        justifyContent={"space-around"}
+                    <AppBar
+                        sx={{ position: "relative" }}
+                        className="draggable-dialog"
                     >
-                        <Stack
-                            direction={"column"}
-                            paddingTop={1}
-                            gap={2}
-                            sx={{ flexGrow: 1 }}
-                        >
-                            <TextField
-                                label="Nome"
-                                value={formName}
-                                onChange={(
-                                    event: React.ChangeEvent<HTMLInputElement>
-                                ) => {
-                                    setFormName(event.target.value);
-                                }}
-                            ></TextField>
-                            <TextField
-                                label="Numero da sala"
-                                value={formRNumber}
-                                onChange={(
-                                    event: React.ChangeEvent<HTMLInputElement>
-                                ) => {
-                                    setFormRNumber(event.target.value);
-                                }}
-                            ></TextField>
-                            <TextField
-                                label="Capacidade da sala"
-                                value={formCapacity}
-                                type="number"
-                                sx={inputNumberStyle}
-                                onChange={(
-                                    event: React.ChangeEvent<HTMLInputElement>
-                                ) => {
-                                    setFormCapacity(
-                                        event.target.value as unknown as number
-                                    );
-                                }}
-                            ></TextField>
-
-                            <TextField
-                                label="Numero de cadeiras"
-                                value={formChairQuantity}
-                                type="number"
-                                sx={inputNumberStyle}
-                                onChange={(
-                                    event: React.ChangeEvent<HTMLInputElement>
-                                ) => {
-                                    setFormChairQuantity(
-                                        event.target.value as unknown as number
-                                    );
-                                }}
-                            ></TextField>
-
-                            <TextField
-                                label="Numero de computadores"
-                                value={formComputerQuantity}
-                                type="number"
-                                sx={inputNumberStyle}
-                                onChange={(
-                                    event: React.ChangeEvent<HTMLInputElement>
-                                ) => {
-                                    setFormComputerQuantity(
-                                        event.target.value as unknown as number
-                                    );
-                                }}
-                            ></TextField>
-                        </Stack>
-                        <Divider orientation="vertical" flexItem />
-                        <Stack>
-                            <Typography variant="h5" marginY={1}>
-                                Característica
+                        <Toolbar>
+                            <Typography
+                                sx={{ ml: 0, flex: 1 }}
+                                variant="h6"
+                                component="div"
+                            >
+                                {selectedRoom ? "Consultar espaço" : "Novo espaço"}
                             </Typography>
-                            <FormControlLabel
-                                label="Mesas grandes"
-                                control={
-                                    <Checkbox
-                                        checked={bigTables}
-                                        onChange={(
-                                            event: React.ChangeEvent<HTMLInputElement>
-                                        ) => {
-                                            setBigTables(event.target.checked);
+                            <Stack direction={"row"} spacing={1}>
+                                {selectedRoom ? (
+                                    <Button
+                                        color="info"
+                                        onClick={() => {
+                                            setIsHistoricOpen(true);
                                         }}
-                                    />
-                                }
-                            />
-                            <FormControlLabel
-                                label="Pias"
-                                control={
-                                    <Checkbox
-                                        checked={sinks}
-                                        onChange={(
-                                            event: React.ChangeEvent<HTMLInputElement>
-                                        ) => {
-                                            setSinks(event.target.checked);
+                                        disabled={isRequestPending}
+                                        variant="contained"
+                                        sx={{ fontWeight: "600" }}
+                                    >
+                                        Historico
+                                    </Button>
+                                ) : null}
+
+                                <Button
+                                    color="success"
+
+                                    onClick={onSubmit}
+                                    disabled={isRequestPending}
+                                    variant="contained"
+                                    sx={{ fontWeight: "600" }}
+                                >
+                                    {selectedRoom ? "Editar" : "Salvar"}
+                                </Button>
+                                {selectedRoom ? (
+                                    <Button
+                                        color="error"
+                                        onClick={() => {
+                                            setIsConfirmationDOpen(true);
                                         }}
-                                    />
-                                }
-                            />
-                            <FormControlLabel
-                                label="Ar-condicionado"
-                                control={
-                                    <Checkbox
-                                        checked={airConditioner}
-                                        onChange={handleChangeAir}
-                                    />
-                                }
-                            />
-                            <FormControlLabel
-                                sx={{ ml: 3 }}
-                                label="Ar-condicionado Funcional"
-                                control={
-                                    <Checkbox
-                                        checked={isAirConditionerWorking}
-                                        onChange={handleChangeAirWorking}
-                                    />
-                                }
-                            />
-                            <FormControlLabel
-                                label="Projetor"
-                                control={
-                                    <Checkbox
-                                        checked={projector}
-                                        onChange={handleChangeProjector}
-                                    />
-                                }
-                            />
-                            <FormControlLabel
-                                sx={{ ml: 3 }}
-                                label="Projetor funcional"
-                                control={
-                                    <Checkbox
-                                        checked={isProjectorWorking}
-                                        onChange={handleChangeProjectorWorking}
-                                    />
-                                }
-                            />
-                            <FormControlLabel
-                                label="Possui chave"
-                                control={
-                                    <Checkbox
-                                        checked={key}
-                                        onChange={(
-                                            event: React.ChangeEvent<HTMLInputElement>
-                                        ) => {
-                                            setKey(event.target.checked);
-                                        }}
-                                    />
-                                }
-                            />
-                            <FormControlLabel
-                                label="Sala administrativa / projeto"
-                                control={
-                                    <Checkbox
-                                        checked={administrative}
-                                        onChange={(
-                                            event: React.ChangeEvent<HTMLInputElement>
-                                        ) => {
-                                            setAdministrative(
-                                                event.target.checked
-                                            );
-                                        }}
-                                    />
-                                }
-                            />
-                            <FormControlLabel
-                                label="Espaço reservavel"
-                                control={
-                                    <Checkbox
-                                        checked={reservable}
-                                        onChange={(
-                                            event: React.ChangeEvent<HTMLInputElement>
-                                        ) => {
-                                            setReservable(event.target.checked);
-                                        }}
-                                    />
-                                }
-                            />
+                                        disabled={isRequestPending}
+                                        variant="contained"
+                                        sx={{ fontWeight: "600" }}
+                                    >
+                                        excluir
+                                    </Button>
+                                ) : null}
+                                <IconButton
+                                    edge="start"
+                                    color="inherit"
+                                    onClick={handleClose}
+                                    disabled={isRequestPending}
+                                    aria-label="close"
+                                >
+                                    <Close />
+                                </IconButton>
+                            </Stack>
+                        </Toolbar>
+                    </AppBar>
+                    <Box sx={{ padding: 2, flexGrow: 1 }}>
+                        <Stack
+                            direction={"row"}
+                            gap={3}
+                            justifyContent={"space-around"}
+                        >
+                            <Stack
+                                direction={"column"}
+                                paddingTop={1}
+                                gap={2}
+                                sx={{ flexGrow: 1 }}
+                            >
+                                <TextField
+                                    label="Nome"
+                                    value={formName}
+                                    onChange={(
+                                        event: React.ChangeEvent<HTMLInputElement>
+                                    ) => {
+                                        setFormName(event.target.value);
+                                    }}
+                                ></TextField>
+                                <TextField
+                                    label="Numero da sala"
+                                    value={formRNumber}
+                                    onChange={(
+                                        event: React.ChangeEvent<HTMLInputElement>
+                                    ) => {
+                                        setFormRNumber(event.target.value);
+                                    }}
+                                ></TextField>
+                                <TextField
+                                    label="Capacidade da sala"
+                                    value={formCapacity}
+                                    type="number"
+                                    sx={inputNumberStyle}
+                                    onChange={(
+                                        event: React.ChangeEvent<HTMLInputElement>
+                                    ) => {
+                                        setFormCapacity(
+                                            event.target.value as unknown as number
+                                        );
+                                    }}
+                                ></TextField>
+
+                                <TextField
+                                    label="Numero de cadeiras"
+                                    value={formChairQuantity}
+                                    type="number"
+                                    sx={inputNumberStyle}
+                                    onChange={(
+                                        event: React.ChangeEvent<HTMLInputElement>
+                                    ) => {
+                                        setFormChairQuantity(
+                                            event.target.value as unknown as number
+                                        );
+                                    }}
+                                ></TextField>
+
+                                <TextField
+                                    label="Numero de computadores"
+                                    value={formComputerQuantity}
+                                    type="number"
+                                    sx={inputNumberStyle}
+                                    onChange={(
+                                        event: React.ChangeEvent<HTMLInputElement>
+                                    ) => {
+                                        setFormComputerQuantity(
+                                            event.target.value as unknown as number
+                                        );
+                                    }}
+                                ></TextField>
+                            </Stack>
+                            <Divider orientation="vertical" flexItem />
+                            <Stack>
+                                <Typography variant="h5" marginY={1}>
+                                    Característica
+                                </Typography>
+                                <FormControlLabel
+                                    label="Mesas grandes"
+                                    control={
+                                        <Checkbox
+                                            checked={bigTables}
+                                            onChange={(
+                                                event: React.ChangeEvent<HTMLInputElement>
+                                            ) => {
+                                                setBigTables(event.target.checked);
+                                            }}
+                                        />
+                                    }
+                                />
+                                <FormControlLabel
+                                    label="Pias"
+                                    control={
+                                        <Checkbox
+                                            checked={sinks}
+                                            onChange={(
+                                                event: React.ChangeEvent<HTMLInputElement>
+                                            ) => {
+                                                setSinks(event.target.checked);
+                                            }}
+                                        />
+                                    }
+                                />
+                                <FormControlLabel
+                                    label="Ar-condicionado"
+                                    control={
+                                        <Checkbox
+                                            checked={airConditioner}
+                                            onChange={handleChangeAir}
+                                        />
+                                    }
+                                />
+                                <FormControlLabel
+                                    sx={{ ml: 3 }}
+                                    label="Ar-condicionado Funcional"
+                                    control={
+                                        <Checkbox
+                                            checked={isAirConditionerWorking}
+                                            onChange={handleChangeAirWorking}
+                                        />
+                                    }
+                                />
+                                <FormControlLabel
+                                    label="Projetor"
+                                    control={
+                                        <Checkbox
+                                            checked={projector}
+                                            onChange={handleChangeProjector}
+                                        />
+                                    }
+                                />
+                                <FormControlLabel
+                                    sx={{ ml: 3 }}
+                                    label="Projetor funcional"
+                                    control={
+                                        <Checkbox
+                                            checked={isProjectorWorking}
+                                            onChange={handleChangeProjectorWorking}
+                                        />
+                                    }
+                                />
+                                <FormControlLabel
+                                    label="Possui chave"
+                                    control={
+                                        <Checkbox
+                                            checked={key}
+                                            onChange={(
+                                                event: React.ChangeEvent<HTMLInputElement>
+                                            ) => {
+                                                setKey(event.target.checked);
+                                            }}
+                                        />
+                                    }
+                                />
+                                <FormControlLabel
+                                    label="Sala administrativa / projeto"
+                                    control={
+                                        <Checkbox
+                                            checked={administrative}
+                                            onChange={(
+                                                event: React.ChangeEvent<HTMLInputElement>
+                                            ) => {
+                                                setAdministrative(
+                                                    event.target.checked
+                                                );
+                                            }}
+                                        />
+                                    }
+                                />
+                                <FormControlLabel
+                                    label="Espaço reservavel"
+                                    control={
+                                        <Checkbox
+                                            checked={reservable}
+                                            onChange={(
+                                                event: React.ChangeEvent<HTMLInputElement>
+                                            ) => {
+                                                setReservable(event.target.checked);
+                                            }}
+                                        />
+                                    }
+                                />
+                            </Stack>
                         </Stack>
-                    </Stack>
-                </Box>
-                {selectedRoom ? (
-                    <>
-                        <ConfirmationDialog
-                            setIsOpen={setIsConfirmationDOpen}
-                            isOpen={isConfirmationDOpen}
-                            toExclude={selectedRoom.name}
-                            excludeFunction={onRemove}
-                        />
-                        <HistoricDialog
-                            isOpen={isHistoricOpen}
-                            setIsOpen={setIsHistoricOpen}
-                            selectedRoom={selectedRoom}
-                        />
-                    </>
-                ) : null}
-            </Dialog>
-        </DraggablePaper>
+                    </Box>
+
+                </Dialog>
+            </DraggablePaper>
+            {selectedRoom ? (
+                <>
+                    <ConfirmationDialog
+                        setIsOpen={setIsConfirmationDOpen}
+                        isOpen={isConfirmationDOpen}
+                        toExclude={selectedRoom.name}
+                        excludeFunction={onRemove}
+                    />
+                    <HistoricDialog
+                        isOpen={isHistoricOpen}
+                        setIsOpen={setIsHistoricOpen}
+                        selectedRoom={selectedRoom}
+                    />
+                </>
+            ) : null}
+        </>
     );
 }

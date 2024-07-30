@@ -70,8 +70,6 @@ export default function HistoricDialog({
             <Dialog
                 open={isOpen}
                 onClose={handleClose}
-                fullWidth
-                maxWidth="sm"
                 PaperComponent={PaperComponent}
                 hideBackdrop
                 PaperProps={{
@@ -115,7 +113,7 @@ export default function HistoricDialog({
                         return (
                             <>
                                 <ListItem key={`modkeylist-${key.id}`}>
-                                    <Stack direction={"column"}>
+                                    <Stack direction={"column"} sx={{marginRight:20}}>
                                         <Typography>
                                             Retirada de chave:
                                             {dayjs(key.withdrawTime).format(
@@ -128,14 +126,7 @@ export default function HistoricDialog({
                                                 "HH:mm"
                                             )}
                                         </Typography>
-                                        {key.isKeyReturned ? (
-                                            <Typography>
-                                                Retorno de chave:
-                                                {dayjs(key.returnTime).format(
-                                                    "HH:mm [no dia] DD/MM/YYYY"
-                                                )}
-                                            </Typography>
-                                        ) : null}
+
                                         <Typography>
                                             Responsavel pela reserva:
                                             {
@@ -154,19 +145,29 @@ export default function HistoricDialog({
                                                 )?.name
                                             }
                                         </Typography>
-
+                                        {key.isKeyReturned ?
+                                            <>
+                                            <Typography>
+                                                Retorno feito por:
+                                                {
+                                                    getUserById(
+                                                        key.keyReturnedById,
+                                                        userList
+                                                    )?.name
+                                                }
+                                            </Typography>
+                                            <Typography>
+                                                Retorno de chave:
+                                                {dayjs(key.returnTime).format(
+                                                    "HH:mm [no dia] DD/MM/YYYY"
+                                                )}
+                                            </Typography>
+                                            </> : null }
                                     </Stack>
                                     {key.isKeyReturned ?
-                                        <Typography>
-                                        Retorno feito por:
-                                        {
-                                            getUserById(
-                                                key.keyReturnedById,
-                                                userList
-                                            )?.name
-                                        }
-                                    </Typography> : (
-                                        <ListItemSecondaryAction>
+                                        null: (
+                                        <ListItemSecondaryAction
+                                        >
                                             <Tooltip
                                                 title={"Chave não retornada"}
                                             >
