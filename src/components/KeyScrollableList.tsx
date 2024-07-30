@@ -179,6 +179,7 @@ export default function KeyScrollableList({
                         )
                             return;
                         if (!item.isKeyReturned) return;
+                        if(dayjs().isAfter(dayjs(item.withdrawTime), 'day')) return
 
                         const room = getRoomById(item.roomId, roomList);
                         let roomDisplayName = room?.name;
@@ -333,6 +334,8 @@ export default function KeyScrollableList({
                         )
                             return;
                         if (!item.isKeyReturned) return;
+
+                        if(dayjs().isAfter(dayjs(item.withdrawTime), 'day')) return
 
                         const room = getRoomById(item.roomId, roomList);
                         let roomDisplayName = room?.name;
