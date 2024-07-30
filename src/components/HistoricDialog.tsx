@@ -108,7 +108,7 @@ export default function HistoricDialog({
                         </IconButton>
                     </Toolbar>
                 </AppBar>
-                <List>
+                <List sx={{overflow: "auto", maxHeight: "30rem"}} >
                     {scrollableRoomArray?.map((key) => {
                         return (
                             <>
