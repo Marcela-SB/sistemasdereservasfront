@@ -120,7 +120,6 @@ export default function CheckUserDialog({
                             <InputMask
                                 mask={"999.999.999-99"}
                                 value={username}
-                                readOnly
                                 onChange={(
                                     event: React.ChangeEvent<HTMLInputElement>
                                 ) => {
