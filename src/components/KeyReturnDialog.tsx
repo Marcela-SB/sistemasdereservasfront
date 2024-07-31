@@ -298,7 +298,7 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
 
                                 <Button
                                     variant="contained"
-                                    sx={{ marginY: 2, flex:1, marginRight:1.5 }}
+                                    sx={{ marginY: 2, flex:1, marginRight:1.5, height:'100%'}}
                                     onClick={submitReturn}
                                     disabled={isRequestPending}
                                     fullWidth

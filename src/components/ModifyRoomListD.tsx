@@ -38,11 +38,11 @@ function ModifyRoomListD({
 
     const [scrollableRoomArray, setScrollableRoomArray] = useState<RoomT[]>([]);
 
-    const [searchedText, setSearchedText] = useState("");
-
     const handleClose = () => {
         setIsOpen(false);
     };
+
+    const [searchedText, setSearchedText] = useState("");
 
     useEffect(() => {
         if (roomList) {
