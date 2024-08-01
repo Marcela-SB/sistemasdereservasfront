@@ -79,18 +79,17 @@ export default function KeyScrollableList({
     }, [keyList,roomList, searchedText]);
 
     return (
-        <Stack direction={'column'} >
-            <Stack direction={"row"}>
-                <Stack direction={"column"} justifyContent={"start"} gap={2} sx={{marginLeft: 2,
-                    marginY: 2}}>
-                    <List
+        <Stack direction={'column'} gap={2} sx={{
+            marginY: 2}}>
+
+            <Stack direction={'row'} gap={1} flex={2/4} ><List
                         sx={{
                             width: "100%",
                             maxWidth: 360,
                             bgcolor: "background.paper",
                             position: "relative",
                             overflow: "auto",
-                            maxHeight: "20rem",
+                            maxHeight: "15rem",
                             "& ul": { padding: 0 },
                             "&::-webkit-scrollbar": { display: "none" },
                             minWidth: 200,
@@ -171,14 +170,116 @@ export default function KeyScrollableList({
                             );
                         })}
                     </List>
-                    <List
+                        <List
+                            sx={{
+                                width: "100%",
+                                maxWidth: 360,
+                                bgcolor: "background.paper",
+                                position: "relative",
+                                overflow: "auto",
+                                maxHeight: "15rem",
+                                "& ul": { padding: 0 },
+                                "&::-webkit-scrollbar": { display: "none" },
+                                minWidth: 200,
+                                borderRadius: ".5rem .5rem  2% 2%",
+                                border: "solid 1px rgba(0, 0, 0, 0.26)",
+                                padding: 0,
+                                flex:2/3
+                            }}
+                        >
+                            <ListSubheader
+                                sx={{
+                                    backgroundColor: "#004586",
+                                    color: "white",
+                                    borderRadius: ".5rem .5rem 0 0 ",
+                                }}
+                            >
+                                Salas de Aula
+                            </ListSubheader>
+                            {ordainedKeyList.map((item) => {
+                                if (
+                                    getRoomById(item.roomId, roomList)?.administrative ==
+                                    true
+                                )
+                                    return;
+                                if (item.isKeyReturned) return;
+
+                                const room = getRoomById(item.roomId, roomList);
+                                let roomDisplayName = room?.name;
+                                if (room?.roomNumber) {
+                                    roomDisplayName =
+                                        roomDisplayName + " " + room.roomNumber;
+                                }
+
+                                const withdratime = dayjs(item.withdrawTime).format(
+                                    "HH:mm"
+                                );
+
+                                let returnPrevision = ""
+                                if(item.returnPrevision) {
+                                    returnPrevision = `-  ${dayjs(item.returnPrevision).format("HH:mm")}`
+                                }
+
+                                return (
+                                    <ListItem
+                                        key={item.id}
+                                        secondaryAction={
+                                            <IconButton
+                                                edge="end"
+                                                onClick={() => {
+                                                    setSelectedKey(item);
+                                                }}
+                                            >
+                                                <Send />
+                                            </IconButton>
+                                        }
+                                        disablePadding
+                                        sx={{ borderBottom: "1px solid gray" }}
+                                    >
+                                        <ListItemButton
+                                            role={undefined}
+                                            onClick={() => {
+                                                handleKeyListChange(item);
+                                            }}
+                                            dense
+                                        >
+                                            <ListItemIcon sx={{ minWidth: "auto" }}>
+                                                <Checkbox edge="start" disableRipple />
+                                            </ListItemIcon>
+                                            <ListItemText
+                                                primary={`${roomDisplayName}`}
+                                                secondary={`${withdratime} ${returnPrevision}`}
+                                            />
+                                        </ListItemButton>
+                                    </ListItem>
+                                );
+                            })}
+                        </List></Stack>
+
+
+                <FormControl >
+                    <TextField
+                        label="Nome do espaço"
+                        placeholder="Digite o nome do espaço"
+                        sx={{
+                            borderRadius: 6,
+                        }}
+                        value={searchedText}
+                        onChange={(
+                            event: React.ChangeEvent<HTMLInputElement>
+                        ) => {
+                            setSearchedText(event.target.value);
+                        }}
+                    ></TextField>
+                </FormControl>
+                    <Stack direction={'row'} gap={1} flex={1/4} ><List
                         sx={{
                             width: "100%",
                             maxWidth: 360,
                             bgcolor: "background.paper",
                             position: "relative",
                             overflow: "auto",
-                            maxHeight: "20rem",
+                            height: "10rem",
                             "& ul": { padding: 0 },
                             "&::-webkit-scrollbar": { display: "none" },
 
@@ -186,7 +287,6 @@ export default function KeyScrollableList({
                             borderRadius: ".5rem .5rem  2% 2%",
                             border: "solid 1px rgba(0, 0, 0, 0.26)",
                             padding: 0,
-                            flex:1/3
                         }}
                     >
                         <ListSubheader
@@ -239,182 +339,76 @@ export default function KeyScrollableList({
                             );
                         })}
                     </List>
-                </Stack>
-
-                <Stack direction={"column"} justifyContent={"start"} gap={2} sx={{marginLeft: 2,
-                    marginY: 2}}>
-                    <List
-                        sx={{
-                            width: "100%",
-                            maxWidth: 360,
-                            bgcolor: "background.paper",
-                            position: "relative",
-                            overflow: "auto",
-                            maxHeight: "20rem",
-                            "& ul": { padding: 0 },
-                            "&::-webkit-scrollbar": { display: "none" },
-                            minWidth: 200,
-                            borderRadius: ".5rem .5rem  2% 2%",
-                            border: "solid 1px rgba(0, 0, 0, 0.26)",
-                            padding: 0,
-                            flex:2/3
-                        }}
-                    >
-                        <ListSubheader
+                        <List
                             sx={{
-                                backgroundColor: "#004586",
-                                color: "white",
-                                borderRadius: ".5rem .5rem 0 0 ",
+                                width: "100%",
+                                maxWidth: 360,
+                                bgcolor: "background.paper",
+                                position: "relative",
+                                overflow: "auto",
+                                height: "10rem",
+                                "& ul": { padding: 0 },
+                                "&::-webkit-scrollbar": { display: "none" },
+
+                                minWidth: 200,
+                                borderRadius: ".5rem .5rem  2% 2%",
+                                border: "solid 1px rgba(0, 0, 0, 0.26)",
+                                padding: 0,
                             }}
                         >
-                            Salas de Aula
-                        </ListSubheader>
-                        {ordainedKeyList.map((item) => {
-                            if (
-                                getRoomById(item.roomId, roomList)?.administrative ==
-                                true
-                            )
-                                return;
-                            if (item.isKeyReturned) return;
+                            <ListSubheader
+                                sx={{
+                                    backgroundColor: "#004586",
+                                    color: "white",
+                                    borderRadius: ".5rem .5rem 0 0 ",
+                                }}
+                            >
+                                Salas de Aula Retornadas
+                            </ListSubheader>
+                            {ordainedKeyList.map((item) => {
+                                if (
+                                    getRoomById(item.roomId, roomList)?.administrative ==
+                                    true
+                                )
+                                    return;
+                                if (!item.isKeyReturned) return;
 
-                            const room = getRoomById(item.roomId, roomList);
-                            let roomDisplayName = room?.name;
-                            if (room?.roomNumber) {
-                                roomDisplayName =
-                                    roomDisplayName + " " + room.roomNumber;
-                            }
+                                if(dayjs().isAfter(dayjs(item.withdrawTime), 'day')) return
 
-                            const withdratime = dayjs(item.withdrawTime).format(
-                                "HH:mm"
-                            );
+                                const room = getRoomById(item.roomId, roomList);
+                                let roomDisplayName = room?.name;
+                                if (room?.roomNumber) {
+                                    roomDisplayName =
+                                        roomDisplayName + " " + room.roomNumber;
+                                }
 
-                            let returnPrevision = ""
-                            if(item.returnPrevision) {
-                                returnPrevision = `-  ${dayjs(item.returnPrevision).format("HH:mm")}`
-                            }
+                                const withdratime = dayjs(item.withdrawTime).format(
+                                    "HH:mm"
+                                );
 
-                            return (
-                                <ListItem
-                                    key={item.id}
-                                    secondaryAction={
-                                        <IconButton
-                                            edge="end"
-                                            onClick={() => {
-                                                setSelectedKey(item);
-                                            }}
-                                        >
-                                            <Send />
-                                        </IconButton>
-                                    }
-                                    disablePadding
-                                    sx={{ borderBottom: "1px solid gray" }}
-                                >
-                                    <ListItemButton
-                                        role={undefined}
-                                        onClick={() => {
-                                            handleKeyListChange(item);
-                                        }}
-                                        dense
+                                let returnPrevision = ""
+                                if(item.returnPrevision) {
+                                    returnPrevision = `-  ${dayjs(item.returnPrevision).format("HH:mm")}`
+                                }
+
+                                return (
+                                    <ListItem
+                                        key={item.id}
+                                        disablePadding
+                                        sx={{ borderBottom: "1px solid gray", paddingLeft:2 }}
+
                                     >
-                                        <ListItemIcon sx={{ minWidth: "auto" }}>
-                                            <Checkbox edge="start" disableRipple />
-                                        </ListItemIcon>
+
                                         <ListItemText
                                             primary={`${roomDisplayName}`}
                                             secondary={`${withdratime} ${returnPrevision}`}
                                         />
-                                    </ListItemButton>
-                                </ListItem>
-                            );
-                        })}
-                    </List>
-                    <List
-                        sx={{
-                            width: "100%",
-                            maxWidth: 360,
-                            bgcolor: "background.paper",
-                            position: "relative",
-                            overflow: "auto",
-                            maxHeight: "20rem",
-                            "& ul": { padding: 0 },
-                            "&::-webkit-scrollbar": { display: "none" },
+                                    </ListItem>
+                                );
+                            })}
+                        </List></Stack>
 
-                            minWidth: 200,
-                            borderRadius: ".5rem .5rem  2% 2%",
-                            border: "solid 1px rgba(0, 0, 0, 0.26)",
-                            padding: 0,
-                            flex:1/3
-                        }}
-                    >
-                        <ListSubheader
-                            sx={{
-                                backgroundColor: "#004586",
-                                color: "white",
-                                borderRadius: ".5rem .5rem 0 0 ",
-                            }}
-                        >
-                            Salas de Aula Retornadas
-                        </ListSubheader>
-                        {ordainedKeyList.map((item) => {
-                            if (
-                                getRoomById(item.roomId, roomList)?.administrative ==
-                                true
-                            )
-                                return;
-                            if (!item.isKeyReturned) return;
 
-                            if(dayjs().isAfter(dayjs(item.withdrawTime), 'day')) return
-
-                            const room = getRoomById(item.roomId, roomList);
-                            let roomDisplayName = room?.name;
-                            if (room?.roomNumber) {
-                                roomDisplayName =
-                                    roomDisplayName + " " + room.roomNumber;
-                            }
-
-                            const withdratime = dayjs(item.withdrawTime).format(
-                                "HH:mm"
-                            );
-
-                            let returnPrevision = ""
-                            if(item.returnPrevision) {
-                                returnPrevision = `-  ${dayjs(item.returnPrevision).format("HH:mm")}`
-                            }
-
-                            return (
-                                <ListItem
-                                    key={item.id}
-                                    disablePadding
-                                    sx={{ borderBottom: "1px solid gray", paddingLeft:2 }}
-
-                                >
-
-                                    <ListItemText
-                                        primary={`${roomDisplayName}`}
-                                        secondary={`${withdratime} ${returnPrevision}`}
-                                    />
-                                </ListItem>
-                            );
-                        })}
-                    </List>
-                </Stack>
-            </Stack>
-            <FormControl>
-                <TextField
-                    label="Nome do espaço"
-                    placeholder="Digite o nome do espaço"
-                    sx={{
-                        margin: 2,
-                        borderRadius: 6,
-                    }}
-                    value={searchedText}
-                    onChange={(
-                        event: React.ChangeEvent<HTMLInputElement>
-                    ) => {
-                        setSearchedText(event.target.value);
-                    }}
-                ></TextField>
-            </FormControl>
         </Stack>
     );
 }
