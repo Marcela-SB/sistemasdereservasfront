@@ -74,7 +74,6 @@ export default function KeyScrollableList({
                         }
                     }
                 }).sort(keyDynamicSort(roomList))
-            console.log(filtededKeyList)
             setOrdainedKeyList(filtededKeyList);
         }
     }, [keyList,roomList, searchedText]);
@@ -129,9 +128,13 @@ export default function KeyScrollableList({
                                 "HH:mm"
                             );
 
-                            const returnPrevision = dayjs(item.returnPrevision).format(
-                                "HH:mm"
-                            );
+                            let returnPrevision = ""
+                            if(item.returnPrevision) {
+                                returnPrevision = `-  ${dayjs(item.returnPrevision).format("HH:mm")}`
+                            }
+
+
+
 
                             return (
                                 <ListItem
@@ -161,7 +164,7 @@ export default function KeyScrollableList({
                                         </ListItemIcon>
                                         <ListItemText
                                             primary={`${roomDisplayName}`}
-                                            secondary={`${withdratime}  -     ${returnPrevision}`}
+                                            secondary={`${withdratime} ${returnPrevision}`}
                                         />
                                     </ListItemButton>
                                 </ListItem>
@@ -215,9 +218,10 @@ export default function KeyScrollableList({
                                 "HH:mm"
                             );
 
-                            const returnPrevision = dayjs(item.returnPrevision).format(
-                                "HH:mm"
-                            );
+                            let returnPrevision = ""
+                            if(item.returnPrevision) {
+                                returnPrevision = `-  ${dayjs(item.returnPrevision).format("HH:mm")}`
+                            }
 
                             return (
                                 <ListItem
@@ -229,7 +233,7 @@ export default function KeyScrollableList({
 
                                     <ListItemText
                                         primary={`${roomDisplayName}`}
-                                        secondary={`${withdratime}  -     ${returnPrevision}`}
+                                        secondary={`${withdratime} ${returnPrevision}`}
                                     />
                                 </ListItem>
                             );
@@ -284,9 +288,10 @@ export default function KeyScrollableList({
                                 "HH:mm"
                             );
 
-                            const returnPrevision = dayjs(item.returnPrevision).format(
-                                "HH:mm"
-                            );
+                            let returnPrevision = ""
+                            if(item.returnPrevision) {
+                                returnPrevision = `-  ${dayjs(item.returnPrevision).format("HH:mm")}`
+                            }
 
                             return (
                                 <ListItem
@@ -316,7 +321,7 @@ export default function KeyScrollableList({
                                         </ListItemIcon>
                                         <ListItemText
                                             primary={`${roomDisplayName}`}
-                                            secondary={`${withdratime}  -     ${returnPrevision}`}
+                                            secondary={`${withdratime} ${returnPrevision}`}
                                         />
                                     </ListItemButton>
                                 </ListItem>
@@ -371,9 +376,10 @@ export default function KeyScrollableList({
                                 "HH:mm"
                             );
 
-                            const returnPrevision = dayjs(item.returnPrevision).format(
-                                "HH:mm"
-                            );
+                            let returnPrevision = ""
+                            if(item.returnPrevision) {
+                                returnPrevision = `-  ${dayjs(item.returnPrevision).format("HH:mm")}`
+                            }
 
                             return (
                                 <ListItem
@@ -385,7 +391,7 @@ export default function KeyScrollableList({
 
                                     <ListItemText
                                         primary={`${roomDisplayName}`}
-                                        secondary={`${withdratime}  -     ${returnPrevision}`}
+                                        secondary={`${withdratime} ${returnPrevision}`}
                                     />
                                 </ListItem>
                             );

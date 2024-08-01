@@ -24,7 +24,7 @@ import { RoomT } from "../types/RoomT";
 import dayjs, { Dayjs } from "dayjs";
 import { UserT } from "../types/UserT";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { TimePicker } from "@mui/x-date-pickers";
+import {ClearIcon, TimePicker} from "@mui/x-date-pickers";
 import axiosInstance from "../utils/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../utils/queryClient";
@@ -65,7 +65,7 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
 
     const [formRoom, setFormRoom] = useState<RoomT[]>([]);
 
-    const [formReturnTime, setFormReturnTime] = useState<Dayjs | null>(dayjs());
+    const [formReturnTime, setFormReturnTime] = useState<Dayjs | null>(null);
 
     const [formReservatedTo, setFormReservatedTo] = useState<UserT | null>(
         null
@@ -128,23 +128,26 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
 
     React.useEffect(() => {
         if (checkSucess) {
-            const formatedStart = formReturnTime!.format("YYYY-MM-DDTHH:mm:ss");
+            const formatedStart = formReturnTime?.format("YYYY-MM-DDTHH:mm:ss");
 
             const headersList: object[] = [];
-
-
 
             formRoom.forEach((room) => {
 
                 const header = {
                     roomId: room.id,
-                    returnPrevision: formatedStart,
                     withdrawResponsibleId: loggedUser.id,
                     responsibleForTheKeyId: formReservatedTo?.id,
                     withdrawTime: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
                     isKeyReturned: false,
                 };
                 if(Object.values(header).every((value) => value != null)) {
+                    if(formReturnTime){
+                        header.returnPrevision = formReturnTime?.format("YYYY-MM-DDTHH:mm:ss");
+                    } else {
+                        header.returnPrevision = null
+                    }
+                    console.log(header)
                     headersList.push(header);
                     createMutation.mutate(header);
                 } else {
@@ -298,7 +301,10 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                             fullWidth
                         />
 
+
+
                         <DemoContainer components={["TimePicker"]}>
+
                             <TimePicker
                                 label="Previsão de retorno"
                                 value={formReturnTime}
@@ -306,8 +312,11 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                                     setFormReturnTime(newValue)
                                 }
                                 sx={{ width: "100%" }}
+
+                                slotProps={{ field: { clearable: true } }}
                             />
                         </DemoContainer>
+
                     </Stack>
                 </Stack>
 
