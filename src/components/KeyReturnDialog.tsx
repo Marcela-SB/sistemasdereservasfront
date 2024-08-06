@@ -32,6 +32,7 @@ import { queryClient } from "../utils/queryClient";
 import { Close } from "@mui/icons-material";
 import DraggablePaper from "./DraggablePaper";
 import PaperComponent from "./PaperComponent";
+import RefreshIcon from '@mui/icons-material/RefreshOutlined';
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -59,6 +60,10 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
         setFormReturnedBy(null);
         setFormRoom(null);
     };
+
+    const handleRefresh = () => {
+        queryClient.invalidateQueries({queryKey: ["keyListContext"]})
+    }
 
     const [selectedKey, setSelectedKey] = useState<KeyT | null>(null);
 
@@ -88,9 +93,8 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
         onSuccess: () => {
             setSnackBarText("Devolução de chave criada com sucesso");
             setSnackBarSeverity("success");
-            handleClose();
             queryClient.invalidateQueries({ queryKey: ["keyListContext"] });
-        },
+        }
     });
 
     React.useEffect(() => {
@@ -181,6 +185,14 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
                             >
                                 DEVOLUÇÃO DE CHAVE
                             </Typography>
+                            <IconButton
+                                edge="start"
+                                color="inherit"
+                                onClick={handleRefresh}
+                                aria-label="close"
+                            >
+                                <RefreshIcon />
+                            </IconButton>
                             <IconButton
                                 edge="start"
                                 color="inherit"

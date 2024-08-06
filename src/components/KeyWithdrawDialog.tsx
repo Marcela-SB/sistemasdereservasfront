@@ -85,7 +85,6 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
             return axiosInstance.post("keydelivery/create", header);
         },
         onSuccess: () => {
-            handleClose();
             queryClient.invalidateQueries({ queryKey: ["keyListContext"] });
             setSnackBarText("Entrega de chave criada com sucesso");
             setSnackBarSeverity("success");
