@@ -88,6 +88,7 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
             queryClient.invalidateQueries({ queryKey: ["keyListContext"] });
             setSnackBarText("Entrega de chave criada com sucesso");
             setSnackBarSeverity("success");
+            setFormReservatedTo(null);
         },
         onError: (error) => {
             setSnackBarText(error.response.data);
@@ -146,7 +147,7 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                     } else {
                         header.returnPrevision = null
                     }
-                    console.log(header)
+                    console.log(formReservatedTo?.name)
                     headersList.push(header);
                     createMutation.mutate(header);
                 } else {
