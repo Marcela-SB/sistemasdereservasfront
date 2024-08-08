@@ -53,13 +53,17 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
 
     const handleClose = () => {
         setIsOpen(false);
+        cleanInputs()
+    };
+
+    const cleanInputs = () => {
         setFormReservatedTo(null);
         setFormResponsible(null);
         setSelectedKey(null);
         setFormReturnTimePrevision(dayjs());
         setFormReturnedBy(null);
         setFormRoom(null);
-    };
+    }
 
     const handleRefresh = () => {
         queryClient.invalidateQueries({queryKey: ["keyListContext"]})
@@ -94,6 +98,7 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
             setSnackBarText("Devolução de chave criada com sucesso");
             setSnackBarSeverity("success");
             queryClient.invalidateQueries({ queryKey: ["keyListContext"] });
+            cleanInputs()
         }
     });
 

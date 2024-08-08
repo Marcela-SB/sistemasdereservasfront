@@ -11,7 +11,8 @@ import { StateContext } from "../context/ReactContext";
 import {
     Autocomplete,
     Checkbox,
-    Divider, FormControl,
+    Divider,
+    FormControl,
     IconButton,
     List,
     ListItem,
@@ -19,12 +20,12 @@ import {
     Stack,
     TextField,
 } from "@mui/material";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { RoomT } from "../types/RoomT";
 import dayjs, { Dayjs } from "dayjs";
 import { UserT } from "../types/UserT";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import {ClearIcon, TimePicker} from "@mui/x-date-pickers";
+import { ClearIcon, TimePicker } from "@mui/x-date-pickers";
 import axiosInstance from "../utils/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
 import { queryClient } from "../utils/queryClient";
@@ -33,6 +34,7 @@ import { Close, Send } from "@mui/icons-material";
 import DraggablePaper from "./DraggablePaper";
 import PaperComponent from "./PaperComponent";
 import roomDynamicSort from "../utils/roomDynamicSort.ts";
+import KeyWithdrawRoomList from "./KeyWithdrawRoomList.tsx";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -49,11 +51,21 @@ type Props = {
 };
 
 export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
-    const { roomList, userList, loggedUser, setSnackBarText, setSnackBarSeverity } = React.useContext(StateContext);
+    const {
+        roomList,
+        userList,
+        loggedUser,
+        setSnackBarText,
+        setSnackBarSeverity,
+    } = React.useContext(StateContext);
 
     const handleClose: DialogProps["onClose"] = (event, reason) => {
         if (reason && reason === "backdropClick") return;
         setIsOpen(false);
+        cleanInputs();
+    };
+
+    const cleanInputs = () => {
         setFormRoom([]);
         setFormReturnTime(dayjs());
         setFormReservatedTo(null);
@@ -61,7 +73,7 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
         setSelectedInternalReservation(null);
     };
 
-    const [searchedText, setSearchedText] = useState<string>("")
+    const [searchedText, setSearchedText] = useState<string>("");
 
     const [formRoom, setFormRoom] = useState<RoomT[]>([]);
 
@@ -89,6 +101,7 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
             setSnackBarText("Entrega de chave criada com sucesso");
             setSnackBarSeverity("success");
             setFormReservatedTo(null);
+            cleanInputs();
         },
         onError: (error) => {
             setSnackBarText(error.response.data);
@@ -97,7 +110,7 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
     });
 
     const submitWithdraw = () => {
-        if(formReservatedTo) {
+        if (formReservatedTo) {
             setCheckDialogIsOpen(true);
         } else {
             setSnackBarText("Preencha todos os campos");
@@ -132,8 +145,9 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
 
             const headersList: object[] = [];
 
-            formRoom.forEach((room) => {
+            console.log(formRoom)
 
+            formRoom.forEach((room) => {
                 const header = {
                     roomId: room.id,
                     withdrawResponsibleId: loggedUser.id,
@@ -141,20 +155,20 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                     withdrawTime: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
                     isKeyReturned: false,
                 };
-                if(Object.values(header).every((value) => value != null)) {
-                    if(formReturnTime){
-                        header.returnPrevision = formReturnTime?.format("YYYY-MM-DDTHH:mm:ss");
+                if (Object.values(header).every((value) => value != null)) {
+                    if (formReturnTime) {
+                        header.returnPrevision = formReturnTime?.format(
+                            "YYYY-MM-DDTHH:mm:ss"
+                        );
                     } else {
-                        header.returnPrevision = null
+                        header.returnPrevision = null;
                     }
-                    console.log(formReservatedTo?.name)
                     headersList.push(header);
                     createMutation.mutate(header);
                 } else {
                     setSnackBarText("Preencha todos os campos");
                     setSnackBarSeverity("error");
                 }
-
             });
 
             setCheckSucess(false);
@@ -197,7 +211,7 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                     top: "30%",
                     left: "30%",
                     height: "fit-content",
-                    width:'42rem',
+                    width: "42rem",
                 }}
             >
                 <AppBar
@@ -209,7 +223,7 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                             sx={{ ml: 2, flex: 1 }}
                             variant="h6"
                             component="div"
-                            textAlign={'center'}
+                            textAlign={"center"}
                         >
                             RETIRADA DE CHAVE
                         </Typography>
@@ -230,26 +244,23 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                     gap={2}
                     marginTop={2}
                 >
-                    <Stack direction={"column"} sx={{border: "solid 1px rgba(0, 0, 0, 0.26)", borderRadius:".5rem .5rem  2% 2%"}} >
-                        <List sx={{ overflow: "auto", height: "18rem"}}>
+                    <Stack
+                        direction={"column"}
+                        sx={{
+                            border: "solid 1px rgba(0, 0, 0, 0.26)",
+                            borderRadius: ".5rem .5rem  2% 2%",
+                        }}
+                    >
+                        <List sx={{ overflow: "auto", height: "18rem" }}>
                             {scrollableRoomArray?.map((room) => {
                                 return (
-                                    <>
-                                        <ListItem key={`modroomlist-${room.id}`}>
-                                            {room.name} {room.roomNumber}
-                                            <ListItemSecondaryAction>
-                                                <Checkbox
-                                                    onChange={() => {
-                                                        changeRoomList(room);
-                                                    }}
-                                                ></Checkbox>
-                                            </ListItemSecondaryAction>
-                                        </ListItem>
-                                        <Divider
-                                            key={`modroomlistdivider-${room.id}`}
-                                            variant="middle"
-                                        />
-                                    </>
+                                    <KeyWithdrawRoomList
+                                        changeRoomList={changeRoomList}
+                                        room={
+                                            room
+                                        }
+                                        checkSucess={checkSucess}
+                                    />
                                 );
                             })}
                         </List>
@@ -301,10 +312,7 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                             fullWidth
                         />
 
-
-
                         <DemoContainer components={["TimePicker"]}>
-
                             <TimePicker
                                 label="Previsão de retorno"
                                 value={formReturnTime}
@@ -312,11 +320,9 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                                     setFormReturnTime(newValue)
                                 }
                                 sx={{ width: "100%" }}
-
                                 slotProps={{ field: { clearable: true } }}
                             />
                         </DemoContainer>
-
                     </Stack>
                 </Stack>
 
