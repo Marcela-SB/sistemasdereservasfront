@@ -264,8 +264,7 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                                 );
                             })}
                         </List>
-
-                        <FormControl>
+                        {/**<FormControl>
                             <TextField
                                 label="Nome do espaço"
                                 placeholder="Digite o nome do espaço"
@@ -280,7 +279,8 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                                     setSearchedText(event.target.value);
                                 }}
                             ></TextField>
-                        </FormControl>
+                        </FormControl> */}
+                        
                     </Stack>
                     <Stack
                         direction={"column"}
