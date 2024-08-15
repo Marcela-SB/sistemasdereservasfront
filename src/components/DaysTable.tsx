@@ -9,6 +9,8 @@ import Paper from "@mui/material/Paper";
 import { tableSchedule } from "../types/tableSchedules";
 import {
     Box,
+    Button,
+    ButtonGroup,
     Container,
     Stack,
     Tooltip,
@@ -78,16 +80,72 @@ export default function DaysTable({
 
     return (
         <Box mb={2}>
-            <DemoContainer
-                components={["DatePicker"]}
-                sx={{ marginLeft: 0, marginBottom: 1 }}
-            >
-                <DatePicker
-                    value={selectedDate}
-                    onChange={(newValue) => setSelectedDate(newValue)}
-                    sx={{ width: "10%" }}
-                />
-            </DemoContainer>
+            <Stack direction={"row"} justifyContent={"space-between"}>
+                <DemoContainer
+                    components={["DatePicker"]}
+                    sx={{ marginLeft: 0, marginBottom: 1 }}
+                >
+                    <DatePicker
+                        value={selectedDate}
+                        onChange={(newValue) => setSelectedDate(newValue)}
+                        sx={{ width: "10%" }}
+                    />
+                </DemoContainer>
+                <ButtonGroup
+                    variant="contained"
+                    aria-label="Basic button group"
+                    sx={{ py: 2, color: "#2b2b2b" }}
+                >
+                    <Button
+                        sx={{
+                            backgroundColor: "#a4c2f4",
+                            color: "inherit",
+                            pointerEvents: "none",
+                            
+                        }}
+                    >
+                        Teatro
+                    </Button>
+                    <Button
+                        sx={{
+                            backgroundColor: "#ffe599",
+                            color: "inherit",
+                            pointerEvents: "none",
+                            
+                        }}
+                    >
+                        Artes
+                    </Button>
+                    <Button
+                        sx={{
+                            backgroundColor: "#b6d7a8",
+                            color: "inherit",
+                            pointerEvents: "none",
+                        }}
+                    >
+                        Desing
+                    </Button>
+                    <Button
+                        sx={{
+                            backgroundColor: "#f4cccc",
+                            color: "inherit",
+                            pointerEvents: "none",
+                        }}
+                    >
+                        Dança
+                    </Button>
+                    <Button
+                        sx={{
+                            backgroundColor: "#e4ecf7",
+                            color: "inherit",
+                            pointerEvents: "none",
+                        }}
+                    >
+                        Sem curso
+                    </Button>
+                </ButtonGroup>
+            </Stack>
+
             <TableContainer
                 component={Paper}
                 sx={{
