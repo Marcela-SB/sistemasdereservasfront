@@ -1,4 +1,5 @@
 import {
+    Box,
     Checkbox,
     Divider,
     ListItem,
@@ -11,38 +12,45 @@ type Props = {
     room: RoomT;
     changeRoomList: (room: RoomT) => void;
     checkSucess: boolean;
+    visible: boolean;
 };
 
 export default function KeyWithdrawRoomList({
     room,
     changeRoomList,
     checkSucess,
+    visible,
 }: Props) {
-
     useEffect(() => {
         if (checkSucess) {
-            console.log("updateidou");
-            setChecked(false)
+            setChecked(false);
         }
     }, [checkSucess]);
 
-    const [checked, setChecked] = useState(false)
+    const [checked, setChecked] = useState(false);
 
     return (
-        <>
-            <ListItem key={`modroomlist-${room.id}`}>
-                {room.name} {room.roomNumber}
-                <ListItemSecondaryAction>
-                    <Checkbox
-                        onChange={() => {
-                            setChecked(!checked)
-                            changeRoomList(room);
-                        }}
-                        checked={checked}
-                    ></Checkbox>
-                </ListItemSecondaryAction>
-            </ListItem>
-            <Divider key={`modroomlistdivider-${room.id}`} variant="middle" />
-        </>
+        <Box>
+            {visible && (
+                <>
+                    <ListItem key={`modroomlist-${room.id}`}>
+                        {room.name} {room.roomNumber}
+                        <ListItemSecondaryAction>
+                            <Checkbox
+                                onChange={() => {
+                                    setChecked(!checked);
+                                    changeRoomList(room);
+                                }}
+                                checked={checked}
+                            ></Checkbox>
+                        </ListItemSecondaryAction>
+                    </ListItem>
+                    <Divider
+                        key={`modroomlistdivider-${room.id}`}
+                        variant="middle"
+                    />
+                </>
+            )}
+        </Box>
     );
 }

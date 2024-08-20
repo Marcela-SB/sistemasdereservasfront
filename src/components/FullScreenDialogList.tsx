@@ -132,7 +132,6 @@ export default function FullScreenDialogList({
                 });
             }
 
-            console.log(holderList);
 
             if (formEndDay) {
                 holderList = holderList.filter((r: ReservationT) => {
@@ -151,7 +150,6 @@ export default function FullScreenDialogList({
                 });
             }
 
-            console.log(holderList);
 
             if (formSchedule) {
                 if (formSchedule.some((formS: boolean) => formS)) {
@@ -162,8 +160,6 @@ export default function FullScreenDialogList({
                                     hourlySchedule: boolean,
                                     hourlyIndex: number
                                 ) => {
-                                    console.log(hourlySchedule);
-                                    console.log(formSchedule[hourlyIndex]);
                                     if (
                                         hourlySchedule &&
                                         formSchedule[hourlyIndex]
@@ -177,7 +173,6 @@ export default function FullScreenDialogList({
                 }
             }
 
-            console.log(holderList);
 
             setOptionsList([...holderList]);
         }

@@ -59,7 +59,6 @@ export default function DaysTable({
                 reservationList,
                 reservableRoomList
             );
-            console.log(holder);
             const holderSchedule = [];
             if (selectedDate.day() != 0) {
                 for (let index = 0; index < holder[0].length; index++) {

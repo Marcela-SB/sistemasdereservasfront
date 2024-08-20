@@ -52,7 +52,6 @@ export default function ReservationDetailsDialog({
 
     const endDate = dayjs(reservation.reservationEnd).format("DD/MM/YYYY");
 
-    console.log(reservation);
 
     return (
         <DraggablePaper>

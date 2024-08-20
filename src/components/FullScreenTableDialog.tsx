@@ -25,9 +25,7 @@ export default function FullScreenTableDialog({
         hIndex: number
     ) => {
         const holder = formSchedule;
-        console.log(event.target.checked);
         holder[wIndex][hIndex] = event.target.checked;
-        console.log(holder);
         setFormSchedule([...holder]);
     };
 

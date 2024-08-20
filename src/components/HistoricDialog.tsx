@@ -47,7 +47,6 @@ export default function HistoricDialog({
             const holder = keyList.filter((key) => {
                 return key.roomId == selectedRoom.id;
             });
-            console.log(holder);
             holder.sort((a, b) => {
                 const dateA = dayjs(a.withdrawTime);
                 const dateB = dayjs(b.withdrawTime);

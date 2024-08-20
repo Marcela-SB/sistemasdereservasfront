@@ -104,7 +104,6 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
 
     React.useEffect(() => {
         if (selectedKey) {
-            console.log(selectedKey);
 
             const room: RoomT = getRoomById(selectedKey.roomId, roomList);
             setFormRoom(room);

@@ -334,7 +334,7 @@ export default function FullScreenActionDialog({
                 </AppBar>
                 <Box sx={{ padding: 2, flexGrow: 1 }}>
                     <Grid container>
-                        <Grid xs={3} paddingX={1}>
+                        <Grid item xs={3} paddingX={1}>
                             <TextField
                                 id="outlined-controlled"
                                 label="Nome da reserva"
@@ -347,7 +347,7 @@ export default function FullScreenActionDialog({
                                 fullWidth
                             />
                         </Grid>
-                        <Grid xs={2} paddingX={1}>
+                        <Grid item xs={2} paddingX={1}>
                             <TextField
                                 label="Vagas"
                                 value={formSlots}
@@ -362,7 +362,7 @@ export default function FullScreenActionDialog({
                                 }}
                             ></TextField>
                         </Grid>
-                        <Grid xs={3} paddingX={1}>
+                        <Grid item xs={3} paddingX={1}>
                             <Autocomplete
                                 value={formRoom}
                                 onChange={(
@@ -389,7 +389,7 @@ export default function FullScreenActionDialog({
                                 )}
                             />
                         </Grid>
-                        <Grid xs={2} paddingX={1}>
+                        <Grid item xs={2} paddingX={1}>
                             <StyledFormControl variant="outlined" fullWidth>
                                 <InputLabel id="demo-simple-select-filled-label">
                                     Curso
@@ -421,7 +421,7 @@ export default function FullScreenActionDialog({
                             </StyledFormControl>
                         </Grid>
 
-                        <Grid xs={2} paddingX={1}>
+                        <Grid item xs={2} paddingX={1}>
                             <TextField
                                 id="outlined-controlled"
                                 label="Supervisor da reserva"
@@ -430,7 +430,7 @@ export default function FullScreenActionDialog({
                                 fullWidth
                             />
                         </Grid>
-                        <Grid xs={3} paddingX={1} paddingTop={1}>
+                        <Grid item xs={3} paddingX={1} paddingTop={1}>
                             <DemoContainer components={["DatePicker"]}>
                                 <DatePicker
                                     label="Inicio da reserva"
@@ -443,7 +443,7 @@ export default function FullScreenActionDialog({
                                 />
                             </DemoContainer>
                         </Grid>
-                        <Grid xs={2} paddingX={0} paddingTop={1.5}>
+                        <Grid item xs={2} paddingX={0} paddingTop={1.5}>
                             <FormControlLabel
                                 control={
                                     <Switch
@@ -466,7 +466,7 @@ export default function FullScreenActionDialog({
                             />
                         </Grid>
                         {formIsOneDay == true ? (
-                            <Grid xs={3} paddingX={1} paddingTop={1}>
+                            <Grid item xs={3} paddingX={1} paddingTop={1}>
                                 <DemoContainer components={["DatePicker"]}>
                                     <DatePicker
                                         label="Final da reserva"
@@ -477,7 +477,7 @@ export default function FullScreenActionDialog({
                                 </DemoContainer>
                             </Grid>
                         ) : (
-                            <Grid xs={3} paddingX={1} paddingTop={1}>
+                            <Grid item xs={3} paddingX={1} paddingTop={1}>
                                 <DemoContainer components={["DatePicker"]}>
                                     <DatePicker
                                         label="Final da reserva"
@@ -491,7 +491,7 @@ export default function FullScreenActionDialog({
                                 </DemoContainer>
                             </Grid>
                         )}
-                        <Grid xs paddingX={1} paddingTop={2}>
+                        <Grid item xs paddingX={1} paddingTop={2}>
                             <Autocomplete
                                 value={formReservatedTo}
                                 onChange={(
@@ -515,7 +515,7 @@ export default function FullScreenActionDialog({
                             />
                         </Grid>
                         <Grid container sx={{ marginTop: 2, paddingX: 1 }}>
-                            <Grid xs={3} sx={{ paddingRight: 2 }}>
+                            <Grid item xs={3} sx={{ paddingRight: 2 }}>
                                 <TextField
                                     label="Observações"
                                     value={formComment}
@@ -529,7 +529,7 @@ export default function FullScreenActionDialog({
                                     rows={14}
                                 />
                             </Grid>
-                            <Grid xs={9}>
+                            <Grid item xs={9}>
                                 <FullScreenTableDialog
                                     formSchedule={formSchedule}
                                     setFormSchedule={setFormSchedule}

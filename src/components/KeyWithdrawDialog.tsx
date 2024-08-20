@@ -120,6 +120,8 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
 
     const [scrollableRoomArray, setScrollableRoomArray] = useState<RoomT[]>([]);
 
+    const [filteredRoomArray, setFilteredRoomArray] = useState<RoomT[]>([]);
+
     useEffect(() => {
         if (roomList) {
             const filteredRoomList = roomList
@@ -135,7 +137,9 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                     }
                 })
                 .sort(roomDynamicSort());
-            setScrollableRoomArray(filteredRoomList);
+            setFilteredRoomArray(filteredRoomList);
+
+            setScrollableRoomArray(roomList.sort(roomDynamicSort()));
         }
     }, [searchedText, roomList]);
 
@@ -145,7 +149,6 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
 
             const headersList: object[] = [];
 
-            console.log(formRoom)
 
             formRoom.forEach((room) => {
                 const header = {
@@ -252,19 +255,29 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                         }}
                     >
                         <List sx={{ overflow: "auto", height: "18rem" }}>
-                            {scrollableRoomArray?.map((room) => {
+                            {scrollableRoomArray?.map((room, index) => {
+                                let visible = false;
+                                if (
+                                    filteredRoomArray.some(
+                                        (filteredRoom) =>
+                                            filteredRoom.id == room.id
+                                    )
+                                ) {
+                                    visible = true;
+                                }
+
                                 return (
                                     <KeyWithdrawRoomList
                                         changeRoomList={changeRoomList}
-                                        room={
-                                            room
-                                        }
+                                        room={room}
                                         checkSucess={checkSucess}
+                                        key={room.name + "_" + index}
+                                        visible={visible}
                                     />
                                 );
                             })}
                         </List>
-                        {/**<FormControl>
+                        <FormControl>
                             <TextField
                                 label="Nome do espaço"
                                 placeholder="Digite o nome do espaço"
@@ -279,8 +292,7 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                                     setSearchedText(event.target.value);
                                 }}
                             ></TextField>
-                        </FormControl> */}
-                        
+                        </FormControl>
                     </Stack>
                     <Stack
                         direction={"column"}

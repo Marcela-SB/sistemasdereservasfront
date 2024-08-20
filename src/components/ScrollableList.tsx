@@ -20,7 +20,6 @@ export default function ScrollableList({
     ) => {
         const holder = formSchedule;
         holder[hIndex] = event.target.checked;
-        console.log(holder);
         setFormSchedule([...holder]);
     };
 

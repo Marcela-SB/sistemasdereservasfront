@@ -71,7 +71,6 @@ function ReactContext({ children }: Props) {
         queryKey: ["keyListContext"],
         queryFn: async () => {
             const response = await axiosInstance.get("keydelivery/list");
-            console.log('invalidado')
             return response.data;
         },
     });

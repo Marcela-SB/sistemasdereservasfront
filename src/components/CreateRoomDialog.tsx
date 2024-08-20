@@ -243,7 +243,6 @@ export default function CreateRoomDialog({
             administrative: administrative,
         };
 
-        console.log(header);
 
         if (selectedRoom) {
             editMutation.mutate(header);
