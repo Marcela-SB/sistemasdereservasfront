@@ -10,6 +10,8 @@ export default function textfyCourse( course: Courses ){
             return 'Desing'
         case Courses.DANÇA:
             return 'Dança'
+        case Courses.POS:
+                return 'Pós'
         default:
             return 'Sem curso relacionado'
     }

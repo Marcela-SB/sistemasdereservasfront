@@ -91,6 +91,7 @@ export default function DaysTable({
                     />
                 </DemoContainer>
                 <ButtonGroup
+                    disableElevation
                     variant="contained"
                     aria-label="Basic button group"
                     sx={{ py: 2, color: "#2b2b2b" }}
@@ -100,7 +101,6 @@ export default function DaysTable({
                             backgroundColor: "#a4c2f4",
                             color: "inherit",
                             pointerEvents: "none",
-                            
                         }}
                     >
                         Teatro
@@ -110,7 +110,6 @@ export default function DaysTable({
                             backgroundColor: "#ffe599",
                             color: "inherit",
                             pointerEvents: "none",
-                            
                         }}
                     >
                         Artes
@@ -132,6 +131,15 @@ export default function DaysTable({
                         }}
                     >
                         Dança
+                    </Button>
+                    <Button
+                        sx={{
+                            backgroundColor: "#eecca7",
+                            color: "inherit",
+                            pointerEvents: "none",
+                        }}
+                    >
+                        Pós
                     </Button>
                     <Button
                         sx={{

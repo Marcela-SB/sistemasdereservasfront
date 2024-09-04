@@ -414,6 +414,9 @@ export default function FullScreenActionDialog({
                                     <MenuItem value={Courses.DANÇA}>
                                         Dança
                                     </MenuItem>
+                                    <MenuItem value={Courses.POS}>
+                                        Pós Graduação
+                                    </MenuItem>
                                     <MenuItem value={Courses.NOCOURSE}>
                                         Sem curso relacionado
                                     </MenuItem>

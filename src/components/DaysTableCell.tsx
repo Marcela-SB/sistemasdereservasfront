@@ -11,6 +11,7 @@ const courseColors = {
     DESING: "#b6d7a8",
     DANÇA: "#f4cccc",
     NOCOURSE: "#e4ecf7",
+    POS: "#eecca7"
 };
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({

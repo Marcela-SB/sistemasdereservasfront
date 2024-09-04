@@ -3,5 +3,6 @@ export enum Courses {
     ARTES = 'ARTES',
     DESING = 'DESING',
     DANÇA = 'DANÇA',
-    NOCOURSE = 'NOCOURSE'
+    NOCOURSE = 'NOCOURSE',
+    POS = 'POS'
 }
