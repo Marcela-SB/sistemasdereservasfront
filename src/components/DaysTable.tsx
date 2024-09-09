@@ -162,6 +162,12 @@ export default function DaysTable({
                 }}
             >
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <colgroup>
+                        <col style={{width:'30%'}} />
+                        {Array.from({ length: 16 }, (_, i) => i + 1).map((number) => {
+                            return(<col key={'colgroup-'+number} style={{width:'4.375%'}} />)
+                        })}
+                    </colgroup>
                     <TableHead>
                         <OrangeTableRow>
                             <TableCell
@@ -253,7 +259,7 @@ export default function DaysTable({
                                                 align="center"
                                                 sx={{
                                                     border: "1px solid white;",
-
+                                                   
                                                     position: "relative",
                                                     "::before": {
                                                         content: '""',
