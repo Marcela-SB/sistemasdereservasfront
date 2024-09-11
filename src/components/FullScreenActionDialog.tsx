@@ -15,6 +15,8 @@ import { baseInternalSchedule } from "../types/tableSchedules";
 import {
     Autocomplete,
     Box,
+    Checkbox,
+    Chip,
     FormControl,
     FormControlLabel,
     Grid,
@@ -39,7 +41,11 @@ import getUserById from "../utils/getUserById";
 import { queryClient } from "../utils/queryClient";
 import ConfirmationDialog from "./ConfirmationDialog";
 import { Courses } from "../types/Courses";
-import { Close } from "@mui/icons-material";
+import {
+    CheckBoxOutlineBlankOutlined,
+    CheckBoxOutlined,
+    Close,
+} from "@mui/icons-material";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -102,7 +108,7 @@ export default function FullScreenActionDialog({
         setFormIsOneDay(true);
         setSelectedReservation(null);
         setFormComment("");
-        setFormSlots(null)
+        setFormSlots(null);
     };
 
     const {
@@ -144,7 +150,7 @@ export default function FullScreenActionDialog({
                 selectedReservation.roomId,
                 roomList
             );
-            setFormRoom(room);
+            setSelectedRooms([room])
 
             setFormCourse(selectedReservation.course);
 
@@ -173,7 +179,7 @@ export default function FullScreenActionDialog({
 
             setFormComment(selectedReservation.comment);
 
-            setFormSlots(selectedReservation.slots)
+            setFormSlots(selectedReservation.slots);
         }
     }, [selectedReservation]);
 
@@ -227,24 +233,34 @@ export default function FullScreenActionDialog({
                 .format("YYYY-MM-DDTHH:mm:ss");
         }
 
-        const header = {
-            name: formName,
-            roomId: formRoom!.id,
-            course: formCourse,
-            reservationStart: formatedStart,
-            reservationEnd: formatedEnd,
-            reservatedToId: formReservatedTo!.id,
-            reservationResponsibleId: loggedUser.id,
-            schedule: formSchedule,
-            comment: formComment,
-            slots: formSlots
-        };
+        selectedRooms.forEach((room) => {
 
-        if (selectedReservation) {
-            editMutation.mutate(header);
-        } else {
-            createMutation.mutate(header);
-        }
+            let addRoomName = null
+            if(selectedRooms.length > 1){
+                addRoomName = room.name
+            }
+
+                const header = {
+                    name: formName + `(${addRoomName})`,
+                    roomId: room.id,
+                    course: formCourse,
+                    reservationStart: formatedStart,
+                    reservationEnd: formatedEnd,
+                    reservatedToId: formReservatedTo!.id,
+                    reservationResponsibleId: loggedUser.id,
+                    schedule: formSchedule,
+                    comment: formComment,
+                    slots: formSlots,
+                };
+    
+                if (selectedReservation) {
+                    editMutation.mutate(header);
+                } else {
+                    createMutation.mutate(header);
+                }
+        });
+
+        
     };
 
     const deleteMutation = useMutation({
@@ -281,6 +297,8 @@ export default function FullScreenActionDialog({
     }, [createMutation, editMutation, deleteMutation]);
 
     const [isConfirmationDOpen, setIsConfirmationDOpen] = useState(false);
+
+    const [selectedRooms, setSelectedRooms] = useState<RoomT[]>([]);
 
     return (
         <React.Fragment>
@@ -364,15 +382,33 @@ export default function FullScreenActionDialog({
                         </Grid>
                         <Grid item xs={3} paddingX={1}>
                             <Autocomplete
-                                value={formRoom}
-                                onChange={(
-                                    _event: any,
-                                    newValue: RoomT | null
-                                ) => {
-                                    setFormRoom(newValue);
-                                }}
+                                multiple
                                 id="controllable-states-demo"
                                 options={roomList}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label="Sala reservada"
+                                        sx={{ flexWrap: "nowrap" }}
+                                    />
+                                )}
+                                limitTags={1}
+                                renderTags={(value, getTagProps) =>
+                                    value.map((room, index) => {
+                                        const { key, ...tagProps } =
+                                            getTagProps({ index });
+                                        if (index > 0) return;
+                                        return (
+                                            <Chip
+                                                key={key}
+                                                variant="outlined"
+                                                label={room.name}
+                                                size="small"
+                                                {...tagProps}
+                                            />
+                                        );
+                                    })
+                                }
                                 getOptionLabel={(room: RoomT) => {
                                     let roomN = "";
                                     if (room.roomNumber) {
@@ -380,13 +416,36 @@ export default function FullScreenActionDialog({
                                     }
                                     return `${room.name} ${roomN}`;
                                 }}
-                                sx={{ flexGrow: 1 }}
-                                renderInput={(params) => (
-                                    <TextField
-                                        {...params}
-                                        label="Sala reservada"
-                                    />
-                                )}
+                                value={selectedRooms}
+                                onChange={(event, values) => {
+                                    setSelectedRooms(values);
+                                }}
+                                renderOption={(props, room, { selected }) => {
+                                    const { key, ...optionProps } = props;
+                                    let roomN = "";
+                                    if (room.roomNumber) {
+                                        roomN = room.roomNumber;
+                                    }
+                                    return (
+                                        <li
+                                            key={key}
+                                            {...optionProps}
+                                            style={{}}
+                                        >
+                                            <Checkbox
+                                                icon={
+                                                    <CheckBoxOutlineBlankOutlined fontSize="small" />
+                                                }
+                                                checkedIcon={
+                                                    <CheckBoxOutlined fontSize="small" />
+                                                }
+                                                style={{ marginRight: 8 }}
+                                                checked={selected}
+                                            />
+                                            {room.name} {roomN}
+                                        </li>
+                                    );
+                                }}
                             />
                         </Grid>
                         <Grid item xs={2} paddingX={1}>
@@ -463,9 +522,7 @@ export default function FullScreenActionDialog({
                                 }
                                 labelPlacement="top"
                                 label="Reserva unitária"
-                                sx={{ width: "100%",
-                                    marginX:0
-                                 }}
+                                sx={{ width: "100%", marginX: 0 }}
                             />
                         </Grid>
                         {formIsOneDay == true ? (
