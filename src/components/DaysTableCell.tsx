@@ -49,12 +49,6 @@ function DaysTableCell({ schedule, index, handleClick, span = 1 }: Props) {
 
     const [width, setWidth] = useState(0)
 
-    useEffect(() => {
-        console.log(parentElement.current?.offsetWidth)
-        setWidth(parentElement.current?.offsetWidth)
-    
-    }, [])
-    
 
     return (
         <Tooltip title={tooltipTitle}>

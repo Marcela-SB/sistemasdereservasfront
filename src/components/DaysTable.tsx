@@ -163,10 +163,17 @@ export default function DaysTable({
             >
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <colgroup>
-                        <col style={{width:'30%'}} />
-                        {Array.from({ length: 16 }, (_, i) => i + 1).map((number) => {
-                            return(<col key={'colgroup-'+number} style={{width:'4.375%'}} />)
-                        })}
+                        <col style={{ width: "20%" }} />
+                        {Array.from({ length: 16 }, (_, i) => i + 1).map(
+                            (number) => {
+                                return (
+                                    <col
+                                        key={"colgroup-" + number}
+                                        style={{ width: "5%" }}
+                                    />
+                                );
+                            }
+                        )}
                     </colgroup>
                     <TableHead>
                         <OrangeTableRow>
@@ -259,7 +266,7 @@ export default function DaysTable({
                                                 align="center"
                                                 sx={{
                                                     border: "1px solid white;",
-                                                   
+
                                                     position: "relative",
                                                     "::before": {
                                                         content: '""',
@@ -331,6 +338,8 @@ export default function DaysTable({
                                     let cellsToIgnore = 0;
                                     let cellsIgnored = 0;
 
+                                    let spanCount = 0;
+
                                     return (
                                         <TableRow key={room.id + "-row"}>
                                             <TableCell
@@ -388,8 +397,6 @@ export default function DaysTable({
                                             </TableCell>
                                             {roomSchedule.map(
                                                 (hourschedule, dayIndex) => {
-                                                    /////////////////////////////////////
-
                                                     if (cellsToIgnore > 0) {
                                                         cellsToIgnore--;
                                                         cellsIgnored++;
@@ -405,7 +412,12 @@ export default function DaysTable({
                                                             hourschedule[1];
                                                         cellsToIgnore =
                                                             hourschedule[1] - 1;
+                                                        spanCount += passedSpan ;
+                                                    } else {
+                                                        spanCount++;
                                                     }
+
+
                                                     return (
                                                         <DaysTableCell
                                                             key={`daystablecell ${room.id}-${roomArrayIndex}-${dayIndex}`}
@@ -421,23 +433,31 @@ export default function DaysTable({
                                                     );
                                                 }
                                             )}
-                                            {[...Array(cellsIgnored)].map(
-                                                (e, i) => (
-                                                    <DaysTableCell
-                                                        key={`daystablecell ${
-                                                            room.id
-                                                        }-${roomArrayIndex}-${
-                                                            cellsIgnored + i
-                                                        }`}
-                                                        schedule={null}
-                                                        index={cellsIgnored + i}
-                                                        span={1}
-                                                        handleClick={
-                                                            handleCellClick
-                                                        }
-                                                    />
-                                                )
+                                            {[...Array(16 - spanCount)].map(
+                                                (e, i) => {
+                                                    
+                                                    spanCount++
+                                                    return (
+                                                        <DaysTableCell
+                                                            key={`daystablecell ${
+                                                                room.id
+                                                            }-${roomArrayIndex}-${
+                                                                cellsIgnored + i
+                                                            }`}
+                                                            schedule={null}
+                                                            index={
+                                                                cellsIgnored + i
+                                                            }
+                                                            
+                                                            span={1}
+                                                            handleClick={
+                                                                handleCellClick
+                                                            }
+                                                        />
+                                                    );
+                                                }
                                             )}
+                                            
                                         </TableRow>
                                     );
                                 }
@@ -534,7 +554,7 @@ export default function DaysTable({
                                                 padding="none"
                                                 sx={{
                                                     border: "1px solid white;",
-                                                    width:'fit-content',
+                                                    width: "fit-content",
                                                     position: "relative",
                                                     "::before": {
                                                         content: '""',
