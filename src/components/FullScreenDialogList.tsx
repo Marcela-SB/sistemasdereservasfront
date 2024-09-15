@@ -99,7 +99,9 @@ export default function FullScreenDialogList({
 
             if (formRoom) {
                 holderList = holderList.filter(
-                    (r: ReservationT) => r.roomId == formRoom.id
+                    (r: ReservationT) => r.roomsId.some(
+                        (roomId : string) => roomId == formRoom.id
+                    ) 
                 );
             }
 
@@ -330,6 +332,7 @@ export default function FullScreenDialogList({
                     renderInput={(params) => (
                         <TextField {...params} label="Reserva selecionada..." />
                     )}
+                    noOptionsText={'Sem reservas correspondentes.'}
                 />
                 <Button
                     variant="contained"

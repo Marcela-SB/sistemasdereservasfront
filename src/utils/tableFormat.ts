@@ -31,9 +31,12 @@ export default function tableFormat(
         filteredReservationsByRooms.push([room]);
 
         filteredReservations.forEach((reservation: ReservationT) => {
-            if (reservation.roomId == room.id) {
-                filteredReservationsByRooms[index].push(reservation);
-            }
+            reservation.roomsId.forEach((roomId) => {
+                if (roomId == room.id) {
+                    filteredReservationsByRooms[index].push(reservation);
+                }
+            })
+            
         });
     });
 

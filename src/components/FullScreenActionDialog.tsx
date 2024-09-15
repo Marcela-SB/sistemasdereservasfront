@@ -22,7 +22,6 @@ import {
     Grid,
     IconButton,
     InputLabel,
-    makeStyles,
     MenuItem,
     Select,
     Stack,
@@ -99,7 +98,7 @@ export default function FullScreenActionDialog({
         createMutation.reset();
         setIsOpen(false);
         setFormName("");
-        setFormRoom(null);
+        setFormRoom([]);
         setFormCourse(Courses.NOCOURSE);
         setFormStartDay(dayjs());
         setFormEndDay(dayjs());
@@ -123,7 +122,7 @@ export default function FullScreenActionDialog({
 
     const [formSlots, setFormSlots] = useState<number | null>(null);
 
-    const [formRoom, setFormRoom] = useState<RoomT | null>(null);
+    const [formRoom, setFormRoom] = useState<RoomT[]>([]);
 
     const [formCourse, setFormCourse] = useState<Courses>(Courses.NOCOURSE);
 
@@ -146,11 +145,15 @@ export default function FullScreenActionDialog({
         if (selectedReservation) {
             setFormName(selectedReservation.name);
 
-            const room: RoomT = getRoomById(
-                selectedReservation.roomId,
-                roomList
-            );
-            setSelectedRooms([room])
+            const roomListToPush : RoomT[] = []
+            for (const roomId of selectedReservation.roomsId) {
+                const room : RoomT = getRoomById(
+                    roomId,
+                    roomList
+                );
+                roomListToPush.push(room)
+            }
+            setFormRoom(roomListToPush);
 
             setFormCourse(selectedReservation.course);
 
@@ -233,33 +236,29 @@ export default function FullScreenActionDialog({
                 .format("YYYY-MM-DDTHH:mm:ss");
         }
 
-        selectedRooms.forEach((room) => {
+        const roomIdList : string[] = []
+        for(const room of formRoom){
+            roomIdList.push(room.id)
+        }
 
-            let addRoomName = null
-            if(selectedRooms.length > 1){
-                addRoomName = room.name
+            const header = {
+                name: formName,
+                roomsId: roomIdList,
+                course: formCourse,
+                reservationStart: formatedStart,
+                reservationEnd: formatedEnd,
+                reservatedToId: formReservatedTo!.id,
+                reservationResponsibleId: loggedUser.id,
+                schedule: formSchedule,
+                comment: formComment,
+                slots: formSlots,
+            };
+
+            if (selectedReservation) {
+                editMutation.mutate(header);
+            } else {
+                createMutation.mutate(header);
             }
-
-                const header = {
-                    name: formName + `(${addRoomName})`,
-                    roomId: room.id,
-                    course: formCourse,
-                    reservationStart: formatedStart,
-                    reservationEnd: formatedEnd,
-                    reservatedToId: formReservatedTo!.id,
-                    reservationResponsibleId: loggedUser.id,
-                    schedule: formSchedule,
-                    comment: formComment,
-                    slots: formSlots,
-                };
-    
-                if (selectedReservation) {
-                    editMutation.mutate(header);
-                } else {
-                    createMutation.mutate(header);
-                }
-        });
-
         
     };
 
@@ -297,8 +296,6 @@ export default function FullScreenActionDialog({
     }, [createMutation, editMutation, deleteMutation]);
 
     const [isConfirmationDOpen, setIsConfirmationDOpen] = useState(false);
-
-    const [selectedRooms, setSelectedRooms] = useState<RoomT[]>([]);
 
     return (
         <React.Fragment>
@@ -416,9 +413,9 @@ export default function FullScreenActionDialog({
                                     }
                                     return `${room.name} ${roomN}`;
                                 }}
-                                value={selectedRooms}
+                                value={formRoom}
                                 onChange={(event, values) => {
-                                    setSelectedRooms(values);
+                                    setFormRoom(values);
                                 }}
                                 renderOption={(props, room, { selected }) => {
                                     const { key, ...optionProps } = props;

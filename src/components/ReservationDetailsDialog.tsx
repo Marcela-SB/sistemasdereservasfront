@@ -17,6 +17,7 @@ import { Courses } from "../types/Courses";
 import textfyCourse from "../utils/textfyCourse";
 import PaperComponent from "./PaperComponent";
 import DraggablePaper from "./DraggablePaper";
+import { RoomT } from "../types/RoomT";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -46,7 +47,11 @@ export default function ReservationDetailsDialog({
         setIsOpen(false);
     };
 
-    const room = getRoomById(reservation.roomId, roomList);
+
+    const reservationRoomList : RoomT[] = []
+    for(const roomId of reservation.roomsId){
+        reservationRoomList.push(getRoomById(roomId, roomList))
+    }
 
     const startDate = dayjs(reservation.reservationStart).format("DD/MM/YYYY");
 
@@ -131,7 +136,12 @@ export default function ReservationDetailsDialog({
                                 </Typography>
                                 <Typography variant="body1" noWrap>
                                     Sala reservada:
-                                    {room?.name} {room?.roomNumber}
+                                    {reservationRoomList.map((room) => {
+                                        return (
+                                            <>{room?.name} {room?.roomNumber},</>
+                                        )
+                                    })}
+                                    
                                 </Typography>
 
                                 <Typography variant="body1" noWrap>
