@@ -534,7 +534,7 @@ export default function DaysTable({
                                                 padding="none"
                                                 sx={{
                                                     border: "1px solid white;",
-
+                                                    width:'fit-content',
                                                     position: "relative",
                                                     "::before": {
                                                         content: '""',

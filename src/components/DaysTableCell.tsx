@@ -45,13 +45,12 @@ function DaysTableCell({ schedule, index, handleClick, span = 1 }: Props) {
         );
     }
 
-    const widthCellSize = 2.5 * span;
-
     const parentElement = useRef(null);
 
     const [width, setWidth] = useState(0)
 
     useEffect(() => {
+        console.log(parentElement.current?.offsetWidth)
         setWidth(parentElement.current?.offsetWidth)
     
     }, [])
@@ -107,7 +106,7 @@ function DaysTableCell({ schedule, index, handleClick, span = 1 }: Props) {
                         style={{
                             overflow: "hidden",
                             textOverflow: "ellipsis",
-                            minWidth:width - 5
+                            //minWidth:width - 5
                         }}
                     >
                         <Typography noWrap>{schedule?.name}</Typography>
