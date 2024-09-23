@@ -61,8 +61,8 @@ export default function ConfirmationDialog({
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Não</Button>
-                    <Button onClick={agreeFunc} autoFocus>
-                        Sim
+                    <Button onClick={agreeFunc} autoFocus color="error" >
+                        Excluir
                     </Button>
                 </DialogActions>
             </Dialog>

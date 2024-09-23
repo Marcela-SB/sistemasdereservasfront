@@ -7,6 +7,7 @@ import { UserT } from "../types/UserT";
 import { ReservationT } from "../types/ReservationT";
 import { KeyT } from "../types/KeyDeliveryT";
 import { AlertColor } from "@mui/material";
+import { AuthorizationT } from "../types/AuthorizationT";
 
 export type GlobalContent = {
     date: Dayjs;
@@ -15,6 +16,7 @@ export type GlobalContent = {
     userList: UserT[];
     reservationList: ReservationT[];
     keyList: KeyT[];
+    AuthorizationList: AuthorizationT[];
     loggedUser: unknown | null;
     setLoggedUser: (u: unknown) => void;
     snackBarText: string;
@@ -30,6 +32,7 @@ export const StateContext = createContext<GlobalContent>({
     userList: [],
     reservationList: [],
     keyList: [],
+    AuthorizationList: [],
     loggedUser: null,
     setLoggedUser: () => {},
     snackBarText: "",
@@ -75,6 +78,14 @@ function ReactContext({ children }: Props) {
         },
     });
 
+    const { data: AuthorizationList } = useQuery({
+        queryKey: ["AuthorizationListContext"],
+        queryFn: async () => {
+            const response = await axiosInstance.get("authorization/list");
+            return response.data;
+        },
+    });
+
     const [loggedUser, setLoggedUser] = React.useState<unknown | null>(
         localStorage.getItem("user")
             ? JSON.parse(localStorage.getItem("user")).user
@@ -95,6 +106,7 @@ function ReactContext({ children }: Props) {
                 userList,
                 reservationList,
                 keyList,
+                AuthorizationList,
                 loggedUser,
                 setLoggedUser,
                 snackBarText,

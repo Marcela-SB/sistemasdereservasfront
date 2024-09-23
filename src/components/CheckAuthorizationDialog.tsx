@@ -1,0 +1,419 @@
+import * as React from "react";
+import Dialog from "@mui/material/Dialog";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Slide from "@mui/material/Slide";
+import { TransitionProps } from "@mui/material/transitions";
+
+import { StateContext } from "../context/ReactContext";
+import {
+    Autocomplete,
+    Checkbox,
+    Chip,
+    Container,
+    IconButton,
+    Stack,
+    TextField,
+} from "@mui/material";
+import { useState } from "react";
+import { RoomT } from "../types/RoomT";
+import dayjs, { Dayjs } from "dayjs";
+import { UserT } from "../types/UserT";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { DatePicker } from "@mui/x-date-pickers";
+import axiosInstance from "../utils/axiosInstance";
+import { useMutation } from "@tanstack/react-query";
+import getRoomById from "../utils/getRoomById";
+import getUserById from "../utils/getUserById";
+import { queryClient } from "../utils/queryClient";
+import {
+    CheckBoxOutlineBlankOutlined,
+    CheckBoxOutlined,
+    Close,
+} from "@mui/icons-material";
+import DraggablePaper from "./DraggablePaper";
+import PaperComponent from "./PaperComponent";
+import RefreshIcon from "@mui/icons-material/RefreshOutlined";
+import { AuthorizationT } from "../types/AuthorizationT";
+import AuthorizationScrollableList from "./AuthorizationScrollableList";
+
+const Transition = React.forwardRef(function Transition(
+    props: TransitionProps & {
+        children: React.ReactElement;
+    },
+    ref: React.Ref<unknown>
+) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+
+type Props = {
+    isOpen: boolean;
+    setIsOpen: (b: boolean) => void;
+    selectedAuthorization: AuthorizationT | null;
+    setSelectedAuthorization: (a: AuthorizationT | null) => void;
+    setCreateAuthIsOpen: (b: boolean) => void;
+};
+
+export default function CheckAuthorizationDialog({
+    isOpen,
+    setIsOpen,
+    selectedAuthorization,
+    setSelectedAuthorization,
+    setCreateAuthIsOpen
+}: Props) {
+    const { setSnackBarText, setSnackBarSeverity, roomList, userList } =
+        React.useContext(StateContext);
+
+    const handleClose = () => {
+        setIsOpen(false);
+        cleanInputs();
+    };
+
+    const cleanInputs = () => {
+
+        setAuthorizatioRoomsId([]);
+        setAuthorizaredToId(null);
+        setAuthorizationStart(dayjs());
+        setAuthorizationEnd(dayjs());
+        setComment(null);
+
+        setIsOpen(false);
+        setIsConfirmationDOpen(false);
+    };
+
+    const handleRefresh = () => {
+        queryClient.invalidateQueries({
+            queryKey: ["authorizationListContext"],
+        });
+    };
+
+    const [authorizationRoomsId, setAuthorizatioRoomsId] = useState<RoomT[]>(
+        []
+    );
+
+    const [authorizaredToId, setAuthorizaredToId] = useState<UserT | null>(
+        null
+    );
+
+    const [authorizationResponsible, setAuthorizationResponsible] =
+        useState<UserT | null>(null);
+
+    const [authorizationStart, setAuthorizationStart] = useState<Dayjs | null>(
+        dayjs()
+    );
+
+    const [authorizationEnd, setAuthorizationEnd] = useState<Dayjs | null>(
+        dayjs()
+    );
+
+    const [comment, setComment] = useState<string | null>(null);
+
+    const [isConfirmationDOpen, setIsConfirmationDOpen] = useState(false);
+
+    const [checkDialogIsOpen, setCheckDialogIsOpen] = useState(false);
+
+    const [checkSucess, setCheckSucess] = useState(false);
+
+    const editMutation = useMutation({
+        mutationFn: (header) => {
+            return axiosInstance.put("keydelivery/edit/" + header.id, header);
+        },
+        onSuccess: () => {
+            setSnackBarText("Devolução de chave criada com sucesso");
+            setSnackBarSeverity("success");
+            queryClient.invalidateQueries({ queryKey: ["keyListContext"] });
+            cleanInputs();
+        },
+    });
+
+    React.useEffect(() => {
+        if (selectedAuthorization) {
+            const roomListToPush: RoomT[] = [];
+            for (const roomId of selectedAuthorization.roomsId) {
+                const room: RoomT = getRoomById(roomId, roomList);
+                roomListToPush.push(room);
+            }
+            setAuthorizatioRoomsId(roomListToPush);
+
+            const userTo: UserT = getUserById(
+                selectedAuthorization.authorizatedToId,
+                userList
+            );
+            setAuthorizaredToId(userTo);
+
+            const userResponsible: UserT = getUserById(
+                selectedAuthorization.authorizationResponsibleId,
+                userList
+            );
+            setAuthorizationResponsible(userResponsible);
+
+            setAuthorizationStart(
+                dayjs(selectedAuthorization.authorizationStart)
+            );
+            setAuthorizationEnd(dayjs(selectedAuthorization.authorizationEnd));
+
+            setComment(selectedAuthorization.comment);
+        }
+    }, [selectedAuthorization]);
+
+    const submitReturn = () => {
+        setCheckDialogIsOpen(true);
+    };
+
+    const [isRequestPending, setIsRequestPending] = useState(false);
+    React.useEffect(() => {
+        setIsRequestPending(editMutation.isPending);
+    }, [editMutation]);
+
+    return (
+        <>
+            <DraggablePaper>
+                <Dialog
+                    open={isOpen}
+                    onClose={handleClose}
+                    TransitionComponent={Transition}
+                    maxWidth="md"
+                    PaperComponent={PaperComponent}
+                    hideBackdrop
+                    PaperProps={{
+                        elevation: 0,
+                        sx: {
+                            border: "solid 1px #004586",
+                        },
+                    }}
+                    disableEnforceFocus
+                    style={{
+                        top: "30%",
+                        left: "30%",
+                        height: "fit-content",
+                        width: "fit-content",
+                        paddingBottom:4
+                    }}
+                >
+                    <AppBar
+                        className="draggable-dialog"
+                        sx={{ position: "relative" }}
+                    >
+                        <Toolbar>
+                            <Typography
+                                sx={{ mx: 30, flex: 1 }}
+                                variant="h6"
+                                component="div"
+                                textAlign={"center"}
+                                noWrap
+                            >
+                                CONSULTA DE AUTORIZAÇÃO
+                            </Typography>
+                            <IconButton
+                                edge="start"
+                                color="inherit"
+                                onClick={handleRefresh}
+                                aria-label="close"
+                            >
+                                <RefreshIcon />
+                            </IconButton>
+                            <IconButton
+                                edge="start"
+                                color="inherit"
+                                onClick={handleClose}
+                                aria-label="close"
+                            >
+                                <Close />
+                            </IconButton>
+                        </Toolbar>
+                    </AppBar>
+                    <Container
+                        sx={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            display: "flex",
+                            flexDirection: "column",
+                        }}
+                    >
+                        <Stack direction={"row"}>
+                            <AuthorizationScrollableList
+                                setSelectedAuthorization={
+                                    setSelectedAuthorization
+                                }
+                                handleClose={handleClose}
+                                setCreateDialogIsOpen={setCreateAuthIsOpen}
+                            />
+                            <Stack
+                                direction={"column"}
+                                justifyContent={"space-between"}
+                                marginX={2}
+                                gap={2}
+                                marginTop={2}
+                            >
+                                <Autocomplete
+                                    readOnly
+                                    fullWidth
+                                    multiple
+                                    id="controllable-states-demo"
+                                    options={roomList}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Salas autorizadas"
+                                            sx={{ flexWrap: "nowrap" }}
+                                        />
+                                    )}
+                                    limitTags={1}
+                                    renderTags={(value, getTagProps) =>
+                                        value.map((room, index) => {
+                                            const { key, ...tagProps } =
+                                                getTagProps({ index });
+                                            if (index > 0) return;
+                                            return (
+                                                <Chip
+                                                    key={key}
+                                                    variant="outlined"
+                                                    label={room.name}
+                                                    size="small"
+                                                    {...tagProps}
+                                                />
+                                            );
+                                        })
+                                    }
+                                    getOptionLabel={(room: RoomT) => {
+                                        let roomN = "";
+                                        if (room.roomNumber) {
+                                            roomN = room.roomNumber;
+                                        }
+                                        return `${room.name} ${roomN}`;
+                                    }}
+                                    value={authorizationRoomsId}
+                                    onChange={(event, values) => {
+                                        setAuthorizatioRoomsId(values);
+                                    }}
+                                    renderOption={(
+                                        props,
+                                        room,
+                                        { selected }
+                                    ) => {
+                                        const { key, ...optionProps } = props;
+                                        let roomN = "";
+                                        if (room.roomNumber) {
+                                            roomN = room.roomNumber;
+                                        }
+                                        return (
+                                            <li
+                                                key={key}
+                                                {...optionProps}
+                                                style={{}}
+                                            >
+                                                <Checkbox
+                                                    icon={
+                                                        <CheckBoxOutlineBlankOutlined fontSize="small" />
+                                                    }
+                                                    checkedIcon={
+                                                        <CheckBoxOutlined fontSize="small" />
+                                                    }
+                                                    style={{ marginRight: 8 }}
+                                                    checked={selected}
+                                                    readOnly
+                                                />
+                                                {room.name} {roomN}
+                                            </li>
+                                        );
+                                    }}
+                                />
+                                <Autocomplete
+                                    readOnly
+                                    fullWidth
+                                    value={authorizaredToId}
+                                    onChange={(
+                                        _event: any,
+                                        newValue: UserT | null
+                                    ) => {
+                                        setAuthorizaredToId(newValue);
+                                    }}
+                                    id="controllable-states-demo"
+                                    options={userList}
+                                    getOptionLabel={(user: UserT) => {
+                                        return user.name;
+                                    }}
+                                    sx={{ flexGrow: 1 }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Autorização para..."
+                                        />
+                                    )}
+                                />
+                                <Autocomplete
+                                    readOnly
+                                    fullWidth
+                                    value={authorizationResponsible}
+                                    onChange={(
+                                        _event: any,
+                                        newValue: UserT | null
+                                    ) => {
+                                        setAuthorizationResponsible(newValue);
+                                    }}
+                                    id="controllable-states-demo"
+                                    options={userList}
+                                    getOptionLabel={(user: UserT) => {
+                                        return user.name;
+                                    }}
+                                    sx={{ flexGrow: 1 }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Responsavel pela autorização..."
+                                        />
+                                    )}
+                                />
+                                <DemoContainer
+                                    components={["DatePicker"]}
+                                    sx={{ width: "100%" }}
+                                >
+                                    <DatePicker
+                                        label="Inicio da autorização"
+                                        value={authorizationStart}
+                                        onChange={(newValue) =>
+                                            setAuthorizationStart(newValue)
+                                        }
+                                        
+                                        sx={{ width: "100%" }}
+                                        readOnly
+                                    />
+                                </DemoContainer>
+                                <DemoContainer
+                                    components={["DatePicker"]}
+                                    sx={{ width: "100%" }}
+                                >
+                                    <DatePicker
+                                        label="Final da reserva"
+                                        value={authorizationEnd}
+                                        onChange={(newValue) =>
+                                            setAuthorizationEnd(newValue)
+                                        }
+                                        
+                                        sx={{ width: "100%" }}
+                                        readOnly
+                                    />
+                                </DemoContainer>
+                                <TextField
+                                    label="Observações"
+                                    value={comment}
+                                    onChange={(
+                                        event: React.ChangeEvent<HTMLInputElement>
+                                    ) => {
+                                        setComment(event.target.value);
+                                    }}
+                                    multiline
+                                    fullWidth
+                                    disabled
+                                    rows={3}
+                                    sx={{paddingBottom:4}}
+                                />
+                            </Stack>
+                        </Stack>
+                    </Container>
+                </Dialog>
+            </DraggablePaper>
+        </>
+    );
+}

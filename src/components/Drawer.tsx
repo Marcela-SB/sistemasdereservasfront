@@ -10,7 +10,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Container from "@mui/material/Container";
 
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
-import BookmarksIcon from '@mui/icons-material/Bookmarks';
+import BookmarksIcon from "@mui/icons-material/Bookmarks";
 
 import KeyIcon from "@mui/icons-material/Key";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
@@ -22,7 +22,9 @@ import KeyReturnDialog from "./KeyReturnDialog";
 import {
     ManageAccounts,
     MeetingRoom,
+    NoteAdd,
     PersonAdd,
+    Plagiarism,
     RoomPreferences,
 } from "@mui/icons-material";
 import CreateUserDialog from "./CreateUserDialog";
@@ -34,6 +36,9 @@ import ModifyRoomListD from "./ModifyRoomListD";
 import ModifyUserListD from "./ModifyUserListD";
 import { StateContext } from "../context/ReactContext";
 import { Button } from "@mui/material";
+import CreateAuthorizationDialog from "./CreateAuthorizationDialog";
+import { AuthorizationT } from "../types/AuthorizationT";
+import CheckAuthorizationDialog from "./CheckAuthorizationDialog";
 
 type Props = {
     isOpen: boolean;
@@ -76,6 +81,14 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
     const [roomModifyDIsOpen, setRoomModifyDIsOpen] = useState(false);
 
     const [selectedRoom, setSelectedRoom] = useState<RoomT | null>(null);
+
+    const [authorizationCreateDIsOpen, setAuthorizationCreateDIsOpen] =
+        useState(false);
+    const [authorizationModifyDIsOpen, setAuthorizationModifyDIsOpen] =
+        useState(false);
+
+    const [selectedAuthorization, setSelectedAuthorization] =
+        useState<AuthorizationT | null>(null);
 
     React.useEffect(() => {
         if (loggedUser) {
@@ -265,6 +278,48 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
                                     </ListItemButton>
                                 </ListItem>
                             </List>
+                            <Divider />
+                        </>
+                    ) : null}
+                    {userPower >= 1 ? (
+                        <>
+                            <List>
+                                <ListItem
+                                    key={"Criar autorização"}
+                                    disablePadding
+                                >
+                                    <ListItemButton
+                                        onClick={() => {
+                                            setAuthorizationCreateDIsOpen(true);
+                                        }}
+                                    >
+                                        <ListItemIcon>
+                                            <NoteAdd />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={"Criar autorização"}
+                                        />
+                                    </ListItemButton>
+                                </ListItem>
+                                <ListItem
+                                    key={"Consultar autorizações"}
+                                    disablePadding
+                                >
+                                    <ListItemButton
+                                        onClick={() => {
+                                            setAuthorizationModifyDIsOpen(true);
+                                        }}
+                                    >
+                                        <ListItemIcon>
+                                            <Plagiarism />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={"Consultar autorizações"}
+                                        />
+                                    </ListItemButton>
+                                </ListItem>
+                            </List>
+                            <Divider />
                         </>
                     ) : null}
                     <Container>
@@ -328,6 +383,19 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
                 setIsOpen={setUserModifyDIsOpen}
                 setSelectedUser={setSelectedUser}
                 setCreateUserIsOpen={setUserCreateDIsOpen}
+            />
+            <CreateAuthorizationDialog
+                isOpen={authorizationCreateDIsOpen}
+                setIsOpen={setAuthorizationCreateDIsOpen}
+                selectedAuthorization={selectedAuthorization}
+                setSelectedAuthorization={setSelectedAuthorization}
+            />
+            <CheckAuthorizationDialog
+                isOpen={authorizationModifyDIsOpen}
+                setIsOpen={(setAuthorizationModifyDIsOpen)}
+                selectedAuthorization={selectedAuthorization}
+                setSelectedAuthorization={setSelectedAuthorization}
+                setCreateAuthIsOpen={setAuthorizationCreateDIsOpen}
             />
         </div>
     );
