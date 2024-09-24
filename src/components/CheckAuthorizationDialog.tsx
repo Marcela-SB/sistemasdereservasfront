@@ -60,7 +60,7 @@ export default function CheckAuthorizationDialog({
     setIsOpen,
     selectedAuthorization,
     setSelectedAuthorization,
-    setCreateAuthIsOpen
+    setCreateAuthIsOpen,
 }: Props) {
     const { setSnackBarText, setSnackBarSeverity, roomList, userList } =
         React.useContext(StateContext);
@@ -71,9 +71,12 @@ export default function CheckAuthorizationDialog({
     };
 
     const cleanInputs = () => {
-
         setAuthorizatioRoomsId([]);
-        setAuthorizaredToId(null);
+        setAuthorizaredToId([]);
+
+        setAuthorizationProfessor(null);
+        setAuthorizationResponsible(null);
+
         setAuthorizationStart(dayjs());
         setAuthorizationEnd(dayjs());
         setComment(null);
@@ -92,9 +95,10 @@ export default function CheckAuthorizationDialog({
         []
     );
 
-    const [authorizaredToId, setAuthorizaredToId] = useState<UserT | null>(
-        null
-    );
+    const [authorizationProfessor, setAuthorizationProfessor] =
+        useState<UserT | null>(null);
+
+    const [authorizaredToId, setAuthorizaredToId] = useState<UserT[]>([]);
 
     const [authorizationResponsible, setAuthorizationResponsible] =
         useState<UserT | null>(null);
@@ -136,11 +140,18 @@ export default function CheckAuthorizationDialog({
             }
             setAuthorizatioRoomsId(roomListToPush);
 
-            const userTo: UserT = getUserById(
-                selectedAuthorization.authorizatedToId,
+            const userListToPush: UserT[] = [];
+            for (const userId of selectedAuthorization.authorizatedToId) {
+                const user: UserT = getUserById(userId, userList);
+                userListToPush.push(user);
+            }
+            setAuthorizaredToId(userListToPush);
+
+            const userProff: UserT = getUserById(
+                selectedAuthorization.authorizationProfessorId,
                 userList
             );
-            setAuthorizaredToId(userTo);
+            setAuthorizationProfessor(userProff);
 
             const userResponsible: UserT = getUserById(
                 selectedAuthorization.authorizationResponsibleId,
@@ -188,7 +199,7 @@ export default function CheckAuthorizationDialog({
                         left: "30%",
                         height: "fit-content",
                         width: "fit-content",
-                        paddingBottom:4
+                        paddingBottom: 4,
                     }}
                 >
                     <AppBar
@@ -245,9 +256,9 @@ export default function CheckAuthorizationDialog({
                                 marginX={2}
                                 gap={2}
                                 marginTop={2}
+                                width={'22rem'}
                             >
                                 <Autocomplete
-                                    readOnly
                                     fullWidth
                                     multiple
                                     id="controllable-states-demo"
@@ -259,6 +270,7 @@ export default function CheckAuthorizationDialog({
                                             sx={{ flexWrap: "nowrap" }}
                                         />
                                     )}
+                                    disableClearable
                                     limitTags={1}
                                     renderTags={(value, getTagProps) =>
                                         value.map((room, index) => {
@@ -272,6 +284,8 @@ export default function CheckAuthorizationDialog({
                                                     label={room.name}
                                                     size="small"
                                                     {...tagProps}
+                                                    deleteIcon={<></>}
+                                                    onDelete={() => {}}
                                                 />
                                             );
                                         })
@@ -292,16 +306,20 @@ export default function CheckAuthorizationDialog({
                                         room,
                                         { selected }
                                     ) => {
+                                        if (!selected) return;
+
                                         const { key, ...optionProps } = props;
                                         let roomN = "";
                                         if (room.roomNumber) {
                                             roomN = room.roomNumber;
                                         }
+
                                         return (
                                             <li
                                                 key={key}
                                                 {...optionProps}
                                                 style={{}}
+                                                onClick={() => {}}
                                             >
                                                 <Checkbox
                                                     icon={
@@ -319,15 +337,87 @@ export default function CheckAuthorizationDialog({
                                         );
                                     }}
                                 />
+
+                                <Autocomplete
+                                    fullWidth
+                                    multiple
+                                    id="controllable-states-demo"
+                                    options={userList}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Autorização para..."
+                                            sx={{ flexWrap: "nowrap" }}
+                                        />
+                                    )}
+                                    disableClearable
+                                    limitTags={1}
+                                    renderTags={(value, getTagProps) =>
+                                        value.map((user, index) => {
+                                            const { key, ...tagProps } =
+                                                getTagProps({ index });
+                                            if (index > 0) return;
+                                            return (
+                                                <Chip
+                                                    key={key}
+                                                    variant="outlined"
+                                                    label={user.name}
+                                                    size="small"
+                                                    {...tagProps}
+                                                    deleteIcon={<></>}
+                                                    onDelete={() => {}}
+                                                />
+                                            );
+                                        })
+                                    }
+                                    getOptionLabel={(user: UserT) => {
+                                        return user.name;
+                                    }}
+                                    value={authorizaredToId}
+                                    onChange={(event, values) => {
+                                        setAuthorizaredToId(values);
+                                    }}
+                                    renderOption={(
+                                        props,
+                                        user,
+                                        { selected }
+                                    ) => {
+                                        const { key, ...optionProps } = props;
+
+                                        if (!selected) return;
+
+                                        return (
+                                            <li
+                                                key={key}
+                                                {...optionProps}
+                                                style={{}}
+                                                onClick={() => {}}
+                                            >
+                                                <Checkbox
+                                                    icon={
+                                                        <CheckBoxOutlineBlankOutlined fontSize="small" />
+                                                    }
+                                                    checkedIcon={
+                                                        <CheckBoxOutlined fontSize="small" />
+                                                    }
+                                                    style={{ marginRight: 8 }}
+                                                    checked={selected}
+                                                    readOnly
+                                                />
+                                                {user.name}
+                                            </li>
+                                        );
+                                    }}
+                                />
                                 <Autocomplete
                                     readOnly
                                     fullWidth
-                                    value={authorizaredToId}
+                                    value={authorizationProfessor}
                                     onChange={(
                                         _event: any,
                                         newValue: UserT | null
                                     ) => {
-                                        setAuthorizaredToId(newValue);
+                                        setAuthorizationProfessor(newValue);
                                     }}
                                     id="controllable-states-demo"
                                     options={userList}
@@ -338,13 +428,16 @@ export default function CheckAuthorizationDialog({
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            label="Autorização para..."
+                                            label="Professor responsavel"
+                                            disabled
                                         />
                                     )}
                                 />
+                               
                                 <Autocomplete
-                                    readOnly
                                     fullWidth
+                                    disableClearable
+                                    disabled
                                     value={authorizationResponsible}
                                     onChange={(
                                         _event: any,
@@ -362,6 +455,7 @@ export default function CheckAuthorizationDialog({
                                         <TextField
                                             {...params}
                                             label="Responsavel pela autorização..."
+                                            disabled
                                         />
                                     )}
                                 />
@@ -375,7 +469,6 @@ export default function CheckAuthorizationDialog({
                                         onChange={(newValue) =>
                                             setAuthorizationStart(newValue)
                                         }
-                                        
                                         sx={{ width: "100%" }}
                                         readOnly
                                     />
@@ -390,7 +483,6 @@ export default function CheckAuthorizationDialog({
                                         onChange={(newValue) =>
                                             setAuthorizationEnd(newValue)
                                         }
-                                        
                                         sx={{ width: "100%" }}
                                         readOnly
                                     />
@@ -406,8 +498,8 @@ export default function CheckAuthorizationDialog({
                                     multiline
                                     fullWidth
                                     disabled
-                                    rows={3}
-                                    sx={{paddingBottom:4}}
+                                    rows={2}
+                                    sx={{ paddingBottom: 4 }}
                                 />
                             </Stack>
                         </Stack>

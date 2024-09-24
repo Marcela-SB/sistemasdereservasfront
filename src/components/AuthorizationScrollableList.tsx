@@ -48,7 +48,7 @@ export default function AuthorizationScrollableList({
                     //return the item which contains the room input
                     else {
                         const user = getUserById(
-                            authorization.authorizatedToId,
+                            authorization.authorizationProfessorId,
                             userList
                         );
                         if (user?.name.toLowerCase().includes(searchedText)) {
@@ -77,7 +77,7 @@ export default function AuthorizationScrollableList({
             <Stack direction={"row"} gap={1} flex={2 / 4}>
                 <List
                     sx={{
-                        width: "100%",
+                        width: "22rem",
                         maxWidth: 360,
                         bgcolor: "background.paper",
                         position: "relative",
@@ -89,8 +89,9 @@ export default function AuthorizationScrollableList({
                         borderRadius: ".5rem .5rem  2% 2%",
                         border: "solid 1px rgba(0, 0, 0, 0.26)",
                         padding: 0,
-                        flex: 2 / 3,
+                        flex: 1,
                     }}
+                    
                 >
                     <ListSubheader
                         sx={{
@@ -110,8 +111,8 @@ export default function AuthorizationScrollableList({
                         )
                             return;
 
-                        const authUser = getUserById(
-                            item.authorizatedToId,
+                        const authProff = getUserById(
+                            item.authorizationProfessorId,
                             userList
                         );
 
@@ -140,88 +141,20 @@ export default function AuthorizationScrollableList({
                                 sx={{ borderBottom: "1px solid gray", pl: 2 }}
                             >
                                 <ListItemText
-                                    primary={`${authUser?.name}`}
+                                    primary={`${authProff?.name}`}
                                     secondary={`${authStart} - ${authEnd}`}
                                 />
                             </ListItem>
                         );
                     })}
                 </List>
-                <List
-                    sx={{
-                        width: "100%",
-                        maxWidth: 360,
-                        bgcolor: "background.paper",
-                        position: "relative",
-                        overflow: "auto",
-                        height: "22rem",
-                        "& ul": { padding: 0 },
-                        "&::-webkit-scrollbar": { display: "none" },
-                        minWidth: 200,
-                        borderRadius: ".5rem .5rem  2% 2%",
-                        border: "solid 1px rgba(0, 0, 0, 0.26)",
-                        padding: 0,
-                        flex: 2 / 3,
-                    }}
-                >
-                    <ListSubheader
-                        sx={{
-                            backgroundColor: "#004586",
-                            color: "white",
-                            borderRadius: ".5rem .5rem 0 0 ",
-                        }}
-                    >
-                        Authorizações finalizadas
-                    </ListSubheader>
-                    {ordainedAuthorizationList.map((item: AuthorizationT) => {
-                        if (
-                            dayjs(item.authorizationEnd).isAfter(dayjs(), "day")
-                        )
-                            return;
-
-                        const authUser = getUserById(
-                            item.authorizatedToId,
-                            userList
-                        );
-
-                        const authStart = dayjs(item.authorizationStart).format(
-                            "HH:mm"
-                        );
-
-                        const authEnd = dayjs(item.authorizationEnd).format(
-                            "HH:mm"
-                        );
-
-                        return (
-                            <ListItem
-                                key={item.id}
-                                secondaryAction={
-                                    <IconButton
-                                        edge="end"
-                                        onClick={() => {
-                                            setSelectedAuthorization(item);
-                                        }}
-                                    >
-                                        <Send />
-                                    </IconButton>
-                                }
-                                disablePadding
-                                sx={{ borderBottom: "1px solid gray", pl: 2 }}
-                            >
-                                <ListItemText
-                                    primary={`${authUser?.name}`}
-                                    secondary={`${authStart} - ${authEnd}`}
-                                />
-                            </ListItem>
-                        );
-                    })}
-                </List>
+               
             </Stack>
 
             <FormControl>
                 <TextField
-                    label="Nome do usuario"
-                    placeholder="Digite o nome do usuario"
+                    label="Nome do professor responsavel"
+                    placeholder="Digite o nome do professor responsavel"
                     sx={{
                         borderRadius: 6,
                     }}

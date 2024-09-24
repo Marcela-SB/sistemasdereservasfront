@@ -81,13 +81,14 @@ export default function CreateAuthorizationDialog({
         createMutation.reset();
         setSelectedAuthorization(null);
 
+        setAuthorizaredToProfessorId(null);
         setAuthorizatioRoomsId([]);
-        setAuthorizaredToId(null);
+        setAuthorizaredToId([]);
         setAuthorizationStart(dayjs());
         setAuthorizationEnd(dayjs());
         setComment(null);
 
-        setIsDaily(true)
+        setIsDaily(true);
 
         setIsOpen(false);
         setIsConfirmationDOpen(false);
@@ -105,9 +106,10 @@ export default function CreateAuthorizationDialog({
         []
     );
 
-    const [authorizaredToId, setAuthorizaredToId] = useState<UserT | null>(
-        null
-    );
+    const [authorizaredToProfessorId, setAuthorizaredToProfessorId] =
+        useState<UserT | null>(null);
+
+    const [authorizaredToId, setAuthorizaredToId] = useState<UserT[]>([]);
 
     const [authorizationStart, setAuthorizationStart] = useState<Dayjs | null>(
         dayjs()
@@ -124,10 +126,8 @@ export default function CreateAuthorizationDialog({
     const [isConfirmationDOpen, setIsConfirmationDOpen] = useState(false);
 
     React.useEffect(() => {
-        
         if (selectedAuthorization) {
-
-            console.log(selectedAuthorization)
+            console.log(selectedAuthorization);
 
             const roomListToPush: RoomT[] = [];
             for (const roomId of selectedAuthorization.roomsId) {
@@ -136,11 +136,18 @@ export default function CreateAuthorizationDialog({
             }
             setAuthorizatioRoomsId(roomListToPush);
 
-            const user: UserT = getUserById(
-                selectedAuthorization.authorizatedToId,
+            const userListToPush: UserT[] = [];
+            for (const userId of selectedAuthorization.authorizatedToId) {
+                const user: UserT = getUserById(userId, userList);
+                userListToPush.push(user);
+            }
+            setAuthorizaredToId(userListToPush);
+
+            const userProff: UserT = getUserById(
+                selectedAuthorization.authorizationProfessorId,
                 userList
             );
-            setAuthorizaredToId(user);
+            setAuthorizaredToProfessorId(userProff);
 
             setAuthorizationStart(
                 dayjs(selectedAuthorization.authorizationStart)
@@ -219,17 +226,22 @@ export default function CreateAuthorizationDialog({
             roomIdList.push(room.id);
         }
 
+        const userIdList: string[] = [];
+        for (const user of authorizaredToId) {
+            userIdList.push(user.id);
+        }
+
         const header = {
             roomsId: roomIdList,
-            authorizatedToId: authorizaredToId.id,
+            authorizatedToId: userIdList,
+            authorizationProfessorId: authorizaredToProfessorId.id,
             authorizationResponsibleId: loggedUser.id,
             authorizationStart: formatedStart,
             authorizationEnd: formatedEnd,
             comment: comment,
         };
 
-        console.log(header)
-
+        console.log(header);
 
         if (selectedAuthorization) {
             editMutation.mutate(header);
@@ -293,7 +305,7 @@ export default function CreateAuthorizationDialog({
                         top: "30%",
                         left: "30%",
                         height: "fit-content",
-                        width: "60rem",
+                        width: "85rem",
                     }}
                 >
                     <AppBar
@@ -348,7 +360,7 @@ export default function CreateAuthorizationDialog({
                         </Toolbar>
                     </AppBar>
                     <Box sx={{ padding: 2, flexGrow: 1 }}>
-                        <Stack spacing={2} >
+                        <Stack spacing={2}>
                             <Stack
                                 direction={"row"}
                                 spacing={2}
@@ -414,6 +426,7 @@ export default function CreateAuthorizationDialog({
                                                     icon={
                                                         <CheckBoxOutlineBlankOutlined fontSize="small" />
                                                     }
+                                                    
                                                     checkedIcon={
                                                         <CheckBoxOutlined fontSize="small" />
                                                     }
@@ -427,12 +440,76 @@ export default function CreateAuthorizationDialog({
                                 />
                                 <Autocomplete
                                     fullWidth
+                                    multiple
+                                    id="controllable-states-demo"
+                                    options={userList}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Autorização para..."
+                                            sx={{ flexWrap: "nowrap" }}
+                                        />
+                                    )}
+                                    limitTags={1}
+                                    renderTags={(value, getTagProps) =>
+                                        value.map((user, index) => {
+                                            const { key, ...tagProps } =
+                                                getTagProps({ index });
+                                            if (index > 0) return;
+                                            return (
+                                                <Chip
+                                                    key={key}
+                                                    variant="outlined"
+                                                    label={user.name}
+                                                    size="small"
+                                                    {...tagProps}
+                                                />
+                                            );
+                                        })
+                                    }
+                                    getOptionLabel={(user: UserT) => {
+                                        return user.name;
+                                    }}
                                     value={authorizaredToId}
+                                    onChange={(event, values) => {
+                                        setAuthorizaredToId(values);
+                                    }}
+                                    renderOption={(
+                                        props,
+                                        user,
+                                        { selected }
+                                    ) => {
+                                        const { key, ...optionProps } = props;
+                                        return (
+                                            <li
+                                                key={key}
+                                                {...optionProps}
+                                                style={{}}
+                                            >
+                                                <Checkbox
+                                                    icon={
+                                                        <CheckBoxOutlineBlankOutlined fontSize="small" />
+                                                    }
+                                                    checkedIcon={
+                                                        <CheckBoxOutlined fontSize="small" />
+                                                    }
+                                                    style={{ marginRight: 8 }}
+                                                    checked={selected}
+                                                />
+                                                {user.name}
+                                            </li>
+                                        );
+                                    }}
+                                />
+
+                                <Autocomplete
+                                    fullWidth
+                                    value={authorizaredToProfessorId}
                                     onChange={(
                                         _event: any,
                                         newValue: UserT | null
                                     ) => {
-                                        setAuthorizaredToId(newValue);
+                                        setAuthorizaredToProfessorId(newValue);
                                     }}
                                     id="controllable-states-demo"
                                     options={userList}
@@ -443,7 +520,7 @@ export default function CreateAuthorizationDialog({
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            label="Autorização para..."
+                                            label="Professor responsavel"
                                         />
                                     )}
                                 />
@@ -466,7 +543,6 @@ export default function CreateAuthorizationDialog({
                                         onChange={(newValue) =>
                                             setAuthorizationStart(newValue)
                                         }
-                                        
                                         sx={{ width: "100%" }}
                                     />
                                 </DemoContainer>
@@ -511,7 +587,6 @@ export default function CreateAuthorizationDialog({
                                             onChange={(newValue) =>
                                                 setAuthorizationEnd(newValue)
                                             }
-                                            
                                             sx={{ width: "100%" }}
                                         />
                                     </DemoContainer>
