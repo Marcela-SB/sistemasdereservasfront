@@ -8,4 +8,5 @@ export type AuthorizationT = {
     authorizationStart: string;
     authorizationEnd: string;
     comment: string | null;
+    name: string;
 };

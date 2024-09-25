@@ -98,9 +98,10 @@ export default function AuthorizationScrollableList({
                             backgroundColor: "#004586",
                             color: "white",
                             borderRadius: ".5rem .5rem 0 0 ",
+                            textAlign: 'center'
                         }}
                     >
-                        Authorizações ativas
+                        AUTORIZAÇÕES ATIVAS
                     </ListSubheader>
                     {ordainedAuthorizationList.map((item: AuthorizationT) => {
                         if (
@@ -114,14 +115,6 @@ export default function AuthorizationScrollableList({
                         const authProff = getUserById(
                             item.authorizationProfessorId,
                             userList
-                        );
-
-                        const authStart = dayjs(item.authorizationStart).format(
-                            "HH:mm"
-                        );
-
-                        const authEnd = dayjs(item.authorizationEnd).format(
-                            "HH:mm"
                         );
 
                         return (
@@ -141,8 +134,8 @@ export default function AuthorizationScrollableList({
                                 sx={{ borderBottom: "1px solid gray", pl: 2 }}
                             >
                                 <ListItemText
-                                    primary={`${authProff?.name}`}
-                                    secondary={`${authStart} - ${authEnd}`}
+                                    primary={`${item.name}`}
+                                    secondary={`${authProff?.name}`}
                                 />
                             </ListItem>
                         );

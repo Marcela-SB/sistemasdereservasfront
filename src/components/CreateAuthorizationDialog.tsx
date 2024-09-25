@@ -81,6 +81,7 @@ export default function CreateAuthorizationDialog({
         createMutation.reset();
         setSelectedAuthorization(null);
 
+        setAuthName('')
         setAuthorizaredToProfessorId(null);
         setAuthorizatioRoomsId([]);
         setAuthorizaredToId([]);
@@ -101,6 +102,8 @@ export default function CreateAuthorizationDialog({
         userList,
         loggedUser,
     } = React.useContext(StateContext);
+
+    const [authName, setAuthName] = useState<string>('');
 
     const [authorizationRoomsId, setAuthorizatioRoomsId] = useState<RoomT[]>(
         []
@@ -128,6 +131,8 @@ export default function CreateAuthorizationDialog({
     React.useEffect(() => {
         if (selectedAuthorization) {
             console.log(selectedAuthorization);
+
+            setAuthName(selectedAuthorization.name)
 
             const roomListToPush: RoomT[] = [];
             for (const roomId of selectedAuthorization.roomsId) {
@@ -232,6 +237,7 @@ export default function CreateAuthorizationDialog({
         }
 
         const header = {
+            name: authName,
             roomsId: roomIdList,
             authorizatedToId: userIdList,
             authorizationProfessorId: authorizaredToProfessorId.id,
@@ -305,7 +311,7 @@ export default function CreateAuthorizationDialog({
                         top: "30%",
                         left: "30%",
                         height: "fit-content",
-                        width: "85rem",
+                        width: "75rem",
                     }}
                 >
                     <AppBar
@@ -366,10 +372,20 @@ export default function CreateAuthorizationDialog({
                                 spacing={2}
                                 justifyContent={"space-evenly"}
                             >
+                                <TextField
+                                    label="Nome da autorização"
+                                    value={authName ? authName : ''}
+                                    onChange={(
+                                        event: React.ChangeEvent<HTMLInputElement>
+                                    ) => {
+                                        setAuthName(event.target.value);
+                                    }}
+                                    fullWidth
+                                />
                                 <Autocomplete
+                                    id="Sala-reservada-states-demo"
                                     fullWidth
                                     multiple
-                                    id="controllable-states-demo"
                                     options={roomList}
                                     renderInput={(params) => (
                                         <TextField
@@ -426,7 +442,6 @@ export default function CreateAuthorizationDialog({
                                                     icon={
                                                         <CheckBoxOutlineBlankOutlined fontSize="small" />
                                                     }
-                                                    
                                                     checkedIcon={
                                                         <CheckBoxOutlined fontSize="small" />
                                                     }
@@ -439,9 +454,9 @@ export default function CreateAuthorizationDialog({
                                     }}
                                 />
                                 <Autocomplete
+                                    id="Autorização-para-states-demo"
                                     fullWidth
                                     multiple
-                                    id="controllable-states-demo"
                                     options={userList}
                                     renderInput={(params) => (
                                         <TextField
@@ -501,8 +516,10 @@ export default function CreateAuthorizationDialog({
                                         );
                                     }}
                                 />
-
+                            </Stack>
+                            <Stack direction={"row"} spacing={2}>
                                 <Autocomplete
+                                    id="Professor-states-demo"
                                     fullWidth
                                     value={authorizaredToProfessorId}
                                     onChange={(
@@ -511,7 +528,6 @@ export default function CreateAuthorizationDialog({
                                     ) => {
                                         setAuthorizaredToProfessorId(newValue);
                                     }}
-                                    id="controllable-states-demo"
                                     options={userList}
                                     getOptionLabel={(user: UserT) => {
                                         return user.name;
@@ -594,7 +610,7 @@ export default function CreateAuthorizationDialog({
                             </Stack>
                             <TextField
                                 label="Observações"
-                                value={comment}
+                                value={comment ? comment : ""}
                                 onChange={(
                                     event: React.ChangeEvent<HTMLInputElement>
                                 ) => {

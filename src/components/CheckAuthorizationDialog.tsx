@@ -489,7 +489,7 @@ export default function CheckAuthorizationDialog({
                                 </DemoContainer>
                                 <TextField
                                     label="Observações"
-                                    value={comment}
+                                    value={comment ? comment : ''}
                                     onChange={(
                                         event: React.ChangeEvent<HTMLInputElement>
                                     ) => {
