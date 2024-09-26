@@ -1,19 +1,25 @@
 import dayjs, { Dayjs } from "dayjs";
 import { ReservationT } from "../types/ReservationT";
 import { RoomT } from "../types/RoomT";
+import getRoomById from "./getRoomById";
 
 export default function tableFormat(
     date: Dayjs,
     reservationList: ReservationT[],
     roomList: RoomT[]
 ) {
-    const dayOfWeek = date.day()-1
-    if(dayOfWeek < 0 ){
-
-        return
+    const dayOfWeek = date.day() - 1;
+    if (dayOfWeek < 0) {
+        return;
     }
     let filteredReservations = reservationList;
     filteredReservations = filteredReservations.filter((r: ReservationT) => {
+        if (r.name == "ART0317 DANÇA E EDUCAÇÃO T1") {
+            //console.log(r);
+            for (const room of r.roomsId) {
+                //console.log(getRoomById(room, roomList)?.name);
+            }
+        }
         const rStart = dayjs(r.reservationStart);
         const rEnd = dayjs(r.reservationEnd);
         if (date.isSame(rStart, "day") || date.isSame(rEnd, "day")) {
@@ -25,9 +31,8 @@ export default function tableFormat(
     });
 
     const filteredReservationsByRooms: any[] = [];
-    
+
     roomList.forEach((room: RoomT, index) => {
-        
         filteredReservationsByRooms.push([room]);
 
         filteredReservations.forEach((reservation: ReservationT) => {
@@ -35,9 +40,11 @@ export default function tableFormat(
                 if (roomId == room.id) {
                     filteredReservationsByRooms[index].push(reservation);
                 }
-            })
-            
+            });
         });
+        if (room.id == "af01c335-d01b-4d99-898e-041d6ad2058b") {
+            //console.log(filteredReservationsByRooms[index]);
+        }
     });
 
     const finalSchedule: any[] = [];
@@ -60,59 +67,75 @@ export default function tableFormat(
         null,
         null,
     ];
-    filteredReservationsByRooms.forEach((array) => {
-        
-        array.forEach((reserv : ReservationT | RoomT, indexOfReserv: number) => {
-            if (indexOfReserv == 0) {
-                baseSchedule = [
-                    reserv,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                    false,
-                ];
-            } else {
-                reserv.schedule[dayOfWeek].forEach((h:boolean, index : number) => {
-                    // se existir primeiro ele procura se ja esta na base schedule se ja estiver adiciona um no span se não estiver ele cria
-                    if(h){
-                        let isInBaseSchedule = false
-                        baseSchedule.forEach((baseScheduleItem : any) => {
-                            if(baseScheduleItem[0]?.id == reserv.id){
-                                        baseScheduleItem[1]++
-                                        isInBaseSchedule = true
-                                        baseSchedule.pop()
-                                    }
-                        })
-                        if(!isInBaseSchedule){
-                            baseSchedule[index + 1] = [reserv, 1]
-                        }
-                    }
-                })
-            }
-        })
-        
-        finalSchedule.push(baseSchedule)
+    filteredReservationsByRooms.forEach((reservationsInARoom, indexout) => {
+        reservationsInARoom.forEach(
+            (reserv: ReservationT | RoomT, indexOfReserv: number) => {
+                if (indexOfReserv == 0) {
+                    baseSchedule = [
+                        reserv,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                    ];
+                } else {
+                    reserv.schedule[dayOfWeek].forEach(
+                        (h: boolean, index: number) => {
+                            if (h) {
 
+                                baseSchedule[index + 1] = [reserv, 1];
+                            }
+                        }
+                    );
+                    
+                    let controlVector = 1;
+                    let softCap = 0
+
+                    while (controlVector < baseSchedule.length && softCap < 20) {
+                        if (
+                            baseSchedule[controlVector] &&
+                            baseSchedule[controlVector + 1]
+                        ) {
+                            if (
+                                baseSchedule[controlVector][0].id ==
+                                baseSchedule[controlVector + 1][0].id
+                            ) {
+                                baseSchedule[controlVector][1]++;
+                                baseSchedule.splice(controlVector + 1, 1);
+                            }
+                        } else {
+                            controlVector++;
+                        }
+                        softCap++
+                    }
+                    
+                }
+            }
+        );
+
+        finalSchedule.push(baseSchedule);
     });
 
-    const headers = []
+    const headers = [];
 
-    finalSchedule.forEach((obj,) =>  {
-        const head = obj.shift()
-        headers.push(head)      
-    })
+    //console.log(finalSchedule[22]);
 
-    return [headers, finalSchedule]
+    finalSchedule.forEach((obj) => {
+        const head = obj.shift();
+        headers.push(head);
+    });
+
+    return [headers, finalSchedule];
 }

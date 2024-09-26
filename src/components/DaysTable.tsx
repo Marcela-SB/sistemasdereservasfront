@@ -59,6 +59,7 @@ export default function DaysTable({
                 reservationList,
                 reservableRoomList
             );
+            
             const holderSchedule = [];
             if (selectedDate.day() != 0) {
                 for (let index = 0; index < holder[0].length; index++) {
@@ -334,6 +335,7 @@ export default function DaysTable({
                                 ) => {
                                     const room = rowContent[0];
                                     const roomSchedule = rowContent[1];
+                                   
 
                                     let cellsToIgnore = 0;
                                     let cellsIgnored = 0;
@@ -412,11 +414,10 @@ export default function DaysTable({
                                                             hourschedule[1];
                                                         cellsToIgnore =
                                                             hourschedule[1] - 1;
-                                                        spanCount += passedSpan ;
+                                                        spanCount += passedSpan;
                                                     } else {
                                                         spanCount++;
                                                     }
-
 
                                                     return (
                                                         <DaysTableCell
@@ -435,8 +436,7 @@ export default function DaysTable({
                                             )}
                                             {[...Array(16 - spanCount)].map(
                                                 (e, i) => {
-                                                    
-                                                    spanCount++
+                                                    spanCount++;
                                                     return (
                                                         <DaysTableCell
                                                             key={`daystablecell ${
@@ -448,7 +448,6 @@ export default function DaysTable({
                                                             index={
                                                                 cellsIgnored + i
                                                             }
-                                                            
                                                             span={1}
                                                             handleClick={
                                                                 handleCellClick
@@ -457,7 +456,6 @@ export default function DaysTable({
                                                     );
                                                 }
                                             )}
-                                            
                                         </TableRow>
                                     );
                                 }
