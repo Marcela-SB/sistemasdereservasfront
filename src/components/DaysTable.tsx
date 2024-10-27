@@ -59,7 +59,7 @@ export default function DaysTable({
                 reservationList,
                 reservableRoomList
             );
-            
+
             const holderSchedule = [];
             if (selectedDate.day() != 0) {
                 for (let index = 0; index < holder[0].length; index++) {
@@ -335,7 +335,6 @@ export default function DaysTable({
                                 ) => {
                                     const room = rowContent[0];
                                     const roomSchedule = rowContent[1];
-                                   
 
                                     let cellsToIgnore = 0;
                                     let cellsIgnored = 0;
@@ -399,11 +398,7 @@ export default function DaysTable({
                                             </TableCell>
                                             {roomSchedule.map(
                                                 (hourschedule, dayIndex) => {
-                                                    if (cellsToIgnore > 0) {
-                                                        cellsToIgnore--;
-                                                        cellsIgnored++;
-                                                        return;
-                                                    }
+                                                    
 
                                                     let passedSchedule = null;
                                                     let passedSpan = 1;

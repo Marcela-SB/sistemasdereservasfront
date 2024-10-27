@@ -222,6 +222,7 @@ export default function FullScreenActionDialog({
         onError: (error) => {
             setSnackBarText(error.response.data);
             setSnackBarSeverity("error");
+            alert("DEU ERRO. CHAME MÁRIO.")
         },
     });
 
