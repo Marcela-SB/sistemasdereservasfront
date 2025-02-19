@@ -9,7 +9,7 @@ import axios from 'axios'
  */
 
 const axiosInstance = axios.create({
-    baseURL:"http://10.3.227.44:8087/"
+    baseURL:"https://10.3.227.44:8443/"
 })
 
 export default axiosInstance
