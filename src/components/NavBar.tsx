@@ -42,7 +42,7 @@ function NavBar() {
                             textDecoration: "none",
                         }}
                     >
-                        DEART
+                        DEARTT
                     </Typography>
 
                     <Box sx={{ flexGrow: 1 }} />
