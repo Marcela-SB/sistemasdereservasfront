@@ -18,6 +18,7 @@ import textfyCourse from "../utils/textfyCourse";
 import PaperComponent from "./PaperComponent";
 import DraggablePaper from "./DraggablePaper";
 import { RoomT } from "../types/RoomT";
+import { Edit } from "@mui/icons-material";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -32,6 +33,8 @@ type Props = {
     isOpen: boolean;
     setIsOpen: (b: boolean) => void;
     reservation: ReservationT;
+    setReservationToEdit: (r: ReservationT) => void;
+    setEditIsOpen: (b: boolean) => void;
     //selectedUser: UserT | null;
     //setSelectedUser: (user: UserT | null) => void;
 };
@@ -40,6 +43,8 @@ export default function ReservationDetailsDialog({
     isOpen,
     setIsOpen,
     reservation,
+    setReservationToEdit,
+    setEditIsOpen
 }: Props) {
     const { roomList, userList } = React.useContext(StateContext);
 
@@ -47,16 +52,20 @@ export default function ReservationDetailsDialog({
         setIsOpen(false);
     };
 
+    const handleEdit = () => {
+        handleClose()
+        setReservationToEdit(reservation)
+        setEditIsOpen(true)
+    }
 
-    const reservationRoomList : RoomT[] = []
-    for(const roomId of reservation.roomsId){
-        reservationRoomList.push(getRoomById(roomId, roomList))
+    const reservationRoomList: RoomT[] = [];
+    for (const roomId of reservation.roomsId) {
+        reservationRoomList.push(getRoomById(roomId, roomList));
     }
 
     const startDate = dayjs(reservation.reservationStart).format("DD/MM/YYYY");
 
     const endDate = dayjs(reservation.reservationEnd).format("DD/MM/YYYY");
-
 
     return (
         <DraggablePaper>
@@ -94,14 +103,24 @@ export default function ReservationDetailsDialog({
                         >
                             Detalhes da reserva
                         </Typography>
-                        <IconButton
-                            edge="start"
-                            color="inherit"
-                            onClick={handleClose}
-                            aria-label="close"
-                        >
-                            <CloseIcon />
-                        </IconButton>
+                        <Stack direction={"row"} spacing={1} >
+                            <IconButton
+                                edge="start"
+                                color="inherit"
+                                onClick={handleEdit}
+                                aria-label="close"
+                            >
+                                <Edit />
+                            </IconButton>
+                            <IconButton
+                                edge="start"
+                                color="inherit"
+                                onClick={handleClose}
+                                aria-label="close"
+                            >
+                                <CloseIcon />
+                            </IconButton>
+                        </Stack>
                     </Toolbar>
                 </AppBar>
                 <Box sx={{ padding: 2, flexGrow: 1 }}>
@@ -138,10 +157,11 @@ export default function ReservationDetailsDialog({
                                     Sala reservada:
                                     {reservationRoomList.map((room) => {
                                         return (
-                                            <>{room?.name} {room?.roomNumber},</>
-                                        )
+                                            <>
+                                                {room?.name} {room?.roomNumber},
+                                            </>
+                                        );
                                     })}
-                                    
                                 </Typography>
 
                                 <Typography variant="body1" noWrap>
