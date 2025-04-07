@@ -425,6 +425,7 @@ export default function DaysTable({
                                                             handleClick={
                                                                 handleCellClick
                                                             }
+                                                            roomName={room.name+' '+room.roomNumber}
                                                         />
                                                     );
                                                 }

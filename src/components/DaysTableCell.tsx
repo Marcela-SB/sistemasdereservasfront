@@ -24,19 +24,23 @@ type Props = {
     index: number;
     span: number;
     handleClick: (r: ReservationT) => void;
+    roomName: string
 };
 
-function DaysTableCell({ schedule, index, handleClick, span = 1 }: Props) {
+function DaysTableCell({ schedule, index, handleClick, roomName, span = 1 }: Props) {
     const { userList } = useContext(StateContext);
 
     let tooltipTitle = null;
     if (schedule) {
+        console.log(schedule);
+        
         const reservedToUserName = getUserById(
             schedule.reservatedToId,
             userList
         )?.name;
         tooltipTitle = (
-            <>
+            <>  
+                <Typography variant="subtitle1">{roomName}</Typography>
                 <Typography variant="subtitle2">{schedule.name}</Typography>
                 <Typography variant="subtitle2">
                     {reservedToUserName}
