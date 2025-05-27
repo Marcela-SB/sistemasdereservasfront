@@ -343,6 +343,11 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                     setIsOpen={setCheckDialogIsOpen}
                     chekedUser={formReservatedTo}
                     setCheckSucess={setCheckSucess}
+                    info= {{
+                        sala: formRoom?.name,
+                        reservadoPara: formReservatedTo?.name,
+                        reservadoPor: formResponsible?.name,
+                    }}
                 />
                 <Button
                     variant="contained"

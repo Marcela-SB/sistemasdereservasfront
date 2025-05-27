@@ -137,10 +137,10 @@ export default function CheckUserDialog({
                             {" "}
                             Reservado por: {info.reservadoPor}
                         </Typography>
-                        <Typography variant="body1">
+                        {info.retornadoPor && <Typography variant="body1">
                             {" "}
                             Chave retornada por: {info.retornadoPor}
-                        </Typography>
+                        </Typography>}
                     </Paper>
                     <Stack direction={"column"} gap={2}>
                         <FormControl variant="outlined">
