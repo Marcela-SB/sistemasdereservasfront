@@ -333,6 +333,12 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
                     setIsOpen={setCheckDialogIsOpen}
                     chekedUser={formReturnedBy}
                     setCheckSucess={setCheckSucess}
+                    info= {{
+                        sala: formRoom?.name,
+                        reservadoPara: formReservatedTo?.name,
+                        reservadoPor: formResponsible?.name,
+                        retornadoPor: formReturnedBy?.name,
+                    }}
                 />
             </DraggablePaper>
         </>

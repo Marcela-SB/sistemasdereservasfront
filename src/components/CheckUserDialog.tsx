@@ -11,8 +11,10 @@ import {
     InputAdornment,
     InputLabel,
     OutlinedInput,
+    Paper,
     Stack,
     TextField,
+    Typography,
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -30,6 +32,12 @@ type Props = {
     isOpen: boolean;
     chekedUser: UserT | null;
     setCheckSucess: (b: boolean) => void;
+    info: {
+        sala?: string;
+        reservadoPara?: string;
+        reservadoPor?: string;
+        retornadoPor?: string;
+    };
 };
 
 export default function CheckUserDialog({
@@ -37,6 +45,7 @@ export default function CheckUserDialog({
     isOpen,
     chekedUser,
     setCheckSucess,
+    info,
 }: Props) {
     const [username, setUsername] = React.useState<string | null>(null);
     const [password, setPassword] = React.useState<string | null>(null);
@@ -106,7 +115,7 @@ export default function CheckUserDialog({
                 }}
             >
                 <Stack direction={"row"} className="draggable-dialog">
-                    <DialogTitle>Logue para completar</DialogTitle>
+                    <DialogTitle>Logue para finalizar a reserva</DialogTitle>
                     <DialogActions>
                         <IconButton onClick={closeDialog} aria-label="close">
                             <Close />
@@ -115,6 +124,24 @@ export default function CheckUserDialog({
                 </Stack>
 
                 <DialogContent>
+                    <Paper elevation={2} sx={{ padding: 1, marginBottom: 4 }}>
+                        <Typography variant="body1">
+                            {" "}
+                            Sala reservada: {info.sala}
+                        </Typography>
+                        <Typography variant="body1">
+                            {" "}
+                            Reservado para: {info.reservadoPara}
+                        </Typography>
+                        <Typography variant="body1">
+                            {" "}
+                            Reservado por: {info.reservadoPor}
+                        </Typography>
+                        <Typography variant="body1">
+                            {" "}
+                            Chave retornada por: {info.retornadoPor}
+                        </Typography>
+                    </Paper>
                     <Stack direction={"column"} gap={2}>
                         <FormControl variant="outlined">
                             <InputMask
