@@ -45,7 +45,6 @@ import {
     CheckBoxOutlined,
     Close,
 } from "@mui/icons-material";
-import ExceptionCreationDialog from "./ExceptionCreationDialog";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -88,7 +87,7 @@ type Props = {
     setSelectedReservation: (r: ReservationT | null) => void;
 };
 
-export default function FullScreenActionDialog({
+export default function ExceptionCreationDialog({
     isOpen,
     setIsOpen,
     text,
@@ -109,8 +108,6 @@ export default function FullScreenActionDialog({
         setSelectedReservation(null);
         setFormComment("");
         setFormSlots(null);
-        setIsConfirmationDOpen(false);
-        setIsExceptionDOpen(false);
     };
 
     const {
@@ -241,6 +238,7 @@ export default function FullScreenActionDialog({
         for (const room of formRoom) {
             roomIdList.push(room.id);
         }
+        
 
         const header = {
             name: formName,
@@ -286,10 +284,8 @@ export default function FullScreenActionDialog({
         deleteMutation.mutate();
     };
 
-    const [isExceptionDOpen, setIsExceptionDOpen] = useState(false)
-
     const onException = () => {
-        setIsExceptionDOpen(true);
+
     };
 
     const [isRequestPending, setIsRequestPending] = useState(false);
@@ -311,7 +307,7 @@ export default function FullScreenActionDialog({
                 onClose={handleClose}
                 TransitionComponent={Transition}
             >
-                <AppBar sx={{ position: "relative" }}>
+                <AppBar color="warning" sx={{ position: "relative"}}>
                     <Toolbar>
                         <Typography
                             sx={{ ml: 2, flex: 1 }}
@@ -322,30 +318,23 @@ export default function FullScreenActionDialog({
                         </Typography>
                         <Stack direction={"row"} spacing={1}>
                             <Button
-                                color="warning"
-                                onClick={onException}
-                                variant="contained"
-                            >
-                                Criar exceção
-                            </Button>
-                            <Button
                                 color="success"
                                 onClick={onSubmit}
                                 disabled={isRequestPending}
-                                variant="contained"
+                                variant="outlined"
                             >
-                                {selectedReservation ? "editar" : "salvar"}
+                                Salvar
                             </Button>
                             {selectedReservation ? (
                                 <Button
                                     color="error"
-                                    variant="contained"
+                                    variant="outlined"
                                     onClick={() => {
                                         setIsConfirmationDOpen(true);
                                     }}
                                     disabled={isRequestPending}
                                 >
-                                    excluir
+                                    Excluir
                                 </Button>
                             ) : null}
                             <IconButton
@@ -373,6 +362,7 @@ export default function FullScreenActionDialog({
                                     setFormName(event.target.value);
                                 }}
                                 fullWidth
+                                disabled
                             />
                         </Grid>
                         <Grid item xs={2} paddingX={1}>
@@ -388,6 +378,7 @@ export default function FullScreenActionDialog({
                                         event.target.value as unknown as number
                                     );
                                 }}
+                                disabled
                             ></TextField>
                         </Grid>
                         <Grid item xs={3} paddingX={1}>
@@ -470,6 +461,7 @@ export default function FullScreenActionDialog({
                                     onChange={(event) => {
                                         setFormCourse(event.target.value);
                                     }}
+                                    disabled
                                 >
                                     <MenuItem value={Courses.TEATRO}>
                                         Teatro
@@ -505,7 +497,7 @@ export default function FullScreenActionDialog({
                         <Grid item xs={3} paddingX={1} paddingTop={1}>
                             <DemoContainer components={["DatePicker"]}>
                                 <DatePicker
-                                    label="Inicio da reserva"
+                                    label="Inicio da exceção"
                                     value={formStartDay}
                                     onChange={(newValue) =>
                                         setFormStartDay(newValue)
@@ -539,7 +531,7 @@ export default function FullScreenActionDialog({
                             <Grid item xs={3} paddingX={1} paddingTop={1}>
                                 <DemoContainer components={["DatePicker"]}>
                                     <DatePicker
-                                        label="Final da reserva"
+                                        label="Final da exceção"
                                         value={formEndDay}
                                         disabled
                                         sx={{ width: "100%" }}
@@ -616,13 +608,6 @@ export default function FullScreenActionDialog({
                         excludeFunction={onRemove}
                     />
                 ) : null}
-                {selectedReservation && <ExceptionCreationDialog 
-                    setIsOpen={setIsExceptionDOpen}
-                    isOpen={isExceptionDOpen}
-                    selectedReservation={selectedReservation}
-                    setSelectedReservation={setSelectedReservation}
-                    text="Criar exceção"
-                />}  
             </Dialog>
         </React.Fragment>
     );

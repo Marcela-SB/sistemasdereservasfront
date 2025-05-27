@@ -8,6 +8,7 @@ import { ReservationT } from "../types/ReservationT";
 import { KeyT } from "../types/KeyDeliveryT";
 import { AlertColor } from "@mui/material";
 import { AuthorizationT } from "../types/AuthorizationT";
+import { ExceptionT } from "../types/ExceptionT";
 
 export type GlobalContent = {
     date: Dayjs;
@@ -16,6 +17,7 @@ export type GlobalContent = {
     userList: UserT[];
     reservationList: ReservationT[];
     keyList: KeyT[];
+    exceptionList: ExceptionT[],
     AuthorizationList: AuthorizationT[];
     loggedUser: unknown | null;
     setLoggedUser: (u: unknown) => void;
@@ -32,6 +34,7 @@ export const StateContext = createContext<GlobalContent>({
     userList: [],
     reservationList: [],
     keyList: [],
+    exceptionList: [],
     AuthorizationList: [],
     loggedUser: null,
     setLoggedUser: () => {},
@@ -78,6 +81,14 @@ function ReactContext({ children }: Props) {
         },
     });
 
+    const { data: exceptionList } = useQuery({
+        queryKey: ["exceptionListContext"],
+        queryFn: async () => {
+            const response = await axiosInstance.get("excecao/list");
+            return response.data;
+        },
+    });
+
     const { data: AuthorizationList } = useQuery({
         queryKey: ["AuthorizationListContext"],
         queryFn: async () => {
@@ -106,6 +117,7 @@ function ReactContext({ children }: Props) {
                 userList,
                 reservationList,
                 keyList,
+                exceptionList,
                 AuthorizationList,
                 loggedUser,
                 setLoggedUser,

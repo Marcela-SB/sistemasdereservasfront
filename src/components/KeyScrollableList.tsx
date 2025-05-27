@@ -70,6 +70,7 @@ export default function KeyScrollableList({
                     }
                 }).sort(keyDynamicSort(roomList))
             setOrdainedKeyList(filtededKeyList);
+            
         }
     }, [keyList,roomList, searchedText]);
 
@@ -230,6 +231,7 @@ export default function KeyScrollableList({
                                         }
                                         disablePadding
                                         sx={{ borderBottom: "1px solid gray" }}
+                                        onClick={()=> {console.log(item)}}
                                     >
                                         <ListItemButton
                                             role={undefined}

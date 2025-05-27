@@ -1,7 +1,7 @@
 import { Courses } from "./Courses";
-import { ExceptionT } from "./ExceptionT";
+import { ReservationT } from "./ReservationT";
 
-export type ReservationT = {
+export type ExceptionT = {
     id: string;
     roomsId: string[];
     reservationResponsibleId: string;
@@ -14,6 +14,6 @@ export type ReservationT = {
     comment:string;
     course: Courses;
     slots: number;
-    excecoes?: ExceptionT[] | null;
+    reserva: ReservationT
   };
   
