@@ -31,6 +31,7 @@ import {
     CheckBoxOutlineBlankOutlined,
     CheckBoxOutlined,
     Close,
+    Edit,
 } from "@mui/icons-material";
 import DraggablePaper from "./DraggablePaper";
 import PaperComponent from "./PaperComponent";
@@ -172,6 +173,11 @@ export default function CheckAuthorizationDialog({
         setCheckDialogIsOpen(true);
     };
 
+    const handleEdit = () => {
+        handleClose();
+        setCreateAuthIsOpen(true);
+    };
+
     const [isRequestPending, setIsRequestPending] = useState(false);
     React.useEffect(() => {
         setIsRequestPending(editMutation.isPending);
@@ -208,7 +214,7 @@ export default function CheckAuthorizationDialog({
                     >
                         <Toolbar>
                             <Typography
-                                sx={{ mx: 30, flex: 1 }}
+                                sx={{ mx: 20, flex: 1 }}
                                 variant="h6"
                                 component="div"
                                 textAlign={"center"}
@@ -216,6 +222,14 @@ export default function CheckAuthorizationDialog({
                             >
                                 CONSULTA DE AUTORIZAÇÃO
                             </Typography>
+                            <IconButton
+                                edge="start"
+                                color="inherit"
+                                onClick={handleEdit}
+                                aria-label="edit"
+                            >
+                                <Edit />
+                            </IconButton>
                             <IconButton
                                 edge="start"
                                 color="inherit"
@@ -256,7 +270,7 @@ export default function CheckAuthorizationDialog({
                                 marginX={2}
                                 gap={2}
                                 marginTop={2}
-                                width={'22rem'}
+                                width={"22rem"}
                             >
                                 <Autocomplete
                                     fullWidth
@@ -433,7 +447,7 @@ export default function CheckAuthorizationDialog({
                                         />
                                     )}
                                 />
-                               
+
                                 <Autocomplete
                                     fullWidth
                                     disableClearable
@@ -487,22 +501,22 @@ export default function CheckAuthorizationDialog({
                                         readOnly
                                     />
                                 </DemoContainer>
-                                <TextField
-                                    label="Observações"
-                                    value={comment ? comment : ''}
-                                    onChange={(
-                                        event: React.ChangeEvent<HTMLInputElement>
-                                    ) => {
-                                        setComment(event.target.value);
-                                    }}
-                                    multiline
-                                    fullWidth
-                                    disabled
-                                    rows={2}
-                                    sx={{ paddingBottom: 4 }}
-                                />
                             </Stack>
                         </Stack>
+                        <TextField
+                            label="Observações"
+                            value={comment ? comment : ""}
+                            onChange={(
+                                event: React.ChangeEvent<HTMLInputElement>
+                            ) => {
+                                setComment(event.target.value);
+                            }}
+                            multiline
+                            fullWidth
+                            disabled
+                            rows={2}
+                            sx={{ paddingBottom: 4, marginY: 2 }}
+                        />
                     </Container>
                 </Dialog>
             </DraggablePaper>

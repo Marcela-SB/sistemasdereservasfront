@@ -157,9 +157,6 @@ export default function AuthorizationScrollableList({
                     }}
                 ></TextField>
             </FormControl>
-            <Button variant="contained" onClick={handleEdit} >
-                Editar autorização
-            </Button>
         </Stack>
     );
 }
