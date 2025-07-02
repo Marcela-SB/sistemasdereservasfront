@@ -61,13 +61,12 @@ export default function DaysTable({
             );
 
             const holderSchedule = [];
-            if (selectedDate.day() != 0) {
-                for (let index = 0; index < holder[0].length; index++) {
-                    holderSchedule.push([holder[0][index], holder[1][index]]);
-                }
-
-                holderSchedule?.sort(daysTabledynamicSort());
+            
+            for (let index = 0; index < holder[0].length; index++) {
+                holderSchedule.push([holder[0][index], holder[1][index]]);
             }
+
+            holderSchedule?.sort(daysTabledynamicSort());
 
             setFinalSchedule(holderSchedule);
         }
@@ -321,14 +320,7 @@ export default function DaysTable({
                         </OrangeTableRow>
                     </TableHead>
                     <TableBody>
-                        {selectedDate?.day() == 0 ? (
-                            <TableRow>
-                                <TableCell colSpan={16} align="center">
-                                    Sem reservas aos domingos
-                                </TableCell>
-                            </TableRow>
-                        ) : (
-                            finalSchedule?.map(
+                        {finalSchedule?.map(
                                 (
                                     rowContent: [RoomT, any[]],
                                     roomArrayIndex: number
@@ -456,7 +448,7 @@ export default function DaysTable({
                                     );
                                 }
                             )
-                        )}
+                        }
 
                         <OrangeTableRow>
                             <TableCell

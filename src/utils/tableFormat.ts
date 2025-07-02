@@ -7,10 +7,8 @@ export default function tableFormat(
     reservationList: ReservationT[],
     roomList: RoomT[]
 ) {
-    const dayOfWeek = date.day() - 1;
-    if (dayOfWeek < 0) {
-        return;
-    }
+    const dayOfWeek = date.day();
+
     let filteredReservations = reservationList;
     filteredReservations = filteredReservations.filter((r: ReservationT) => {
         const rStart = dayjs(r.reservationStart);
@@ -57,9 +55,29 @@ export default function tableFormat(
         null,
         null,
     ];
+
+    let falseSchedule = [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+    ];
+    
     filteredReservationsByRooms.forEach((reservationsInARoom, indexout) => {
         let shouldPrint = false;
-        shouldPrint = reservationsInARoom[0].name == "SALA 22 -" ? true : false;
+        shouldPrint = reservationsInARoom[0].name == "teste domingo" ? true : false;
         reservationsInARoom.forEach(
             (reserv: ReservationT | RoomT, indexOfReserv: number) => {
                 if (indexOfReserv == 0) {
@@ -83,7 +101,29 @@ export default function tableFormat(
                         false,
                     ];
                 } else {
-                    reserv.schedule[dayOfWeek].forEach(
+                    
+                    let holdDay = dayOfWeek
+                    const hasSunday = reserv.schedule.length > 6
+                    if(!hasSunday) {
+                        holdDay -= 1;
+                    }
+
+                    if (!hasSunday && holdDay < 0) {
+                        reserv.schedule.splice(0,0,falseSchedule)
+
+                        reserv.schedule[0].forEach(
+                        (h: boolean, index: number) => {
+                            if (h) {
+                                if (shouldPrint) {
+                                    console.log(reserv.name);
+                                }
+                                baseSchedule[index + 1] = false;
+                            }
+                        }
+                        );
+                    } else {
+                        
+                        reserv.schedule[holdDay].forEach(
                         (h: boolean, index: number) => {
                             if (h) {
                                 if (shouldPrint) {
@@ -92,7 +132,9 @@ export default function tableFormat(
                                 baseSchedule[index + 1] = [reserv, 1];
                             }
                         }
-                    );
+                        );
+                    }
+                    
                 }
             }
         );

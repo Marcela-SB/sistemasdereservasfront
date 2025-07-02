@@ -32,7 +32,6 @@ function DaysTableCell({ schedule, index, handleClick, roomName, span = 1 }: Pro
 
     let tooltipTitle = null;
     if (schedule) {
-        console.log(schedule);
         
         const reservedToUserName = getUserById(
             schedule.reservatedToId,
