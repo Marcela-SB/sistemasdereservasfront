@@ -61,6 +61,20 @@ export default function ReservationDetailsTable({ formSchedule }: Props) {
                             <TableCell align="center">{wd.name}</TableCell>
 
                             {tableSchedule.map((schedule, hourIndex) => {
+                                console.log(formSchedule);
+
+                                const valorTratado = () => {
+                                    let value = false;
+                                    try {
+                                        value =
+                                            formSchedule[weekIndex][hourIndex];
+                                    } catch (error) {
+                                        console.log(error);
+                                        
+                                    }
+                                    return value;
+                                };
+
                                 return (
                                     <Tooltip
                                         title={""}
@@ -83,9 +97,7 @@ export default function ReservationDetailsTable({ formSchedule }: Props) {
                                                     },
                                                 }}
                                                 checked={
-                                                    formSchedule[weekIndex][
-                                                        hourIndex
-                                                    ]
+                                                     valorTratado()
                                                 }
                                             />
                                         </TableCell>
