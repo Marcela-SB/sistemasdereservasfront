@@ -29,6 +29,20 @@ export default function FullScreenTableDialog({
         setFormSchedule([...holder]);
     };
 
+    if(formSchedule.length <= 6){
+        // O novo array que você quer adicionar no início
+        const novoHorario = [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false];
+
+        // Criamos um novo array começando com 'novoHorario' e depois
+        // "espalhando" todos os itens do 'formSchedule' original
+        const novoFormSchedule = [novoHorario, ...formSchedule];
+
+        console.log(novoFormSchedule);
+        
+        // Atualizamos o estado com o novo array
+        setFormSchedule(novoFormSchedule);
+    }
+
     return (
         <TableContainer component={Paper} sx={{ marginX: "auto" }}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -71,6 +85,7 @@ export default function FullScreenTableDialog({
                             <TableCell align="center">{wd.name}</TableCell>
 
                             {tableSchedule.map((schedule, hourIndex) => {
+                               
                                 return (
                                     <Tooltip
                                         title={""}
