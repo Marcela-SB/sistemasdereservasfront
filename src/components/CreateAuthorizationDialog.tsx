@@ -35,7 +35,7 @@ import DraggablePaper from "./DraggablePaper";
 import PaperComponent from "./PaperComponent";
 import { AuthorizationT } from "../types/AuthorizationT";
 import getRoomById from "../utils/getRoomById";
-import { DatePicker } from "@mui/x-date-pickers";
+import { DatePicker, TimePicker } from "@mui/x-date-pickers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { UserT } from "../types/UserT";
 import getUserById from "../utils/getUserById";
@@ -125,6 +125,8 @@ export default function CreateAuthorizationDialog({
     const [comment, setComment] = useState<string | null>(null);
 
     const [isDaily, setIsDaily] = useState(false);
+
+    const [timeLimit, setTimeLimit] = useState(false)
 
     const [isConfirmationDOpen, setIsConfirmationDOpen] = useState(false);
 
@@ -607,6 +609,57 @@ export default function CreateAuthorizationDialog({
                                         />
                                     </DemoContainer>
                                 )}
+                            </Stack>
+                            <Stack direction={"row"} spacing={2}>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={timeLimit}
+                                            onChange={(event) => {
+                                                setTimeLimit(
+                                                    event.target.checked
+                                                );
+                                            }}
+                                            inputProps={{
+                                                "aria-label": "controlled",
+                                            }}
+                                        />
+                                    }
+                                    labelPlacement="top"
+                                    label="Autorização com horario"
+                                    sx={{ width: "100%", marginX: 0 }}
+                                />
+                                <DemoContainer
+                                    components={["TimePicker"]}
+                                    sx={{ width: "100%" }}
+                                >
+                                    <TimePicker
+                                        label="Horario de início"
+                                        // value={authorizationStart}
+                                        // onChange={(newValue) =>
+                                        //     setAuthorizationStart(newValue)
+                                        // }
+                                        sx={{ width: "100%" }}
+                                        disabled={!timeLimit}
+                                    />
+                                </DemoContainer>
+                                
+                                
+                                    <DemoContainer
+                                        components={["TimePicker"]}
+                                        sx={{ width: "100%" }}
+                                    >
+                                        <TimePicker
+                                            label="Horario final"
+                                            // value={authorizationEnd}
+                                            // onChange={(newValue) =>
+                                            //     setAuthorizationEnd(newValue)
+                                            // }
+                                            sx={{ width: "100%" }}
+                                            disabled={!timeLimit}
+                                        />
+                                    </DemoContainer>
+                                
                             </Stack>
                             <TextField
                                 label="Observações"
