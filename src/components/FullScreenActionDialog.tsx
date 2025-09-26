@@ -199,7 +199,8 @@ export default function FullScreenActionDialog({
             setSnackBarSeverity("success");
         },
         onError: (error) => {
-            setSnackBarText(error.response.data);
+            const errorMessage = error.response.data || error.response?.data?.error || "Ocorreu um erro desconhecido.";
+            setSnackBarText(errorMessage);
             setSnackBarSeverity("error");
         },
     });
