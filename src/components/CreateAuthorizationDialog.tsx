@@ -145,8 +145,10 @@ export default function CreateAuthorizationDialog({
 
             const userListToPush: UserT[] = [];
             for (const userId of selectedAuthorization.authorizatedToId) {
-                const user: UserT = getUserById(userId, userList);
-                userListToPush.push(user);
+                const user: UserT | null | undefined = getUserById(userId, userList);       
+                if (user) { 
+                    userListToPush.push(user);
+                }
             }
             setAuthorizaredToId(userListToPush);
 
@@ -235,7 +237,9 @@ export default function CreateAuthorizationDialog({
 
         const userIdList: string[] = [];
         for (const user of authorizaredToId) {
-            userIdList.push(user.id);
+            if (user) { 
+                userIdList.push(user.id);
+            }
         }
 
         const header = {

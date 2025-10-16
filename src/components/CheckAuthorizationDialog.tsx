@@ -143,8 +143,10 @@ export default function CheckAuthorizationDialog({
 
             const userListToPush: UserT[] = [];
             for (const userId of selectedAuthorization.authorizatedToId) {
-                const user: UserT = getUserById(userId, userList);
-                userListToPush.push(user);
+                const user: UserT | null | undefined = getUserById(userId, userList);       
+                if (user) { 
+                    userListToPush.push(user);
+                }
             }
             setAuthorizaredToId(userListToPush);
 
