@@ -45,6 +45,7 @@ import {
     CheckBoxOutlined,
     Close,
 } from "@mui/icons-material";
+import { useEnterSubmit } from "../utils/enterKeyButtonActivate";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -298,10 +299,15 @@ export default function FullScreenActionDialog({
     }, [createMutation, editMutation, deleteMutation]);
 
     const [isConfirmationDOpen, setIsConfirmationDOpen] = useState(false);
+        
+    const dialogRef = React.useRef<HTMLDivElement>(null);
+    const submitButtonRef = React.useRef<HTMLButtonElement>(null);
+    useEnterSubmit(isOpen, submitButtonRef, dialogRef);
 
     return (
         <React.Fragment>
             <Dialog
+                ref={dialogRef}
                 fullScreen
                 open={isOpen}
                 onClose={handleClose}
@@ -318,6 +324,7 @@ export default function FullScreenActionDialog({
                         </Typography>
                         <Stack direction={"row"} spacing={1}>
                             <Button
+                                ref={submitButtonRef}
                                 color="success"
                                 onClick={onSubmit}
                                 disabled={isRequestPending}

@@ -38,6 +38,7 @@ import PaperComponent from "./PaperComponent";
 import RefreshIcon from "@mui/icons-material/RefreshOutlined";
 import { AuthorizationT } from "../types/AuthorizationT";
 import AuthorizationScrollableList from "./AuthorizationScrollableList";
+import { useEnterSubmit } from "../utils/enterKeyButtonActivate";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -184,11 +185,16 @@ export default function CheckAuthorizationDialog({
     React.useEffect(() => {
         setIsRequestPending(editMutation.isPending);
     }, [editMutation]);
+            
+    const dialogRef = React.useRef<HTMLDivElement>(null);
+    const submitButtonRef = React.useRef<HTMLButtonElement>(null);
+    useEnterSubmit(isOpen, submitButtonRef, dialogRef);
 
     return (
         <>
             <DraggablePaper>
                 <Dialog
+                    ref={dialogRef}
                     open={isOpen}
                     onClose={handleClose}
                     TransitionComponent={Transition}
@@ -225,6 +231,7 @@ export default function CheckAuthorizationDialog({
                                 CONSULTA DE AUTORIZAÇÃO
                             </Typography>
                             <IconButton
+                                ref={submitButtonRef}
                                 edge="start"
                                 color="inherit"
                                 onClick={handleEdit}

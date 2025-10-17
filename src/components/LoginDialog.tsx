@@ -25,6 +25,7 @@ import { StateContext } from "../context/ReactContext";
 import { Close } from "@mui/icons-material";
 import PaperComponent from "./PaperComponent";
 import DraggablePaper from "./DraggablePaper";
+import { useEnterSubmit } from "../utils/enterKeyButtonActivate";
 
 type Props = {
     setIsOpen: (b: boolean) => void;
@@ -76,11 +77,16 @@ export default function LoginDialog({ setIsOpen, isOpen, setIsLogged }: Props) {
         loginMutation.reset();
         setIsOpen(false);
     };
+        
+    const dialogRef = React.useRef<HTMLDivElement>(null);
+    const submitButtonRef = React.useRef<HTMLButtonElement>(null);
+    useEnterSubmit(isOpen, submitButtonRef, dialogRef);
 
     return (
         <>
             <DraggablePaper>
                 <Dialog
+                    ref={dialogRef}
                     onClose={() => {
                         closeDialog;
                     }}
@@ -176,6 +182,7 @@ export default function LoginDialog({ setIsOpen, isOpen, setIsLogged }: Props) {
                             )}
 
                             <Button
+                                ref={submitButtonRef}
                                 variant="contained"
                                 onClick={LoginTentative}
                                 sx={{ marginTop: 1 }}

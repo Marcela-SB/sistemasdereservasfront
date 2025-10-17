@@ -19,6 +19,7 @@ import PaperComponent from "./PaperComponent";
 import DraggablePaper from "./DraggablePaper";
 import { RoomT } from "../types/RoomT";
 import { Edit } from "@mui/icons-material";
+import { useEnterSubmit } from "../utils/enterKeyButtonActivate";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -66,10 +67,15 @@ export default function ReservationDetailsDialog({
     const startDate = dayjs(reservation.reservationStart).format("DD/MM/YYYY");
 
     const endDate = dayjs(reservation.reservationEnd).format("DD/MM/YYYY");
+            
+    const dialogRef = React.useRef<HTMLDivElement>(null);
+    const submitButtonRef = React.useRef<HTMLButtonElement>(null);
+    useEnterSubmit(isOpen, submitButtonRef, dialogRef);
 
     return (
         <DraggablePaper>
             <Dialog
+                ref={dialogRef}
                 maxWidth={"md"}
                 fullWidth
                 open={isOpen}
@@ -105,6 +111,7 @@ export default function ReservationDetailsDialog({
                         </Typography>
                         <Stack direction={"row"} spacing={1} >
                             <IconButton
+                                ref={submitButtonRef}
                                 edge="start"
                                 color="inherit"
                                 onClick={handleEdit}

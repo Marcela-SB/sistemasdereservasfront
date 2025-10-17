@@ -33,6 +33,7 @@ import { Close } from "@mui/icons-material";
 import DraggablePaper from "./DraggablePaper";
 import PaperComponent from "./PaperComponent";
 import RefreshIcon from '@mui/icons-material/RefreshOutlined';
+import { useEnterSubmit } from "../utils/enterKeyButtonActivate";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -151,11 +152,16 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
         setIsRequestPending(editMutation.isPending);
     }, [editMutation]);
 
+    const dialogRef = React.useRef<HTMLDivElement>(null);
+    const submitButtonRef = React.useRef<HTMLButtonElement>(null);
+    useEnterSubmit(isOpen, submitButtonRef, dialogRef);
+
     return (
         <>
             <DraggablePaper>
                 <Dialog
                     open={isOpen}
+                    ref={dialogRef}
                     onClose={handleClose}
                     TransitionComponent={Transition}
                     maxWidth="md"
@@ -315,6 +321,7 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
                                 <Button
                                     variant="contained"
                                     sx={{ marginY: 2, flex:1, marginRight:1.5, height:'100%'}}
+                                    ref={submitButtonRef}
                                     onClick={submitReturn}
                                     disabled={isRequestPending}
                                     fullWidth

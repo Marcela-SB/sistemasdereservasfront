@@ -40,6 +40,7 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { UserT } from "../types/UserT";
 import getUserById from "../utils/getUserById";
 import dayjs, { Dayjs } from "dayjs";
+import { useEnterSubmit } from "../utils/enterKeyButtonActivate";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -294,11 +295,16 @@ export default function CreateAuthorizationDialog({
                 deleteMutation.isPending
         );
     }, [createMutation, editMutation, deleteMutation]);
+    
+    const dialogRef = React.useRef<HTMLDivElement>(null);
+    const submitButtonRef = React.useRef<HTMLButtonElement>(null);
+    useEnterSubmit(isOpen, submitButtonRef, dialogRef);
 
     return (
         <>
             <DraggablePaper>
                 <Dialog
+                    ref={dialogRef}
                     open={isOpen}
                     onClose={handleClose}
                     TransitionComponent={Transition}
@@ -336,6 +342,7 @@ export default function CreateAuthorizationDialog({
                             </Typography>
                             <Stack direction={"row"} spacing={1}>
                                 <Button
+                                    ref={submitButtonRef}
                                     color="success"
                                     onClick={onSubmit}
                                     disabled={isRequestPending}

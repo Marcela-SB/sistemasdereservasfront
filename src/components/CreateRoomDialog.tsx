@@ -26,6 +26,7 @@ import HistoricDialog from "./HistoricDialog";
 import { Close } from "@mui/icons-material";
 import DraggablePaper from "./DraggablePaper";
 import PaperComponent from "./PaperComponent";
+import { useEnterSubmit } from "../utils/enterKeyButtonActivate";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -279,12 +280,17 @@ export default function CreateRoomDialog({
                 deleteMutation.isPending
         );
     }, [createMutation, editMutation, deleteMutation]);
+    
+    const dialogRef = React.useRef<HTMLDivElement>(null);
+    const submitButtonRef = React.useRef<HTMLButtonElement>(null);
+    useEnterSubmit(isOpen, submitButtonRef, dialogRef);
 
     return (
 
         <>
             <DraggablePaper>
                 <Dialog
+                    ref={dialogRef}
                     open={isOpen}
                     onClose={handleClose}
                     TransitionComponent={Transition}
@@ -334,8 +340,8 @@ export default function CreateRoomDialog({
                                 ) : null}
 
                                 <Button
+                                    ref={submitButtonRef}
                                     color="success"
-
                                     onClick={onSubmit}
                                     disabled={isRequestPending}
                                     variant="contained"

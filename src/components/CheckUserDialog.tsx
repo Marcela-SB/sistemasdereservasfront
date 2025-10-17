@@ -26,6 +26,7 @@ import { UserT } from "../types/UserT";
 import { Close } from "@mui/icons-material";
 import DraggablePaper from "./DraggablePaper";
 import PaperComponent from "./PaperComponent";
+import { useEnterSubmit } from "../utils/enterKeyButtonActivate";
 
 type Props = {
     setIsOpen: (b: boolean) => void;
@@ -90,10 +91,15 @@ export default function CheckUserDialog({
         setIsOpen(false);
         setPassword(null);
     };
+                
+    const dialogRef = React.useRef<HTMLDivElement>(null);
+    const submitButtonRef = React.useRef<HTMLButtonElement>(null);
+    useEnterSubmit(isOpen, submitButtonRef, dialogRef);
 
     return (
         <DraggablePaper>
             <Dialog
+                ref={dialogRef}
                 onClose={() => {
                     closeDialog;
                 }}
@@ -199,6 +205,7 @@ export default function CheckUserDialog({
                         )}
 
                         <Button
+                            ref={submitButtonRef}
                             variant="contained"
                             onClick={LoginTentative}
                             sx={{ marginTop: 1 }}

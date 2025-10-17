@@ -35,6 +35,7 @@ import DraggablePaper from "./DraggablePaper";
 import PaperComponent from "./PaperComponent";
 import roomDynamicSort from "../utils/roomDynamicSort.ts";
 import KeyWithdrawRoomList from "./KeyWithdrawRoomList.tsx";
+import { useEnterSubmit } from "../utils/enterKeyButtonActivate.ts";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -193,9 +194,14 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
         setFormRoom(holder);
     };
 
+    const dialogRef = React.useRef<HTMLDivElement>(null);
+    const submitButtonRef = React.useRef<HTMLButtonElement>(null);
+    useEnterSubmit(isOpen, submitButtonRef, dialogRef);
+
     return (
         <DraggablePaper>
             <Dialog
+                ref={dialogRef}
                 open={isOpen}
                 onClose={handleClose}
                 TransitionComponent={Transition}
@@ -350,6 +356,7 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                     }}
                 />
                 <Button
+                    ref={submitButtonRef}
                     variant="contained"
                     sx={{ marginX: 6, marginY: 2 }}
                     onClick={submitWithdraw}

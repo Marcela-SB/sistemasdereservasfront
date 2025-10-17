@@ -18,6 +18,7 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { DatePicker } from "@mui/x-date-pickers";
 import PaperComponent from "./PaperComponent";
 import DraggablePaper from "./DraggablePaper";
+import { useEnterSubmit } from "../utils/enterKeyButtonActivate";
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -187,10 +188,15 @@ export default function FullScreenDialogList({
         formEndDay,
         formSchedule,
     ]);
+        
+    const dialogRef = React.useRef<HTMLDivElement>(null);
+    const submitButtonRef = React.useRef<HTMLButtonElement>(null);
+    useEnterSubmit(isOpen, submitButtonRef, dialogRef);
 
     return (
         <DraggablePaper>
             <Dialog
+                ref={dialogRef}
                 open={isOpen}
                 onClose={handleClose}
                 TransitionComponent={Transition}
@@ -335,6 +341,7 @@ export default function FullScreenDialogList({
                     noOptionsText={'Sem reservas correspondentes.'}
                 />
                 <Button
+                    ref={submitButtonRef}
                     variant="contained"
                     sx={{ marginX: 6, marginBottom: 2 }}
                     onClick={submitReservation}
