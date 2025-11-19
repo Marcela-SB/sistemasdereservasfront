@@ -29,7 +29,7 @@ function FilteredUserList({ inputText, selectUser }: Props) {
 
             //return the item which contains the user input
             else {
-                return user.name?.toLowerCase().includes(inputText);
+                return user.name?.toLowerCase().includes(inputText.toLowerCase());
             }
         })
         .sort(userDynamicSort());

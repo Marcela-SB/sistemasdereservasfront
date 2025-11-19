@@ -134,7 +134,7 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
 
                     //return the item which contains the room input
                     else {
-                        return room.name?.toLowerCase().includes(searchedText);
+                        return room.name?.toLowerCase().includes(searchedText.toLowerCase());
                     }
                 })
                 .sort(roomDynamicSort());

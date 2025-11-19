@@ -51,7 +51,7 @@ export default function AuthorizationScrollableList({
                             authorization.authorizationProfessorId,
                             userList
                         );
-                        if (user?.name.toLowerCase().includes(searchedText)) {
+                        if (user?.name.toLowerCase().includes(searchedText.toLowerCase())) {
                             return authorization;
                         }
                     }

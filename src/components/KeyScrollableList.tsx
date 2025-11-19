@@ -64,7 +64,7 @@ export default function KeyScrollableList({
                     //return the item which contains the room input
                     else {
                         const room = getRoomById(key.roomId, roomList)
-                        if(room?.name.toLowerCase().includes(searchedText)){
+                        if(room?.name.toLowerCase().includes(searchedText.toLowerCase())){
                             return key
                         }
                     }
