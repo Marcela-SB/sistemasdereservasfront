@@ -130,7 +130,7 @@ export default function HistoricDialog({
                                             Responsavel pela reserva:
                                             {
                                                 getUserById(
-                                                    key.responsibleForTheKeyId,
+                                                    key.withdrawResponsibleId,
                                                     userList
                                                 )?.name
                                             }
