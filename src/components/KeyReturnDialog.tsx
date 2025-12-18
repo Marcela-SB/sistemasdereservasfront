@@ -50,7 +50,7 @@ type Props = {
 };
 
 export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
-    const { roomList, userList } = React.useContext(StateContext);
+    const { roomList, activeUsersList, allUsersList } = React.useContext(StateContext);
 
     const handleClose = () => {
         setIsOpen(false);
@@ -76,12 +76,9 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
 
     const [formRoom, setFormRoom] = useState<RoomT | null>(null);
 
-    const [formReturnTimePrevision, setFormReturnTimePrevision] =
-        useState<Dayjs | null>(dayjs());
+    const [formReturnTimePrevision, setFormReturnTimePrevision] = useState<Dayjs | null>(dayjs());
 
-    const [formReservatedTo, setFormReservatedTo] = useState<UserT | null>(
-        null
-    );
+    const [formReservatedTo, setFormReservatedTo] = useState<UserT | null>(null);
 
     const [formResponsible, setFormResponsible] = useState<UserT | null>(null);
 
@@ -90,6 +87,8 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
     const [checkDialogIsOpen, setCheckDialogIsOpen] = useState(false);
 
     const [checkSucess, setCheckSucess] = useState(false);
+
+    const { setSnackBarText, setSnackBarSeverity } = React.useContext(StateContext);
 
     const editMutation = useMutation({
         mutationFn: (header) => {
@@ -100,7 +99,11 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
             setSnackBarSeverity("success");
             queryClient.invalidateQueries({ queryKey: ["keyListContext"] });
             cleanInputs()
-        }
+        },
+        onError: (error) => {
+            setSnackBarText("Houve um problema na requisição!");
+            setSnackBarSeverity("error");
+        },
     });
 
     React.useEffect(() => {
@@ -113,13 +116,13 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
 
             const user: UserT = getUserById(
                 selectedKey.responsibleForTheKeyId,
-                userList
+                allUsersList
             );
             setFormReservatedTo(user);
 
             const userResponsible: UserT = getUserById(
                 selectedKey.withdrawResponsibleId,
-                userList
+                allUsersList
             );
             setFormResponsible(userResponsible);
         }
@@ -257,7 +260,7 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
                                     value={formReservatedTo}
                                     disabled
                                     id="controllable-states-demo"
-                                    options={userList}
+                                    options={allUsersList}
                                     getOptionLabel={(user: UserT) => {
                                         return user.name;
                                     }}
@@ -273,7 +276,7 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
                                     value={formResponsible}
                                     disabled
                                     id="controllable-states-demo"
-                                    options={userList}
+                                    options={allUsersList}
                                     getOptionLabel={(user: UserT) => {
                                         return user.name;
                                     }}
@@ -306,7 +309,7 @@ export default function KeyReturnDialog({ isOpen, setIsOpen }: Props) {
                                         setFormReturnedBy(newValue);
                                     }}
                                     id="controllable-states-demo"
-                                    options={userList}
+                                    options={activeUsersList}
                                     getOptionLabel={(user: UserT) => {
                                         return user.name;
                                     }}

@@ -34,7 +34,7 @@ export default function HistoricDialog({
     setIsOpen,
     selectedRoom,
 }: Props) {
-    const { userList, keyList } = React.useContext(StateContext);
+    const { allUsersList, keyList } = React.useContext(StateContext);
 
     const [scrollableRoomArray, setScrollableRoomArray] = useState<KeyT[]>([]);
 
@@ -131,7 +131,7 @@ export default function HistoricDialog({
                                             {
                                                 getUserById(
                                                     key.withdrawResponsibleId,
-                                                    userList
+                                                    allUsersList
                                                 )?.name
                                             }
                                         </Typography>
@@ -140,7 +140,7 @@ export default function HistoricDialog({
                                             {
                                                 getUserById(
                                                     key.responsibleForTheKeyId,
-                                                    userList
+                                                    allUsersList
                                                 )?.name
                                             }
                                         </Typography>
@@ -151,7 +151,7 @@ export default function HistoricDialog({
                                                 {
                                                     getUserById(
                                                         key.keyReturnedById,
-                                                        userList
+                                                        allUsersList
                                                     )?.name
                                                 }
                                             </Typography>

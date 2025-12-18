@@ -13,12 +13,13 @@ import {
 import React, { useEffect, useState } from "react";
 import { StateContext } from "../context/ReactContext";
 import { UserT } from "../types/UserT";
-import FilteredUserList from "./FilteredUserList";
 
 import InputMask from "react-input-mask";
 import { Close } from "@mui/icons-material";
 import PaperComponent from "./PaperComponent";
 import DraggablePaper from "./DraggablePaper";
+import FilteredUserListByCpf from "./FilteredUserListByCpf";
+import FilteredUserList from "./FilteredUserList";
 
 type Props = {
     isOpen: boolean;
@@ -26,13 +27,14 @@ type Props = {
     setSelectedUser: (r: UserT) => void;
     setCreateUserIsOpen: (b: boolean) => void;
 };
-function ModifyUserListD({
+
+function CreateUserCpfSearchDialog({
     isOpen,
     setIsOpen,
     setSelectedUser,
     setCreateUserIsOpen,
 }: Props) {
-    const { activeUsersList } = React.useContext(StateContext);
+    const { allUsersList } = React.useContext(StateContext);
 
     const [searchedText, setSearchedText] = useState("");
 
@@ -41,8 +43,8 @@ function ModifyUserListD({
     };
 
     useEffect(() => {
-        if (activeUsersList) {
-            const holder = [...activeUsersList];
+        if (allUsersList) {
+            const holder = [...allUsersList];
             holder.sort((a, b) => {
                 const nameA = a.name.toUpperCase();
                 const nameB = b.name.toUpperCase();
@@ -56,7 +58,7 @@ function ModifyUserListD({
                 return 0;
             });
         }
-    }, [activeUsersList]);
+    }, [allUsersList]);
 
     const selectUser = (room: UserT) => {
         setSelectedUser(room);
@@ -83,7 +85,7 @@ function ModifyUserListD({
                     top: "30%",
                     left: "30%",
                     height: "fit-content",
-                    width:'36.5rem',
+                    width: '36.5rem',
                 }}
             >
                 <AppBar
@@ -96,38 +98,52 @@ function ModifyUserListD({
                             variant="h6"
                             component="div"
                         >
-                            Selecione um usuario
+                            Verificação de usuário
                         </Typography>
-                        <IconButton
-                            edge="start"
-                            color="inherit"
-                            onClick={handleClose}
-                            aria-label="close"
-                        >
-                            <Close />
-                        </IconButton>
+                         <Stack direction={"row"} spacing={1}>
+                            <Button
+                                color="success"
+                                onClick={() => setCreateUserIsOpen(true)}
+                                variant="contained"
+                                sx={{ fontWeight: "600" }}
+                            >
+                                Criar
+                            </Button>
+                            <IconButton
+                                edge="start"
+                                color="inherit"
+                                onClick={handleClose}
+                                aria-label="close"
+                            >
+                                <Close />
+                            </IconButton>
+                        </Stack>
                     </Toolbar>
                 </AppBar>
                 <Stack direction={"column"}>
-                    <FilteredUserList
+                    <FilteredUserListByCpf
                         selectUser={selectUser}
                         inputText={searchedText}
                     />
                     <FormControl>
-                        <TextField
-                            label="Nome do usuario"
-                            placeholder="Digite o nome do usuario"
-                            sx={{
-                                margin: 2,
-                                borderRadius: 6,
-                            }}
+                        <InputMask
+                            mask="999.999.999-99"
                             value={searchedText}
-                            onChange={(
-                                event: React.ChangeEvent<HTMLInputElement>
-                            ) => {
+                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                 setSearchedText(event.target.value);
                             }}
-                        ></TextField>
+                        >
+                            {() => (
+                                <TextField
+                                    label="CPF do usuario"
+                                    placeholder="Digite o CPF do usuario"
+                                    sx={{
+                                        margin: 2,
+                                        borderRadius: 6,
+                                    }}
+                                ></TextField>
+                            )}
+                        </InputMask>
                     </FormControl>
                 </Stack>
             </Dialog>
@@ -135,4 +151,4 @@ function ModifyUserListD({
     );
 }
 
-export default ModifyUserListD;
+export default CreateUserCpfSearchDialog;

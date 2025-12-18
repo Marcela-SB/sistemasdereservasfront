@@ -28,7 +28,7 @@ export default function AuthorizationScrollableList({
     setCreateDialogIsOpen,
     handleClose
 }: Props) {
-    const { AuthorizationList, userList } = React.useContext(StateContext);
+    const { AuthorizationList, allUsersList } = React.useContext(StateContext);
 
     const [ordainedAuthorizationList, setOrdainedAuthorizationList] = useState<
         AuthorizationT[]
@@ -37,7 +37,7 @@ export default function AuthorizationScrollableList({
     const [searchedText, setSearchedText] = useState("");
 
     useEffect(() => {
-        if (userList && AuthorizationList) {
+        if (allUsersList && AuthorizationList) {
             const filtededAuthorizationList = AuthorizationList?.filter(
                 (authorization: AuthorizationT) => {
                     //if no input the return the original
@@ -49,7 +49,7 @@ export default function AuthorizationScrollableList({
                     else {
                         const user = getUserById(
                             authorization.authorizationProfessorId,
-                            userList
+                            allUsersList
                         );
                         if (user?.name.toLowerCase().includes(searchedText.toLowerCase())) {
                             return authorization;
@@ -59,7 +59,7 @@ export default function AuthorizationScrollableList({
             );
             setOrdainedAuthorizationList(filtededAuthorizationList);
         }
-    }, [AuthorizationList, userList, searchedText]);
+    }, [AuthorizationList, allUsersList, searchedText]);
 
     const handleEdit = () => {
         handleClose()
@@ -114,7 +114,7 @@ export default function AuthorizationScrollableList({
 
                         const authProff = getUserById(
                             item.authorizationProfessorId,
-                            userList
+                            allUsersList
                         );
 
                         return (
@@ -135,7 +135,7 @@ export default function AuthorizationScrollableList({
                             >
                                 <ListItemText
                                     primary={`${item.name}`}
-                                    secondary={`${authProff?.name}`}
+                                    secondary={`${authProff?.name}`+(!authProff?.active && " (inativo)")}
                                 />
                             </ListItem>
                         );

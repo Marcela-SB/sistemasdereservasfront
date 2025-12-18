@@ -84,7 +84,7 @@ export default function FullScreenDialogList({
     const [selectedInternalReservation, setSelectedInternalReservation] =
         useState<ReservationT | null>(null);
 
-    const { roomList, userList, reservationList } =
+    const { roomList, allUsersList, reservationList } =
         React.useContext(StateContext);
 
     const submitReservation = () => {
@@ -273,9 +273,9 @@ export default function FullScreenDialogList({
                                 setFormReservatedTo(newValue);
                             }}
                             id="controllable-states-demo"
-                            options={userList}
+                            options={allUsersList}
                             getOptionLabel={(user: UserT) => {
-                                return user.name;
+                                return user.name + (!user.active && " (inativo)");
                             }}
                             renderInput={(params) => (
                                 <TextField
@@ -293,9 +293,9 @@ export default function FullScreenDialogList({
                                 setFormResponsible(newValue);
                             }}
                             id="controllable-states-demo"
-                            options={userList}
+                            options={allUsersList}
                             getOptionLabel={(user: UserT) => {
-                                return user.name;
+                                return user.name + (!user.active && " (inativo)");
                             }}
                             renderInput={(params) => (
                                 <TextField

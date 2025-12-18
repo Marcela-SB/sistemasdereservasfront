@@ -54,7 +54,7 @@ type Props = {
 export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
     const {
         roomList,
-        userList,
+        activeUsersList,
         loggedUser,
         setSnackBarText,
         setSnackBarSeverity,
@@ -311,7 +311,7 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                                 setFormReservatedTo(newValue);
                             }}
                             id="controllable-states-demo"
-                            options={userList}
+                            options={activeUsersList}
                             getOptionLabel={(user: UserT) => {
                                 return user.name;
                             }}

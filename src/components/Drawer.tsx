@@ -28,6 +28,7 @@ import {
     RoomPreferences,
 } from "@mui/icons-material";
 import CreateUserDialog from "./CreateUserDialog";
+import CreateUserCpfSearchDialog from "./CreateUserCpfSearchDialog";
 import { useState } from "react";
 import { UserT } from "../types/UserT";
 import CreateRoomDialog from "./CreateRoomDialog";
@@ -72,6 +73,7 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
     const [keyWDialogIsOpen, setKeyWDialogIsOpen] = useState(false);
     const [keyRDialogIsOpen, setKeyRDialogIsOpen] = useState(false);
 
+    const [userSearchDIsOpen, setUserSearchDIsOpen] = useState(false);
     const [userCreateDIsOpen, setUserCreateDIsOpen] = useState(false);
     const [userModifyDIsOpen, setUserModifyDIsOpen] = useState(false);
 
@@ -249,7 +251,9 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
                                 <ListItem key={"Criar usuario"} disablePadding>
                                     <ListItemButton
                                         onClick={() => {
-                                            setUserCreateDIsOpen(true);
+                                            // setUserCreateDIsOpen(true);
+                                            setUserSearchDIsOpen(true);
+                                            setSelectedUser(null);
                                         }}
                                     >
                                         <ListItemIcon>
@@ -359,6 +363,13 @@ export default function LoginDrawer({ isOpen, setIsOpen }: Props) {
             <KeyReturnDialog
                 isOpen={keyRDialogIsOpen}
                 setIsOpen={setKeyRDialogIsOpen}
+            />
+            
+            <CreateUserCpfSearchDialog
+                isOpen={userSearchDIsOpen}
+                setIsOpen={setUserSearchDIsOpen}
+                setSelectedUser={setSelectedUser}
+                setCreateUserIsOpen={setUserCreateDIsOpen} 
             />
             <CreateUserDialog
                 isOpen={userCreateDIsOpen}
