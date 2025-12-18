@@ -113,7 +113,7 @@ export default function FullScreenActionDialog({
 
     const {
         roomList,
-        userList,
+        activeUsersList,
         loggedUser,
         setSnackBarText,
         setSnackBarSeverity,
@@ -175,7 +175,7 @@ export default function FullScreenActionDialog({
 
             const user: UserT = getUserById(
                 selectedReservation.reservatedToId,
-                userList
+                activeUsersList
             );
             setFormReservatedTo(user);
 
@@ -567,7 +567,7 @@ export default function FullScreenActionDialog({
                                     setFormReservatedTo(newValue);
                                 }}
                                 id="controllable-states-demo"
-                                options={userList}
+                                options={activeUsersList}
                                 getOptionLabel={(user: UserT) => {
                                     return user.name;
                                 }}

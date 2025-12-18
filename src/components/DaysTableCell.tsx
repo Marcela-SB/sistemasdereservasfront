@@ -28,14 +28,14 @@ type Props = {
 };
 
 function DaysTableCell({ schedule, index, handleClick, roomName, span = 1 }: Props) {
-    const { userList } = useContext(StateContext);
+    const { allUsersList } = useContext(StateContext);
 
     let tooltipTitle = null;
     if (schedule) {
         
         const reservedToUserName = getUserById(
             schedule.reservatedToId,
-            userList
+            allUsersList
         )?.name;
         tooltipTitle = (
             <>  

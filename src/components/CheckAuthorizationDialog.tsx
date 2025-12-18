@@ -64,7 +64,7 @@ export default function CheckAuthorizationDialog({
     setSelectedAuthorization,
     setCreateAuthIsOpen,
 }: Props) {
-    const { setSnackBarText, setSnackBarSeverity, roomList, userList } =
+    const { setSnackBarText, setSnackBarSeverity, roomList, allUsersList, activeUsersList } =
         React.useContext(StateContext);
 
     const handleClose = () => {
@@ -131,6 +131,10 @@ export default function CheckAuthorizationDialog({
             queryClient.invalidateQueries({ queryKey: ["keyListContext"] });
             cleanInputs();
         },
+        onError: (error) => {
+            setSnackBarText("Houve um problema na requisição de edição!");
+            setSnackBarSeverity("error");
+        },
     });
 
     React.useEffect(() => {
@@ -144,7 +148,7 @@ export default function CheckAuthorizationDialog({
 
             const userListToPush: UserT[] = [];
             for (const userId of selectedAuthorization.authorizatedToId) {
-                const user: UserT | null | undefined = getUserById(userId, userList);       
+                const user: UserT | null | undefined = getUserById(userId, activeUsersList);       
                 if (user) { 
                     userListToPush.push(user);
                 }
@@ -153,13 +157,13 @@ export default function CheckAuthorizationDialog({
 
             const userProff: UserT = getUserById(
                 selectedAuthorization.authorizationProfessorId,
-                userList
+                allUsersList
             );
             setAuthorizationProfessor(userProff);
 
             const userResponsible: UserT = getUserById(
                 selectedAuthorization.authorizationResponsibleId,
-                userList
+                allUsersList
             );
             setAuthorizationResponsible(userResponsible);
 
@@ -365,7 +369,7 @@ export default function CheckAuthorizationDialog({
                                     fullWidth
                                     multiple
                                     id="controllable-states-demo"
-                                    options={userList}
+                                    options={activeUsersList}
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
@@ -443,9 +447,9 @@ export default function CheckAuthorizationDialog({
                                         setAuthorizationProfessor(newValue);
                                     }}
                                     id="controllable-states-demo"
-                                    options={userList}
+                                    options={allUsersList}
                                     getOptionLabel={(user: UserT) => {
-                                        return user.name;
+                                        return user.name + (!user.active && " (inativo)");
                                     }}
                                     sx={{ flexGrow: 1 }}
                                     renderInput={(params) => (
@@ -469,7 +473,7 @@ export default function CheckAuthorizationDialog({
                                         setAuthorizationResponsible(newValue);
                                     }}
                                     id="controllable-states-demo"
-                                    options={userList}
+                                    options={allUsersList}
                                     getOptionLabel={(user: UserT) => {
                                         return user.name;
                                     }}

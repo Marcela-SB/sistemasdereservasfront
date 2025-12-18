@@ -13,7 +13,8 @@ export type GlobalContent = {
     date: Dayjs;
     setDate: (c: Dayjs) => void;
     roomList: RoomT[];
-    userList: UserT[];
+    activeUsersList: UserT[];
+    allUsersList: UserT[];
     reservationList: ReservationT[];
     keyList: KeyT[];
     AuthorizationList: AuthorizationT[];
@@ -29,7 +30,8 @@ export const StateContext = createContext<GlobalContent>({
     date: dayjs(),
     setDate: () => {},
     roomList: [],
-    userList: [],
+    activeUsersList: [],
+    allUsersList: [],
     reservationList: [],
     keyList: [],
     AuthorizationList: [],
@@ -54,10 +56,18 @@ function ReactContext({ children }: Props) {
         },
     });
 
-    const { data: userList } = useQuery({
+    const { data: activeUsersList } = useQuery({
         queryKey: ["userListContext"],
         queryFn: async () => {
-            const response = await axiosInstance.get("user/list");
+            const response = await axiosInstance.get("user/actives");
+            return response.data;
+        },
+    });
+
+    const { data: allUsersList } = useQuery({
+        queryKey: ["allUserListContext"],
+        queryFn: async () => {
+            const response = await axiosInstance.get("user");
             return response.data;
         },
     });
@@ -86,9 +96,10 @@ function ReactContext({ children }: Props) {
         },
     });
 
+    const userFromLocalStorage = localStorage.getItem("user");
     const [loggedUser, setLoggedUser] = React.useState<unknown | null>(
-        localStorage.getItem("user")
-            ? JSON.parse(localStorage.getItem("user")).user
+        userFromLocalStorage
+            ? JSON.parse(userFromLocalStorage).user
             : null
     );
 
@@ -103,7 +114,8 @@ function ReactContext({ children }: Props) {
                 date,
                 setDate,
                 roomList,
-                userList,
+                activeUsersList,
+                allUsersList,
                 reservationList,
                 keyList,
                 AuthorizationList,

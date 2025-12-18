@@ -7,5 +7,6 @@ export type UserT = {
     cpf: string;
     registration: string;
     role: string;
+    active: boolean;
 };
   

@@ -100,7 +100,7 @@ export default function CreateAuthorizationDialog({
         setSnackBarText,
         setSnackBarSeverity,
         roomList,
-        userList,
+        activeUsersList,
         loggedUser,
     } = React.useContext(StateContext);
 
@@ -146,7 +146,7 @@ export default function CreateAuthorizationDialog({
 
             const userListToPush: UserT[] = [];
             for (const userId of selectedAuthorization.authorizatedToId) {
-                const user: UserT | null | undefined = getUserById(userId, userList);       
+                const user: UserT | null | undefined = getUserById(userId, activeUsersList);       
                 if (user) { 
                     userListToPush.push(user);
                 }
@@ -155,7 +155,7 @@ export default function CreateAuthorizationDialog({
 
             const userProff: UserT = getUserById(
                 selectedAuthorization.authorizationProfessorId,
-                userList
+                activeUsersList
             );
             setAuthorizaredToProfessorId(userProff);
 
@@ -470,7 +470,7 @@ export default function CreateAuthorizationDialog({
                                     id="Autorização-para-states-demo"
                                     fullWidth
                                     multiple
-                                    options={userList}
+                                    options={activeUsersList}
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
@@ -541,7 +541,7 @@ export default function CreateAuthorizationDialog({
                                     ) => {
                                         setAuthorizaredToProfessorId(newValue);
                                     }}
-                                    options={userList}
+                                    options={activeUsersList}
                                     getOptionLabel={(user: UserT) => {
                                         return user.name;
                                     }}

@@ -47,7 +47,7 @@ export default function ReservationDetailsDialog({
     setReservationToEdit,
     setEditIsOpen
 }: Props) {
-    const { roomList, userList } = React.useContext(StateContext);
+    const { roomList, allUsersList } = React.useContext(StateContext);
 
     const handleClose = () => {
         setIsOpen(false);
@@ -156,7 +156,7 @@ export default function ReservationDetailsDialog({
                                     {
                                         getUserById(
                                             reservation.reservatedToId,
-                                            userList
+                                            allUsersList
                                         )?.name
                                     }
                                 </Typography>
@@ -182,7 +182,7 @@ export default function ReservationDetailsDialog({
                                     {
                                         getUserById(
                                             reservation.reservationResponsibleId,
-                                            userList
+                                            allUsersList
                                         )?.name
                                     }
                                 </Typography>

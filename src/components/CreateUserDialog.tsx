@@ -115,11 +115,12 @@ export default function CreateUserDialog({
         onSuccess: () => {
             handleClose();
             queryClient.invalidateQueries({ queryKey: ["userListContext"] });
+            queryClient.invalidateQueries({ queryKey: ["allUserListContext"] });
             setSnackBarText("Usuario criado com sucesso");
             setSnackBarSeverity("success");
         },
         onError: (error) => {
-            setSnackBarText(error.response.data);
+            setSnackBarText("Houve um problema na requisição!");
             setSnackBarSeverity("error");
         },
     });
@@ -135,7 +136,7 @@ export default function CreateUserDialog({
             setSnackBarSeverity("success");
         },
         onError: (error) => {
-            setSnackBarText(error.response.data);
+            setSnackBarText("Houve um problema na requisição!");
             setSnackBarSeverity("error");
         },
     });
@@ -149,7 +150,7 @@ export default function CreateUserDialog({
             registration: formRegistration,
             role: formRole,
         };
-
+        
         if (selectedUser) {
             editMutation.mutate(header);
         } else {
@@ -164,17 +165,38 @@ export default function CreateUserDialog({
         onSuccess: () => {
             handleClose();
             queryClient.invalidateQueries({ queryKey: ["userListContext"] });
+            queryClient.invalidateQueries({ queryKey: ["allUserListContext"] });
             setSnackBarText("Usuario removido com sucesso");
             setSnackBarSeverity("success");
         },
         onError: (error) => {
-            setSnackBarText(error.response.data);
+            setSnackBarText("Houve um problema na requisição!");
             setSnackBarSeverity("error");
         },
     });
 
     const onRemove = () => {
         deleteMutation.mutate();
+    };
+
+    const activateMutation = useMutation({
+        mutationFn: () => {
+            return axiosInstance.post("user/activate/" + selectedUser?.id);
+        },
+        onSuccess: () => {
+            handleClose();
+            queryClient.invalidateQueries({ queryKey: ["userListContext"] });
+            queryClient.invalidateQueries({ queryKey: ["allUserListContext"] });
+            setSnackBarText("Usuario ativado com sucesso");
+            setSnackBarSeverity("success");
+        },
+        onError: (error) => {
+            setSnackBarText("Houve um problema na requisição!")
+            setSnackBarSeverity("error");
+        },
+    });
+    const onActivate = () => {
+        activateMutation.mutate();
     };
 
     const [isRequestPending, setIsRequestPending] = useState(false);
@@ -226,32 +248,46 @@ export default function CreateUserDialog({
                             variant="h6"
                             component="div"
                         >
-                            Novo usuario
+                            {(selectedUser === null || selectedUser.active) ? "Novo usuario" : "Reativar usuario"}
                         </Typography>
                         <Stack direction={"row"} spacing={1}>
-                            <Button
-                                ref={submitButtonRef}
-                                color="success"
-                                onClick={onSubmit}
-                                disabled={isRequestPending}
-                                variant="contained"
-                                sx={{ fontWeight: "600" }}
-                            >
-                                {selectedUser ? "editar" : "salvar"}
-                            </Button>
-                            {selectedUser ? (
+                            {(selectedUser === null || selectedUser.active) ? (
+                                <>
+                                    <Button
+                                        ref={submitButtonRef}
+                                        color="success"
+                                        onClick={onSubmit}
+                                        disabled={isRequestPending}
+                                        variant="contained"
+                                        sx={{ fontWeight: "600" }}
+                                    >
+                                        {selectedUser ? "editar" : "salvar"}
+                                    </Button>
+                                    {selectedUser ? (
+                                        <Button
+                                            color="error"
+                                            onClick={() => {
+                                                setIsConfirmationDOpen(true);
+                                            }}
+                                            disabled={isRequestPending}
+                                            variant="contained"
+                                            sx={{ fontWeight: "600" }}
+                                        >
+                                            excluir
+                                        </Button>
+                                    ) : null}
+                                </>
+                            ) : (
                                 <Button
-                                    color="error"
-                                    onClick={() => {
-                                        setIsConfirmationDOpen(true);
-                                    }}
+                                    color="info"
+                                    onClick={onActivate}
                                     disabled={isRequestPending}
                                     variant="contained"
                                     sx={{ fontWeight: "600" }}
                                 >
-                                    excluir
+                                    Ativar
                                 </Button>
-                            ) : null}
+                            )}
                             <IconButton
                                 edge="start"
                                 color="inherit"

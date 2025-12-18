@@ -17,10 +17,10 @@ type Props = {
 };
 
 function FilteredUserList({ inputText, selectUser }: Props) {
-    const { userList } = useContext(StateContext);
+    const { activeUsersList } = useContext(StateContext);
 
     //create a new array by filtering the original array
-    const filteredUserList = userList
+    const filteredUserList = activeUsersList
         ?.filter((user: UserT) => {
             //if no input the return the original
             if (inputText === "") {
