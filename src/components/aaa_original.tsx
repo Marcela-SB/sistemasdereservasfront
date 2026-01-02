@@ -23,7 +23,6 @@ import {
     IconButton,
     InputLabel,
     MenuItem,
-    Paper,
     Select,
     Stack,
     styled,
@@ -45,7 +44,6 @@ import {
     CheckBoxOutlineBlankOutlined,
     CheckBoxOutlined,
     Close,
-    Delete,
 } from "@mui/icons-material";
 import { useEnterSubmit } from "../utils/enterKeyButtonActivate";
 
@@ -301,17 +299,6 @@ export default function FullScreenActionDialog({
     }, [createMutation, editMutation, deleteMutation]);
 
     const [isConfirmationDOpen, setIsConfirmationDOpen] = useState(false);
-
-    // Estado das Seções de Sala-Horário
-    const [sections, setSections] = useState([{ rooms: [], schedule: baseInternalSchedule }]);
-
-    const addSection = () => setSections([...sections, { rooms: [], schedule: baseInternalSchedule }]);
-    const removeSection = (index: number) => setSections(sections.filter((_, i) => i !== index));
-    const updateSection = (index: number, field: string, value: any) => {
-        const newSections = [...sections] as any;
-        newSections[index][field] = value;
-        setSections(newSections);
-    };
         
     const dialogRef = React.useRef<HTMLDivElement>(null);
     const submitButtonRef = React.useRef<HTMLButtonElement>(null);
@@ -369,9 +356,9 @@ export default function FullScreenActionDialog({
                         </Stack>
                     </Toolbar>
                 </AppBar>
-                <Box sx={{ padding: 2, minHeight: '100vh' }}>
-                    <Grid container spacing={2}>
-                        <Grid item  xs={12} md={3.5}>
+                <Box sx={{ padding: 2, flexGrow: 1 }}>
+                    <Grid container>
+                        <Grid item xs={3} paddingX={1}>
                             <TextField
                                 id="outlined-controlled"
                                 label="Nome da reserva"
@@ -384,7 +371,7 @@ export default function FullScreenActionDialog({
                                 fullWidth
                             />
                         </Grid>
-                        <Grid item xs={12} md={1.5}>
+                        <Grid item xs={2} paddingX={1}>
                             <TextField
                                 label="Vagas"
                                 value={formSlots}
@@ -399,7 +386,7 @@ export default function FullScreenActionDialog({
                                 }}
                             ></TextField>
                         </Grid>
-                        {/* <Grid item xs={3}>
+                        <Grid item xs={3} paddingX={1}>
                             <Autocomplete
                                 multiple
                                 id="controllable-states-demo"
@@ -466,8 +453,8 @@ export default function FullScreenActionDialog({
                                     );
                                 }}
                             />
-                        </Grid> */}
-                        <Grid item xs={3.5}>
+                        </Grid>
+                        <Grid item xs={2} paddingX={1}>
                             <StyledFormControl variant="outlined" fullWidth>
                                 <InputLabel id="demo-simple-select-filled-label">
                                     Curso
@@ -502,7 +489,7 @@ export default function FullScreenActionDialog({
                             </StyledFormControl>
                         </Grid>
 
-                        <Grid item xs={3.5}>
+                        <Grid item xs={2} paddingX={1}>
                             <TextField
                                 id="outlined-controlled"
                                 label="Supervisor da reserva"
@@ -511,7 +498,7 @@ export default function FullScreenActionDialog({
                                 fullWidth
                             />
                         </Grid>
-                        <Grid item xs={3.5}>
+                        <Grid item xs={3} paddingX={1} paddingTop={1}>
                             <DemoContainer components={["DatePicker"]}>
                                 <DatePicker
                                     label="Inicio da reserva"
@@ -524,7 +511,7 @@ export default function FullScreenActionDialog({
                                 />
                             </DemoContainer>
                         </Grid>
-                        <Grid item xs={1.5}>
+                        <Grid item xs={2} paddingX={0} paddingTop={1.5}>
                             <FormControlLabel
                                 control={
                                     <Switch
@@ -545,7 +532,7 @@ export default function FullScreenActionDialog({
                             />
                         </Grid>
                         {formIsOneDay == true ? (
-                            <Grid item xs={3}>
+                            <Grid item xs={3} paddingX={1} paddingTop={1}>
                                 <DemoContainer components={["DatePicker"]}>
                                     <DatePicker
                                         label="Final da reserva"
@@ -556,7 +543,7 @@ export default function FullScreenActionDialog({
                                 </DemoContainer>
                             </Grid>
                         ) : (
-                            <Grid item xs={3.5}>
+                            <Grid item xs={3} paddingX={1} paddingTop={1}>
                                 <DemoContainer components={["DatePicker"]}>
                                     <DatePicker
                                         label="Final da reserva"
@@ -570,7 +557,7 @@ export default function FullScreenActionDialog({
                                 </DemoContainer>
                             </Grid>
                         )}
-                        <Grid item xs={3.5}>
+                        <Grid item xs paddingX={1} paddingTop={2}>
                             <Autocomplete
                                 value={formReservatedTo}
                                 onChange={(
@@ -593,81 +580,28 @@ export default function FullScreenActionDialog({
                                 )}
                             />
                         </Grid>
-
-            {/* ----------------------------------- */}
-                        <Grid item xs={12}>
-                            <TextField
-                                label="Observações"
-                                value={formComment}
-                                onChange={(
-                                    event: React.ChangeEvent<HTMLInputElement>
-                                ) => {
-                                    setFormComment(event.target.value);
-                                }}
-                                multiline
-                                fullWidth
-                                rows={3}
-                            />
+                        <Grid container sx={{ marginTop: 2, paddingX: 1 }}>
+                            <Grid item xs={3} sx={{ paddingRight: 2 }}>
+                                <TextField
+                                    label="Observações"
+                                    value={formComment}
+                                    onChange={(
+                                        event: React.ChangeEvent<HTMLInputElement>
+                                    ) => {
+                                        setFormComment(event.target.value);
+                                    }}
+                                    multiline
+                                    fullWidth
+                                    rows={14}
+                                />
+                            </Grid>
+                            <Grid item xs={9}>
+                                <FullScreenTableDialog
+                                    formSchedule={formSchedule}
+                                    setFormSchedule={setFormSchedule}
+                                />
+                            </Grid>
                         </Grid>
-                        <Grid 
-                            item 
-                            xs={12} 
-                            sx={{ 
-                                display: 'flex', 
-                                flexDirection: 'column', 
-                                alignItems: 'center', 
-                                mt: 3 
-                            }}
-                        >
-                            <Stack spacing={4} sx={{ width: '100%', maxWidth: '1200px' }}>
-                                {sections.map((section, index) => (
-                                    <Box key={index} sx={{ position: 'relative', width: '100%' }}>
-                                        
-                                        {/* LIXEIRA LATERAL*/}
-                                        {index > 0 && (
-                                            <Button 
-                                                onClick={() => removeSection(index)}
-                                                variant="contained"
-                                                sx={{ 
-                                                    position: 'absolute', 
-                                                    left: -65,
-                                                    top: '50%', 
-                                                    transform: 'translateY(-50%)',
-                                                    bgcolor: '#d32f2f', 
-                                                    color: 'white',
-                                                    minWidth: 0,
-                                                    width: 45,
-                                                    height: 45,
-                                                    borderRadius: '8px',
-                                                    padding: 0,
-                                                    '&:hover': { bgcolor: '#b71c1c' },
-                                                    boxShadow: 3
-                                                }}
-                                            >
-                                                <Delete />
-                                            </Button>
-                                        )}
-                                        <Paper elevation={1} sx={{ overflow: 'hidden', borderRadius: '4px' }}>
-                                            <FullScreenTableDialog
-                                                formSchedule={formSchedule}
-                                                setFormSchedule={setFormSchedule}
-                                            />
-                                        </Paper>
-                                    </Box>
-                                ))}
-
-                                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                    <Button 
-                                        variant="contained" 
-                                        onClick={addSection}
-                                        sx={{ bgcolor: '#004a89', px: 4, py: 1, fontWeight: 'bold' }}
-                                    >
-                                        Adicionar nova sala-horário
-                                    </Button>
-                                </Box>
-                            </Stack>
-                        </Grid>
-            {/*--------------------------------------- */}
                     </Grid>
                 </Box>
                 {selectedReservation ? (

@@ -36,14 +36,12 @@ function CreateUserCpfSearchDialog({
 }: Props) {
     const { allUsersList } = React.useContext(StateContext);
 
-    // O estado 'searchedText' agora conterá o CPF (com ou sem formatação, dependendo do InputMask)
     const [searchedText, setSearchedText] = useState("");
 
     const handleClose = () => {
         setIsOpen(false);
     };
 
-    // O useEffect para ordenação não precisa ser alterado se a ordenação inicial for a mesma.
     useEffect(() => {
         if (allUsersList) {
             const holder = [...allUsersList];
@@ -125,12 +123,11 @@ function CreateUserCpfSearchDialog({
                 <Stack direction={"column"}>
                     <FilteredUserListByCpf
                         selectUser={selectUser}
-                        inputText={searchedText} // Passa o texto (agora CPF) para o filtro
+                        inputText={searchedText}
                     />
                     <FormControl>
-                        {/* 🌟 Alteração aqui para usar InputMask para CPF */}
                         <InputMask
-                            mask="999.999.999-99" // Máscara de CPF
+                            mask="999.999.999-99"
                             value={searchedText}
                             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                 setSearchedText(event.target.value);
@@ -138,8 +135,8 @@ function CreateUserCpfSearchDialog({
                         >
                             {() => (
                                 <TextField
-                                    label="CPF do usuario" // Novo label
-                                    placeholder="Digite o CPF do usuario" // Novo placeholder
+                                    label="CPF do usuario"
+                                    placeholder="Digite o CPF do usuario"
                                     sx={{
                                         margin: 2,
                                         borderRadius: 6,
