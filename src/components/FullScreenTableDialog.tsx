@@ -9,15 +9,22 @@ import Paper from "@mui/material/Paper";
 import { tableSchedule } from "../types/tableSchedules";
 import { Checkbox, Tooltip } from "@mui/material";
 import { weekDays } from "../types/weekDays";
+import { RoomT } from "../types/RoomT";
 
 type Props = {
     formSchedule: boolean[][];
     setFormSchedule: (b: boolean[][]) => void;
+        roomList: RoomT[];        // Adicionado
+        formRoom: RoomT[];        // Adicionado
+        setFormRoom: (r: RoomT[]) => void; // Adicionado
 };
 
 export default function FullScreenTableDialog({
     formSchedule,
     setFormSchedule,
+    roomList,
+    formRoom,
+    setFormRoom
 }: Props) {
     const handleChange = (
         event: React.ChangeEvent<HTMLInputElement>,
