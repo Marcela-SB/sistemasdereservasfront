@@ -1,36 +1,22 @@
 import * as React from "react";
-import Button from "@mui/material/Button";
-import Dialog, { DialogProps } from "@mui/material/Dialog";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Slide from "@mui/material/Slide";
-import { TransitionProps } from "@mui/material/transitions";
-import { ReservationT } from "../types/ReservationT";
-import { StateContext } from "../context/ReactContext";
+import { useEffect, useState, useContext, useRef } from "react";
 import {
-    Autocomplete,
-    Checkbox,
-    Divider,
-    FormControl,
-    IconButton,
-    List,
-    ListItem,
-    ListItemSecondaryAction,
-    Stack,
-    TextField,
+    Button, Dialog, DialogProps, AppBar, Toolbar, Typography, Slide,
+    Stack, TextField, Autocomplete, FormControl, List, IconButton
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import { RoomT } from "../types/RoomT";
+import { TransitionProps } from "@mui/material/transitions";
+import { Close } from "@mui/icons-material";
 import dayjs, { Dayjs } from "dayjs";
-import { UserT } from "../types/UserT";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { ClearIcon, TimePicker } from "@mui/x-date-pickers";
-import axiosInstance from "../utils/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { TimePicker } from "@mui/x-date-pickers";
+
+import { RoomT } from "../types/RoomT";
+import { UserT } from "../types/UserT";
+import { StateContext } from "../context/ReactContext";
+import axiosInstance from "../utils/axiosInstance";
 import { queryClient } from "../utils/queryClient";
 import CheckUserDialog from "./CheckUserDialog";
-import { Close, Send } from "@mui/icons-material";
 import DraggablePaper from "./DraggablePaper";
 import PaperComponent from "./PaperComponent";
 import roomDynamicSort from "../utils/roomDynamicSort.ts";
@@ -38,9 +24,7 @@ import KeyWithdrawRoomList from "./KeyWithdrawRoomList.tsx";
 import { useEnterSubmit } from "../utils/enterKeyButtonActivate.ts";
 
 const Transition = React.forwardRef(function Transition(
-    props: TransitionProps & {
-        children: React.ReactElement;
-    },
+    props: TransitionProps & { children: React.ReactElement },
     ref: React.Ref<unknown>
 ) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -58,7 +42,27 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
         loggedUser,
         setSnackBarText,
         setSnackBarSeverity,
-    } = React.useContext(StateContext);
+    } = useContext(StateContext);
+
+    // ESTADOS DO FORMULÁRIO
+    const [searchedText, setSearchedText] = useState<string>("");
+    const [formRoom, setFormRoom] = useState<RoomT[]>([]);
+    const [formWithdrawTime, setFormWithdrawTime] = useState<Dayjs | null>(dayjs());
+    const [formReturnTime, setFormReturnTime] = useState<Dayjs | null>(null);
+    const [formReservatedTo, setFormReservatedTo] = useState<UserT | null>(null);
+    
+    // ESTADOS DE CONTROLE
+    const [checkDialogIsOpen, setCheckDialogIsOpen] = useState(false);
+    const [checkSucess, setCheckSucess] = useState(false);
+    const [filteredRoomArray, setFilteredRoomArray] = useState<RoomT[]>([]);
+
+    const cleanInputs = () => {
+        setFormRoom([]);
+        setFormWithdrawTime(dayjs());
+        setFormReturnTime(null);
+        setFormReservatedTo(null);
+        setSearchedText("");
+    };
 
     const handleClose: DialogProps["onClose"] = (event, reason) => {
         if (reason && reason === "backdropClick") return;
@@ -66,136 +70,71 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
         cleanInputs();
     };
 
-    const cleanInputs = () => {
-        setFormRoom([]);
-        setFormReturnTime(dayjs());
-        setFormReservatedTo(null);
-        setFormResponsible(null);
-        setSelectedInternalReservation(null);
-    };
-
-    const [searchedText, setSearchedText] = useState<string>("");
-
-    const [formRoom, setFormRoom] = useState<RoomT[]>([]);
-
-    const [formReturnTime, setFormReturnTime] = useState<Dayjs | null>(null);
-
-    const [formReservatedTo, setFormReservatedTo] = useState<UserT | null>(
-        null
-    );
-
-    const [formResponsible, setFormResponsible] = useState<UserT | null>(null);
-
-    const [selectedInternalReservation, setSelectedInternalReservation] =
-        useState<ReservationT | null>(null);
-
-    const [checkDialogIsOpen, setCheckDialogIsOpen] = useState(false);
-
-    const [checkSucess, setCheckSucess] = useState(false);
-
     const createMutation = useMutation({
-        mutationFn: (header) => {
-            return axiosInstance.post("keydelivery/create", header);
-        },
+        mutationFn: (header: any) => axiosInstance.post("keydelivery/create", header),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["keyListContext"] });
             setSnackBarText("Entrega de chave criada com sucesso");
             setSnackBarSeverity("success");
-            setFormReservatedTo(null);
+            setIsOpen(false);
             cleanInputs();
         },
-        onError: (error) => {
-            setSnackBarText(error.response.data);
+        onError: (error: any) => {
+            setSnackBarText(error.response?.data || "Erro ao criar retirada");
             setSnackBarSeverity("error");
         },
     });
 
-    const submitWithdraw = () => {
-        if (formReservatedTo) {
-            setCheckDialogIsOpen(true);
-        } else {
-            setSnackBarText("Preencha todos os campos");
-            setSnackBarSeverity("error");
-        }
-    };
-
-    const [scrollableRoomArray, setScrollableRoomArray] = useState<RoomT[]>([]);
-
-    const [filteredRoomArray, setFilteredRoomArray] = useState<RoomT[]>([]);
-
+    // Filtro de salas
     useEffect(() => {
         if (roomList) {
-            const filteredRoomList = roomList
-                ?.filter((room: RoomT) => {
-                    //if no input the return the original
-                    if (searchedText === "") {
-                        return room;
-                    }
-
-                    //return the item which contains the room input
-                    else {
-                        return room.name?.toLowerCase().includes(searchedText.toLowerCase());
-                    }
-                })
+            const filtered = roomList
+                .filter((room: RoomT) =>
+                    room.name?.toLowerCase().includes(searchedText.toLowerCase())
+                )
                 .sort(roomDynamicSort());
-            setFilteredRoomArray(filteredRoomList);
-
-            setScrollableRoomArray(roomList.sort(roomDynamicSort()));
+            setFilteredRoomArray(filtered);
         }
     }, [searchedText, roomList]);
 
-    React.useEffect(() => {
-        if (checkSucess) {
-            const formatedStart = formReturnTime?.format("YYYY-MM-DDTHH:mm:ss");
-
-            const headersList: object[] = [];
-
-
+    // Envio após validação do CheckUserDialog
+    useEffect(() => {
+        if (checkSucess && formRoom.length > 0) {
             formRoom.forEach((room) => {
                 const header = {
                     roomId: room.id,
                     withdrawResponsibleId: loggedUser.id,
                     responsibleForTheKeyId: formReservatedTo?.id,
-                    withdrawTime: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
+                    withdrawTime: formWithdrawTime?.format("YYYY-MM-DDTHH:mm:ss"),
+                    returnPrevision: formReturnTime?.format("YYYY-MM-DDTHH:mm:ss") || null,
                     isKeyReturned: false,
                 };
-                if (Object.values(header).every((value) => value != null)) {
-                    if (formReturnTime) {
-                        header.returnPrevision = formReturnTime?.format(
-                            "YYYY-MM-DDTHH:mm:ss"
-                        );
-                    } else {
-                        header.returnPrevision = null;
-                    }
-                    headersList.push(header);
-                    createMutation.mutate(header);
-                } else {
-                    setSnackBarText("Preencha todos os campos");
-                    setSnackBarSeverity("error");
-                }
+                createMutation.mutate(header);
             });
-
             setCheckSucess(false);
         }
     }, [checkSucess]);
 
-    const changeRoomList = (room: RoomT) => {
-        const holder = formRoom;
-
-        const roomIndex = holder?.findIndex(
-            (holderRoom) => holderRoom.id == room.id
-        );
-
-        if (roomIndex > -1) {
-            holder?.splice(roomIndex, 1);
+    const submitWithdraw = () => {
+        if (formReservatedTo && formRoom.length > 0) {
+            setCheckDialogIsOpen(true);
         } else {
-            holder?.push(room);
+            setSnackBarText("Selecione ao menos uma sala e o responsável");
+            setSnackBarSeverity("error");
         }
-        setFormRoom(holder);
     };
 
-    const dialogRef = React.useRef<HTMLDivElement>(null);
-    const submitButtonRef = React.useRef<HTMLButtonElement>(null);
+    // Função de toggle de sala corrigida (imutabilidade)
+    const changeRoomList = (room: RoomT) => {
+        setFormRoom((prev) => {
+            const exists = prev.find((r) => r.id === room.id);
+            if (exists) return prev.filter((r) => r.id !== room.id);
+            return [...prev, room];
+        });
+    };
+
+    const dialogRef = useRef<HTMLDivElement>(null);
+    const submitButtonRef = useRef<HTMLButtonElement>(null);
     useEnterSubmit(isOpen, submitButtonRef, dialogRef);
 
     return (
@@ -206,7 +145,7 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                 onClose={handleClose}
                 TransitionComponent={Transition}
                 fullWidth
-                maxWidth="sm"
+                maxWidth={false} // Desabilita o maxWidth padrão para respeitar o style width
                 PaperComponent={PaperComponent}
                 hideBackdrop
                 PaperProps={{
@@ -216,6 +155,7 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                     },
                 }}
                 disableEnforceFocus
+                // MANTIDO: Estilos originais de posicionamento e tamanho
                 style={{
                     top: "30%",
                     left: "30%",
@@ -223,62 +163,36 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                     width: "42rem",
                 }}
             >
-                <AppBar
-                    sx={{ position: "relative" }}
-                    className="draggable-dialog"
-                >
+                <AppBar sx={{ position: "relative" }} className="draggable-dialog">
                     <Toolbar>
-                        <Typography
-                            sx={{ ml: 2, flex: 1 }}
-                            variant="h6"
-                            component="div"
-                            textAlign={"center"}
-                        >
+                        <Typography sx={{ ml: 2, flex: 1 }} variant="h6" textAlign="center">
                             RETIRADA DE CHAVE
                         </Typography>
-                        <IconButton
-                            edge="start"
-                            color="inherit"
-                            onClick={handleClose}
-                            aria-label="close"
-                        >
+                        <IconButton edge="start" color="inherit" onClick={handleClose}>
                             <Close />
                         </IconButton>
                     </Toolbar>
                 </AppBar>
-                <Stack
-                    direction={"row"}
-                    justifyContent={"space-between"}
-                    marginX={2}
-                    gap={2}
-                    marginTop={2}
-                >
+
+                <Stack direction="row" justifyContent="space-between" marginX={2} gap={2} marginTop={2}>
                     <Stack
-                        direction={"column"}
+                        direction="column"
                         sx={{
+                            width: "50%", // Garante divisão proporcional
                             border: "solid 1px rgba(0, 0, 0, 0.26)",
-                            borderRadius: ".5rem .5rem  2% 2%",
+                            borderRadius: ".5rem .5rem 2% 2%",
                         }}
                     >
                         <List sx={{ overflow: "auto", height: "18rem" }}>
-                            {scrollableRoomArray?.map((room, index) => {
-                                let visible = false;
-                                if (
-                                    filteredRoomArray.some(
-                                        (filteredRoom) =>
-                                            filteredRoom.id == room.id
-                                    )
-                                ) {
-                                    visible = true;
-                                }
-
+                            {(roomList || []).sort(roomDynamicSort()).map((room, index) => {
+                                const isVisible = filteredRoomArray.some((f) => f.id === room.id);
                                 return (
                                     <KeyWithdrawRoomList
+                                        key={`${room.id}-${index}`}
                                         changeRoomList={changeRoomList}
                                         room={room}
                                         checkSucess={checkSucess}
-                                        key={room.name + "_" + index}
-                                        visible={visible}
+                                        visible={isVisible}
                                     />
                                 );
                             })}
@@ -287,56 +201,38 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                             <TextField
                                 label="Nome do espaço"
                                 placeholder="Digite o nome do espaço"
-                                sx={{
-                                    margin: 2,
-                                    borderRadius: 6,
-                                }}
+                                sx={{ margin: 2 }}
                                 value={searchedText}
-                                onChange={(
-                                    event: React.ChangeEvent<HTMLInputElement>
-                                ) => {
-                                    setSearchedText(event.target.value);
-                                }}
-                            ></TextField>
+                                onChange={(e) => setSearchedText(e.target.value)}
+                            />
                         </FormControl>
                     </Stack>
-                    <Stack
-                        direction={"column"}
-                        justifyContent={"space-evenly"}
-                        gap={4}
-                    >
+
+                    <Stack direction="column" justifyContent="space-evenly" gap={2} sx={{ width: "50%" }}>
                         <Autocomplete
                             value={formReservatedTo}
-                            onChange={(_event: any, newValue: UserT | null) => {
-                                setFormReservatedTo(newValue);
-                            }}
-                            id="controllable-states-demo"
-                            options={activeUsersList}
-                            getOptionLabel={(user: UserT) => {
-                                return user.name;
-                            }}
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    label="Sala reservada para..."
-                                />
-                            )}
+                            onChange={(_, newValue) => setFormReservatedTo(newValue)}
+                            options={activeUsersList || []}
+                            getOptionLabel={(user: UserT) => user.name || ""}
+                            renderInput={(params) => <TextField {...params} label="Sala reservada para..." />}
                         />
-                        <TextField
-                            id="outlined-controlled"
-                            label="Supervisor da reserva"
-                            value={loggedUser?.name}
-                            disabled
-                            fullWidth
-                        />
+                        
+                        <TextField label="Supervisor da reserva" value={loggedUser?.name || ""} disabled fullWidth />
+
+                        <DemoContainer components={["TimePicker"]}>
+                            <TimePicker
+                                label="Hora de retirada"
+                                value={formWithdrawTime}
+                                onChange={(val) => setFormWithdrawTime(val)}
+                                sx={{ width: "100%" }}
+                            />
+                        </DemoContainer>
 
                         <DemoContainer components={["TimePicker"]}>
                             <TimePicker
                                 label="Previsão de retorno"
                                 value={formReturnTime}
-                                onChange={(newValue) =>
-                                    setFormReturnTime(newValue)
-                                }
+                                onChange={(val) => setFormReturnTime(val)}
                                 sx={{ width: "100%" }}
                                 slotProps={{ field: { clearable: true } }}
                             />
@@ -349,12 +245,13 @@ export default function KeyWithdraDialog({ isOpen, setIsOpen }: Props) {
                     setIsOpen={setCheckDialogIsOpen}
                     chekedUser={formReservatedTo}
                     setCheckSucess={setCheckSucess}
-                    info= {{
-                        sala: formRoom?.name,
+                    info={{
+                        sala: formRoom.map(r => r.name).join(", "),
                         reservadoPara: formReservatedTo?.name,
-                        reservadoPor: formResponsible?.name,
+                        reservadoPor: loggedUser?.name,
                     }}
                 />
+
                 <Button
                     ref={submitButtonRef}
                     variant="contained"
